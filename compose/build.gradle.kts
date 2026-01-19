@@ -115,7 +115,6 @@ kotlin {
     }
 
 }
-// ✅ Configuración para GitHub Packages
 publishing {
     repositories {
         maven {
@@ -129,6 +128,5 @@ publishing {
     }
 
     publications {
-        // Las publicaciones se crean automáticamente por el plugin multiplatform
     }
 }
