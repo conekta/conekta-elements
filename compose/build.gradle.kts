@@ -4,7 +4,6 @@ plugins {
     alias(libs.plugins.android.lint)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.vanniktech.mavenPublish)
     `maven-publish`
 
 }
@@ -116,32 +115,20 @@ kotlin {
     }
 
 }
-mavenPublishing {
-    // OJO: coordinates() está bien para control artifactId
-    coordinates(group.toString(), "elements", version.toString())
-
-    pom {
-        name.set("Conekta Elements")
-        description.set("Conekta Elements.")
-        url.set("https://github.com/conekta/conekta_elements/")
-
-        licenses {
-            license {
-                name.set("XXX")
-                url.set("YYY")
+// ✅ Configuración para GitHub Packages
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/conekta/conekta_elements")
+            credentials {
+                username = project.findProperty("gpr.user") as String? ?: System.getenv("GP_USER")
+                password = project.findProperty("gpr.token") as String? ?: System.getenv("GP_TOKEN")
             }
         }
-        developers {
-            developer {
-                id.set("fcarrero")
-                name.set("Franklin Carrero")
-                url.set("https://github.com/fcarrero")
-            }
-        }
-        scm {
-            url.set("https://github.com/conekta/conekta_elements/")
-            connection.set("scm:git:https://github.com/conekta/conekta_elements.git")
-            developerConnection.set("scm:git:ssh://git@github.com:conekta/conekta_elements.git")
-        }
+    }
+
+    publications {
+        // Las publicaciones se crean automáticamente por el plugin multiplatform
     }
 }
