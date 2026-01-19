@@ -8,9 +8,12 @@ plugins {
 
 }
 group = "io.conekta.elements"
-version = "1.0.0"
+version = "1.0.7"
 
-
+compose.resources {
+    publicResClass = true
+    generateResClass = always
+}
 kotlin {
 
     // Target declarations - add or remove as needed below. These define
@@ -29,6 +32,7 @@ kotlin {
         }.configure {
             instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         }
+        androidResources.enable = true
     }
 
     // For iOS targets, this is also where you should
@@ -75,7 +79,7 @@ kotlin {
                 implementation(compose.preview)
                 implementation(libs.androidx.lifecycle.viewmodelCompose)
                 implementation(libs.androidx.lifecycle.runtimeCompose)
-                implementation(project(":shared"))
+                //implementation(project(":shared"))
             }
         }
 
