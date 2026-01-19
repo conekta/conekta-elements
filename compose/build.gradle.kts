@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.vanniktech.mavenPublish)
+    `maven-publish`
 
 }
 group = "io.conekta.elements"
@@ -142,11 +143,5 @@ mavenPublishing {
             connection.set("scm:git:https://github.com/conekta/conekta_elements.git")
             developerConnection.set("scm:git:ssh://git@github.com:conekta/conekta_elements.git")
         }
-    }
-
-    // ✅ SOLO para Maven Central (local/dev/CI tuyo), NO para JitPack
-    if (System.getenv("JITPACK") == null) {
-        publishToMavenCentral()
-        signAllPublications()
     }
 }
