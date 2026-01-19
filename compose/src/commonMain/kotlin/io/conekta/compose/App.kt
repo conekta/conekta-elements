@@ -14,11 +14,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import conekta_elements.compose.generated.resources.Res
+import conekta_elements.compose.generated.resources.compose_multiplatform
 import io.conekta.elements.Greeting
 import org.jetbrains.compose.resources.painterResource
-
-//import conekta_elements.compose.generated.resources.compose_multiplatform
-//import conekta_elements.compose.generated.resources.Res
 
 @Composable
 @Preview
@@ -41,7 +40,7 @@ fun App() {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    //Image(painterResource(Res.drawable.compose_multiplatform), null)
+                    Image(painterResource(Res.drawable.compose_multiplatform), null)
                     Text("Compose: $greeting")
                 }
             }
