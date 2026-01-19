@@ -4,8 +4,12 @@ plugins {
     alias(libs.plugins.android.lint)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.vanniktech.mavenPublish)
 
 }
+group = "io.conekta.elements"
+version = "1.0.0"
+
 
 kotlin {
 
@@ -110,4 +114,39 @@ kotlin {
         }
     }
 
+}
+mavenPublishing {
+    // OJO: coordinates() está bien para control artifactId
+    coordinates(group.toString(), "elements", version.toString())
+
+    pom {
+        name.set("Conekta Elements")
+        description.set("Conekta Elements.")
+        url.set("https://github.com/conekta/conekta_elements/")
+
+        licenses {
+            license {
+                name.set("XXX")
+                url.set("YYY")
+            }
+        }
+        developers {
+            developer {
+                id.set("fcarrero")
+                name.set("Franklin Carrero")
+                url.set("https://github.com/fcarrero")
+            }
+        }
+        scm {
+            url.set("https://github.com/conekta/conekta_elements/")
+            connection.set("scm:git:https://github.com/conekta/conekta_elements.git")
+            developerConnection.set("scm:git:ssh://git@github.com:conekta/conekta_elements.git")
+        }
+    }
+
+    // ✅ SOLO para Maven Central (local/dev/CI tuyo), NO para JitPack
+    if (System.getenv("JITPACK") == null) {
+        publishToMavenCentral()
+        signAllPublications()
+    }
 }
