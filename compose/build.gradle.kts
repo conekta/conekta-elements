@@ -7,9 +7,8 @@ plugins {
     `maven-publish`
 
 }
-group = "io.conekta.elements"
-version = "1.0.7"
-
+group = project.property("conekta.group") as String
+version = project.property("conekta.version") as String
 compose.resources {
     publicResClass = true
     generateResClass = always
@@ -79,7 +78,7 @@ kotlin {
                 implementation(compose.preview)
                 implementation(libs.androidx.lifecycle.viewmodelCompose)
                 implementation(libs.androidx.lifecycle.runtimeCompose)
-                //implementation(project(":shared"))
+                api(project(":shared"))
             }
         }
 

@@ -14,7 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-//import io.conekta.elements.Greeting
+import io.conekta.elements.Greeting
 import io.conekta.elements.compose.generated.resources.Res
 import io.conekta.elements.compose.generated.resources.compose_multiplatform
 import org.jetbrains.compose.resources.painterResource
@@ -35,7 +35,7 @@ fun App() {
                 Text("Click me!")
             }
             AnimatedVisibility(showContent) {
-                val greeting =  "hello"//remember { Greeting().greet() }
+                val greeting =  remember { Greeting().greet() }
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
