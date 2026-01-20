@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "conekta_elements"
+rootProject.name = "conekta-elements"
 include(":shared")
 include(":compose")
