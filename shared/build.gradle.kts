@@ -11,6 +11,15 @@ kotlin {
     iosX64()
     iosArm64()
     iosSimulatorArm64()
+    js {
+        outputModuleName = "shared"
+        browser()
+        binaries.library()
+        generateTypeScriptDefinitions()
+        compilerOptions {
+            target = "es2015"
+        }
+    }
     androidLibrary {
         namespace = "io.conekta.shared"
         compileSdk = 36
