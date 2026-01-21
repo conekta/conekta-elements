@@ -1,0 +1,337 @@
+# Conekta Elements - Web Application Rules
+
+## Project Context
+
+This is the **Web Application** part of Conekta Elements, a monorepo with:
+- `webApp/` - React + TypeScript (this project)
+- `shared/` - Kotlin Multiplatform SDK with Compose UI
+
+**Current Phase:** Express Checkout only (Apple Pay / Google Pay)
+
+## Architecture: Feature-Based
+
+Everything related to a feature lives together in one folder.
+
+```
+src/
+├── features/
+│   └── express-checkout/        # Phase 1
+│       ├── components/
+│       ├── hooks/
+│       ├── store/
+│       ├── utils/
+│       └── index.ts            # Public API
+├── lib/                        # Formatters, constants
+├── api/                        # HTTP client, endpoints
+├── providers/                  # ConektaProvider
+└── styles/                     # Mantine theme
+```
+
+## Core Principles
+
+### 1. Feature Encapsulation
+- Everything for Express Checkout stays in `/features/express-checkout/`
+- Export only public API via `index.ts`
+- Internal components/hooks/utils stay private
+
+### 2. TypeScript Strict Mode
+- Always define explicit types
+- No `any` - use `unknown` if needed
+- Use interfaces for public APIs
+- Use types for internal implementations
+
+### 3. Mantine Components
+- Use Mantine as base for all UI components
+- Customize via theme in `/styles/theme.ts`
+- Use `sx` prop for component-specific styles
+- Avoid custom CSS unless absolutely necessary
+
+### 4. Zustand for State (if needed)
+- Create store in `features/express-checkout/store/`
+- Use selectors to prevent unnecessary re-renders
+- Keep store focused and minimal
+
+### 5. Custom Hooks
+- Extract logic from components into hooks
+- Place in `features/express-checkout/hooks/`
+- Name with `use` prefix
+
+## File Structure
+
+### Express Checkout Feature
+
+```
+features/express-checkout/
+├── components/
+│   ├── ExpressCheckout.tsx          # Main component (public)
+│   ├── ApplePayButton.tsx           # Internal
+│   └── GooglePayButton.tsx          # Internal
+├── hooks/
+│   └── usePaymentMethod.ts          # Auto-detection logic
+├── store/
+│   └── expressCheckoutStore.ts      # Zustand (if needed)
+├── utils/
+│   └── detectPaymentMethod.ts       # Device/browser detection
+└── index.ts                         # Public exports only
+
+// index.ts exports:
+export { ExpressCheckout } from './components/ExpressCheckout';
+export type { ExpressCheckoutProps } from './components/ExpressCheckout';
+```
+
+## TypeScript Guidelines
+
+### Interfaces & Types
+
+```typescript
+// Public API - use interface
+interface ExpressCheckoutProps {
+  publicKey: string;
+  amount: number;
+  currency: string;
+  onPaymentCompleted: (result: PaymentResult) => void;
+}
+
+// Discriminated unions for state
+type PaymentMethodType = 'apple_pay' | 'google_pay' | null;
+
+type PaymentResult = 
+  | { status: 'success'; data: PaymentData }
+  | { status: 'error'; error: string };
+```
+
+### No Any
+
+```typescript
+// ❌ Bad
+const handlePayment = (data: any) => { ... }
+
+// ✅ Good
+const handlePayment = (data: PaymentData) => { ... }
+```
+
+## React Patterns
+
+### Component Structure
+
+```typescript
+import { Button } from '@mantine/core';
+
+interface ApplePayButtonProps {
+  amount: number;
+  onClick: () => void;
+}
+
+export const ApplePayButton = ({ amount, onClick }: ApplePayButtonProps) => {
+  return (
+    <Button
+      variant="filled"
+      size="lg"
+      onClick={onClick}
+    >
+      Pay ${(amount / 100).toFixed(2)} with Apple Pay
+    </Button>
+  );
+};
+```
+
+### Custom Hooks
+
+```typescript
+// features/express-checkout/hooks/usePaymentMethod.ts
+export const usePaymentMethod = () => {
+  const [method, setMethod] = useState<PaymentMethodType>(null);
+  
+  useEffect(() => {
+    const detected = detectPaymentMethod();
+    setMethod(detected);
+  }, []);
+  
+  return method;
+};
+```
+
+### Zustand Store (if needed)
+
+```typescript
+// features/express-checkout/store/expressCheckoutStore.ts
+import { create } from 'zustand';
+
+interface ExpressCheckoutStore {
+  isProcessing: boolean;
+  setIsProcessing: (value: boolean) => void;
+}
+
+export const useExpressCheckoutStore = create<ExpressCheckoutStore>((set) => ({
+  isProcessing: false,
+  setIsProcessing: (value) => set({ isProcessing: value }),
+}));
+
+// Usage with selector (for performance)
+const isProcessing = useExpressCheckoutStore(state => state.isProcessing);
+```
+
+## Mantine Usage
+
+### Theme Configuration
+
+```typescript
+// styles/theme.ts
+import { createTheme } from '@mantine/core';
+
+export const conektaTheme = createTheme({
+  primaryColor: 'blue',
+  fontFamily: 'Inter, sans-serif',
+  radius: { md: '8px' },
+  spacing: { md: '16px' },
+});
+```
+
+### Component Styling
+
+```typescript
+// Use Mantine props
+<Button variant="filled" size="lg" radius="md">
+  Click me
+</Button>
+
+// Use sx for custom styles
+<Button 
+  sx={(theme) => ({
+    backgroundColor: theme.colors.blue[6],
+    '&:hover': {
+      backgroundColor: theme.colors.blue[7],
+    },
+  })}
+>
+  Custom
+</Button>
+```
+
+## File Naming
+
+- Components: `PascalCase.tsx` (e.g., `ExpressCheckout.tsx`)
+- Hooks: `useCamelCase.ts` (e.g., `usePaymentMethod.ts`)
+- Utils: `camelCase.ts` (e.g., `detectPaymentMethod.ts`)
+- Stores: `camelCaseStore.ts` (e.g., `expressCheckoutStore.ts`)
+- Types: `types.ts` or colocated in component file
+
+## Express Checkout Specific
+
+### Auto-Detection Logic
+
+```typescript
+// utils/detectPaymentMethod.ts
+export const detectPaymentMethod = (): PaymentMethodType => {
+  // Check Apple Pay
+  if (window.ApplePaySession?.canMakePayments()) {
+    return 'apple_pay';
+  }
+  
+  // Check Google Pay
+  if (window.google?.payments?.api) {
+    return 'google_pay';
+  }
+  
+  return null;
+};
+```
+
+### Compliance by Design
+- Follow Apple Pay Human Interface Guidelines
+- Follow Google Pay Brand Guidelines
+- Enforce minimum button sizes (height: 40px+)
+- Use official button styles only
+- Support dark/light themes
+
+## Testing
+
+### Component Tests
+
+```typescript
+import { render, screen } from '@testing-library/react';
+import { ExpressCheckout } from './ExpressCheckout';
+
+describe('ExpressCheckout', () => {
+  it('shows Apple Pay on iOS', () => {
+    window.ApplePaySession = { canMakePayments: () => true } as any;
+    
+    render(<ExpressCheckout amount={10000} currency="MXN" />);
+    
+    expect(screen.getByText(/apple pay/i)).toBeInTheDocument();
+  });
+});
+```
+
+### Hook Tests
+
+```typescript
+import { renderHook } from '@testing-library/react';
+import { usePaymentMethod } from './usePaymentMethod';
+
+describe('usePaymentMethod', () => {
+  it('detects Apple Pay', () => {
+    window.ApplePaySession = { canMakePayments: () => true } as any;
+    
+    const { result } = renderHook(() => usePaymentMethod());
+    
+    expect(result.current).toBe('apple_pay');
+  });
+});
+```
+
+## Code Quality
+
+### ESLint & Prettier
+- Use provided configs
+- Run `npm run lint` before commit
+- Run `npm run format` to auto-fix
+
+### Performance
+- Use React.memo for pure components
+- Use Zustand selectors to prevent re-renders
+- Lazy load components if needed
+
+### Accessibility
+- All buttons must be keyboard accessible
+- Provide ARIA labels where needed
+- Test with screen readers
+- Support high contrast mode
+
+## Anti-Patterns
+
+❌ **Don't**
+- Mix business logic in UI components
+- Use inline styles (use Mantine or sx)
+- Import from other feature internals
+- Mutate state directly
+- Use `any` type
+- Ignore TypeScript errors
+- Skip tests
+
+✅ **Do**
+- Use Mantine components
+- Extract logic to hooks
+- Keep components small
+- Use explicit types
+- Write tests
+- Follow file naming conventions
+
+## Code Review Checklist
+
+- [ ] Code in correct feature folder
+- [ ] Public API exported via index.ts
+- [ ] TypeScript types explicit
+- [ ] Uses Mantine components
+- [ ] No business logic in UI components
+- [ ] Accessible (keyboard + ARIA)
+- [ ] Tests included
+- [ ] No console.logs
+
+## Resources
+
+- [Mantine](https://mantine.dev/) - Design system
+- [Zustand](https://github.com/pmndrs/zustand) - State management
+- [React Testing Library](https://testing-library.com/react) - Testing
+- [Apple Pay Guidelines](https://developer.apple.com/design/human-interface-guidelines/apple-pay)
+- [Google Pay Guidelines](https://developers.google.com/pay/api/web/guides/brand-guidelines)
