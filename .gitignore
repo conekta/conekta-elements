@@ -1,9 +1,14 @@
-*.iml
-.gradle
-.idea
-.DS_Store
-build
-captures
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Android
+*.apk
+*.ap_
+*.aab
+local.properties
+captures/
 .externalNativeBuild
 .cxx
 local.properties
@@ -15,3 +20,58 @@ node_modules/
 **/build/
 !src/**/build/
 webApp/dist/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# macOS
+.DS_Store
+
+# Kotlin
+*.class
+*.jar
+*.kotlin_module
+
+# Compose
+compose-desktop.properties
+
+# iOS
+*.xcodeproj
+*.xcworkspace
+!*.xcworkspace/contents.xcworkspacedata
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata/
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+DerivedData/
+.build/
+
+# Node (if needed)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~

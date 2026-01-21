@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 rootProject.name = "conekta-elements"
 include(":shared")
 include(":compose")
+include(":demo-app:android")

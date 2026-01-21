@@ -78,7 +78,7 @@ kotlin {
                 implementation(compose.preview)
                 implementation(libs.androidx.lifecycle.viewmodelCompose)
                 implementation(libs.androidx.lifecycle.runtimeCompose)
-                api(project(":shared"))
+                implementation(project(":shared"))
             }
         }
 
