@@ -29,6 +29,9 @@ jobs:
       - name: Build KMP
         run: make build
 
+      - name: Publish dry run
+        run: make publish-local
+
   build_js:
     runs-on: aws-runner-set
     steps:
