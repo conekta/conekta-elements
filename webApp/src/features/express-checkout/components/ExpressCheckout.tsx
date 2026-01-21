@@ -4,7 +4,7 @@ export const ExpressCheckout = ({ publicKey, amount, currency }: ExpressCheckout
   return (
     <div>
       <h2>Express Checkout</h2>
-      <p>Amount: {amount} {currency}</p>
+      <p>Amount: {amount} {currency} {publicKey}</p>
     </div>
   );
 };
