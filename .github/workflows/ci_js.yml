@@ -11,6 +11,10 @@ jobs:
   build:
     runs-on: aws-runner-set
     steps:
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+         java-version: 17
       - uses: actions/setup-node@v6
         with:
           node-version: '20'
