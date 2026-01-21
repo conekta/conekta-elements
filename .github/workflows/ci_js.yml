@@ -1,0 +1,26 @@
+name: CI_JS
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: aws-runner-set
+    steps:
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+      - name: Checkout code
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: actions/checkout@v6
+        with:
+            fetch-depth: 0
+      - name: install dependencies
+        run: npm ci
+      - name: build
+        run: npm run build
