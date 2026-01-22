@@ -9,6 +9,8 @@
   "scripts": {
     "build": "cd webApp && npm run build",
     "start": "cd webApp && npm run start",
-    "publish-dry-run": "cd webApp && npm publish --dry-run"
+    "publish-dry-run": "cd webApp && npm publish --dry-run",
+    "prepublishOnly": "cd webApp && npm run build",
+    "publish-app": "cd webApp && npm publish"
   }
 }

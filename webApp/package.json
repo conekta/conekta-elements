@@ -74,5 +74,8 @@
     "url": "https://github.com/conekta/conekta-elements/issues"
   },
   "author": "Conekta",
-  "license": "MIT"
+  "license": "MIT",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
 }
