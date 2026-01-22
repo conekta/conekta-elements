@@ -3,7 +3,6 @@ agp = "8.13.0"
 kotlin = "2.2.20"
 android-minSdk = "24"
 android-compileSdk = "36"
-vanniktechMavenPublish = "0.34.0"
 kotlinStdlib = "2.2.20"
 runner = "1.7.0"
 core = "1.7.0"
@@ -27,7 +26,6 @@ androidx-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-vanniktech-mavenPublish = { id = "com.vanniktech.maven.publish", version.ref = "vanniktechMavenPublish" }
 android-lint = { id = "com.android.lint", version.ref = "agp" }
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
