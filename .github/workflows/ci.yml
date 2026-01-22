@@ -8,7 +8,6 @@ on:
 
 env:
   JAVA_VERSION: '17'
-  NODE_VERSION: '18'
 
 jobs:
   build_kmp:
@@ -45,7 +44,7 @@ jobs:
       
       - uses: actions/setup-node@v6
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version-file: '.nvmrc'
           cache: npm
       
       - name: Install make
