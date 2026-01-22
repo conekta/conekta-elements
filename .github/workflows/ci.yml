@@ -6,9 +6,6 @@ on:
   pull_request:
     branches: [main]
 
-env:
-  JAVA_VERSION: '17'
-
 jobs:
   build_kmp:
     runs-on: aws-runner-set
@@ -18,7 +15,7 @@ jobs:
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: ${{ env.JAVA_VERSION }}
+          java-version-file: '.sdkmanrc'
           cache: gradle
       - uses: android-actions/setup-android@v3
       
@@ -39,7 +36,7 @@ jobs:
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: ${{ env.JAVA_VERSION }}
+          java-version-file: '.sdkmanrc'
           cache: gradle
       
       - uses: actions/setup-node@v6
