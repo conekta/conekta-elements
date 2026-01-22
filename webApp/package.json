@@ -67,8 +67,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/conekta/conekta-elements.git",
+    "url": "git+https://github.com/conekta/conekta-elements.git",
     "directory": "webApp"
+  },
+  "bugs": {
+    "url": "https://github.com/conekta/conekta-elements/issues"
   },
   "author": "Conekta",
   "license": "MIT"
