@@ -1,22 +1,75 @@
 {
-  "name": "webApp",
+  "name": "@conekta/elements-web",
   "version": "1.0.0",
-  "description": "Web application that uses Kotlin Multiplatform Library",
+  "description": "Conekta Elements - React UI components for payment processing",
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "keywords": [
+    "conekta",
+    "payment",
+    "tokenizer",
+    "express-checkout",
+    "apple-pay",
+    "google-pay",
+    "react",
+    "typescript"
+  ],
   "scripts": {
+    "dev": "vite",
+    "start": "vite",
     "build": "tsc && vite build",
-    "start": "vite"
+    "preview": "vite preview",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint . --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint . --ext .ts,.tsx --fix",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,css,json}\"",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage",
+    "clean": "rm -rf dist node_modules",
+    "prepare": "husky install || true"
   },
   "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "zustand": "^4.5.0",
     "shared": "1.0.10"
   },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "@mantine/core": "^7.5.0",
+    "@mantine/hooks": "^7.5.0"
+  },
   "devDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "@mantine/core": "^7.5.0",
+    "@mantine/hooks": "^7.5.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
     "@vitejs/plugin-react": "^4.0.0",
+    "@vitest/ui": "^1.0.0",
+    "eslint": "^8.50.0",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "eslint-plugin-react": "^7.33.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "prettier": "^3.0.0",
     "typescript": "^5.0.2",
-    "vite": "^7.1.6"
-  }
+    "vite": "^7.1.6",
+    "vitest": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/conekta/conekta-elements.git",
+    "directory": "webApp"
+  },
+  "author": "Conekta",
+  "license": "MIT"
 }
