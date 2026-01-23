@@ -6,7 +6,8 @@
     "sourceType": "module",
     "ecmaFeatures": {
       "jsx": true
-    }
+    },
+    "project": true
   },
   "env": {
     "browser": true,
