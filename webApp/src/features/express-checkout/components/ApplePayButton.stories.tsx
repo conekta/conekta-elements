@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { ApplePayButton } from './ApplePayButton';
 
-// Configuración del componente para Storybook
+// Component configuration for Storybook
 const meta: Meta<typeof ApplePayButton> = {
   title: 'Components/ApplePayButton',
   component: ApplePayButton,
@@ -12,37 +12,37 @@ const meta: Meta<typeof ApplePayButton> = {
   argTypes: {
     onClick: {
       action: 'clicked',
-      description: 'Función que se ejecuta al hacer click en el botón',
+      description: 'Function to execute when the button is clicked',
     },
     disabled: {
       control: 'boolean',
-      description: 'Deshabilita el botón',
+      description: 'Disables the button',
     },
     loading: {
       control: 'boolean',
-      description: 'Muestra el estado de carga',
+      description: 'Shows the loading state',
     },
     variant: {
       control: 'select',
       options: ['black', 'white', 'white-with-line'],
-      description: 'Variante visual del botón (solo para botón nativo de Apple Pay)',
+      description: 'Visual variant of the button (for native Apple Pay button only)',
     },
     appearance: {
       control: 'select',
       options: ['light', 'dark', 'auto'],
-      description: 'Apariencia del botón (afecta colores y spinner)',
+      description: 'Appearance of the button (affects colors and spinner)',
     },
     borderRadius: {
       control: 'text',
-      description: 'Radio del borde (ej: "8px", "16px")',
+      description: 'Border radius (e.g., "8px", "16px")',
     },
     height: {
       control: 'number',
-      description: 'Altura del botón en píxeles (mínimo: 30px)',
+      description: 'Button height in pixels (minimum: 30px)',
     },
     width: {
       control: 'number',
-      description: 'Ancho del botón en píxeles (mínimo: 140px)',
+      description: 'Button width in pixels (minimum: 140px)',
     },
   },
 };
@@ -50,14 +50,14 @@ const meta: Meta<typeof ApplePayButton> = {
 export default meta;
 type Story = StoryObj<typeof ApplePayButton>;
 
-// Historia por defecto
+// Default story
 export const Default: Story = {
   args: {
     onClick: () => console.warn('Apple Pay clicked'),
   },
 };
 
-// Variantes
+// Variants
 export const BlackVariant: Story = {
   args: {
     variant: 'black',
@@ -82,7 +82,7 @@ export const WhiteOutlineVariant: Story = {
   },
 };
 
-// Apariencias
+// Appearances
 export const LightAppearance: Story = {
   args: {
     appearance: 'light',
@@ -107,7 +107,7 @@ export const AutoAppearance: Story = {
   },
 };
 
-// Estados
+// States
 export const Disabled: Story = {
   args: {
     disabled: true,
@@ -133,7 +133,7 @@ export const LoadingLight: Story = {
   },
 };
 
-// Tamaños
+// Sizes
 export const SmallSize: Story = {
   args: {
     height: 40,
@@ -195,7 +195,7 @@ export const PillShape: Story = {
   },
 };
 
-// Combinaciones especiales
+// Special combinations
 export const CustomStyled: Story = {
   args: {
     variant: 'black',
