@@ -19,6 +19,7 @@ export const ApplePayButton = ({
 
   const isDisabled = disabled || loading;
   const opacity = isDisabled ? 0.5 : 1;
+  const cursor = isDisabled ? 'not-allowed' : 'pointer';
   const variantClass = `apple-pay-button-${variant}`;
 
   const backgroundColor = appearance === 'light' ? '#fff' : '#1E293B';
@@ -60,7 +61,7 @@ export const ApplePayButton = ({
             padding: 0,
             border: 'none',
             background: 'transparent',
-            cursor: "pointer",
+            cursor,
           }}
         />
 
@@ -86,7 +87,7 @@ export const ApplePayButton = ({
             fontSize: '16px',
             transition: shouldHaveHoverEffect ? 'opacity 0.2s ease, transform 0.1s ease' : 'none',
             padding: 0,
-            cursor: "pointer",
+            cursor,
           }}
         >
           <Box style={{ 
