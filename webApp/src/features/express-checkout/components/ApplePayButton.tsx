@@ -28,6 +28,17 @@ export const ApplePayButton = ({
   return (
     <>
       <style>{APPLE_PAY_BUTTON_STYLES}</style>
+      <style>
+        {`
+          .apple-pay-button[data-hover-effect="true"]:hover:not(:disabled) {
+            opacity: 0.8 !important;
+          }
+          
+          .apple-pay-button-legacy[data-hover-effect="true"]:hover:not(:disabled) {
+            opacity: 0.8 !important;
+          }
+        `}
+      </style>
 
       <Box pos="relative" w={validatedWidth} style={{ minWidth: '140px' }}>
         {loading && <Spinner color={textColor} />}
@@ -38,6 +49,7 @@ export const ApplePayButton = ({
           className={`apple-pay-button ${variantClass}`}
           onClick={onClick}
           disabled={isDisabled}
+          data-hover-effect={shouldHaveHoverEffect}
           style={{
             height: `${validatedHeight}px`,
             width: '100%',
@@ -49,16 +61,6 @@ export const ApplePayButton = ({
             border: 'none',
             background: 'transparent',
           }}
-          onMouseEnter={(e) => {
-            if (!isDisabled && shouldHaveHoverEffect) {
-              e.currentTarget.style.opacity = '0.8';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (shouldHaveHoverEffect && !loading) {
-              e.currentTarget.style.opacity = opacity.toString();
-            }
-          }}
         />
 
         <Box
@@ -67,6 +69,7 @@ export const ApplePayButton = ({
           className="apple-pay-button-legacy"
           onClick={onClick}
           disabled={isDisabled}
+          data-hover-effect={shouldHaveHoverEffect}
           style={{
             height: `${validatedHeight}px`,
             width: '100%',
@@ -82,16 +85,6 @@ export const ApplePayButton = ({
             fontSize: '16px',
             transition: shouldHaveHoverEffect ? 'opacity 0.2s ease, transform 0.1s ease' : 'none',
             padding: 0,
-          }}
-          onMouseEnter={(e) => {
-            if (!isDisabled && shouldHaveHoverEffect) {
-              e.currentTarget.style.opacity = '0.8';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (shouldHaveHoverEffect && !loading) {
-              e.currentTarget.style.opacity = opacity.toString();
-            }
           }}
         >
           <Box style={{ 
