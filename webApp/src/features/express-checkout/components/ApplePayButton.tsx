@@ -19,18 +19,11 @@ export const ApplePayButton = ({
 
   const isDisabled = disabled || loading;
   const opacity = isDisabled ? 0.5 : 1;
-  const cursor = isDisabled ? 'not-allowed' : 'pointer';
   const variantClass = `apple-pay-button-${variant}`;
 
   const backgroundColor = appearance === 'light' ? '#fff' : '#1E293B';
   const textColor = appearance === 'light' ? '#000' : '#fff';
   const shouldHaveHoverEffect = appearance === 'dark' || appearance === 'auto';
-
-  const handleClick = () => {
-    if (!isDisabled) {
-      onClick();
-    }
-  };
 
   return (
     <>
@@ -40,16 +33,21 @@ export const ApplePayButton = ({
         {loading && <Spinner color={textColor} />}
         
         <Box
+          component="button"
+          type="button"
           className={`apple-pay-button ${variantClass}`}
-          onClick={handleClick}
+          onClick={onClick}
+          disabled={isDisabled}
           style={{
             height: `${validatedHeight}px`,
             width: '100%',
             borderRadius: validatedBorderRadius,
-            cursor,
             opacity,
             display: 'inline-block',
             transition: shouldHaveHoverEffect ? 'opacity 0.2s ease' : 'none',
+            padding: 0,
+            border: 'none',
+            background: 'transparent',
           }}
           onMouseEnter={(e) => {
             if (!isDisabled && shouldHaveHoverEffect) {
@@ -64,13 +62,15 @@ export const ApplePayButton = ({
         />
 
         <Box
+          component="button"
+          type="button"
           className="apple-pay-button-legacy"
-          onClick={handleClick}
+          onClick={onClick}
+          disabled={isDisabled}
           style={{
             height: `${validatedHeight}px`,
             width: '100%',
             borderRadius: validatedBorderRadius,
-            cursor,
             opacity,
             backgroundColor,
             color: textColor,
@@ -81,6 +81,7 @@ export const ApplePayButton = ({
             fontWeight: 600,
             fontSize: '16px',
             transition: shouldHaveHoverEffect ? 'opacity 0.2s ease, transform 0.1s ease' : 'none',
+            padding: 0,
           }}
           onMouseEnter={(e) => {
             if (!isDisabled && shouldHaveHoverEffect) {
