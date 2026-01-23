@@ -29,34 +29,46 @@
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
     "clean": "rm -rf dist node_modules",
-    "prepare": "husky install || true"
+    "prepare": "husky install || true",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
-    "zustand": "^4.5.0",
-    "shared": "1.0.10"
+    "shared": "1.0.10",
+    "zustand": "^4.5.0"
   },
   "peerDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "@mantine/core": "^7.5.0",
-    "@mantine/hooks": "^7.5.0"
-  },
-  "devDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
     "@mantine/core": "^7.5.0",
     "@mantine/hooks": "^7.5.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@mantine/core": "^7.5.0",
+    "@mantine/hooks": "^7.5.0",
+    "@storybook/addon-essentials": "^7.6.20",
+    "@storybook/addon-interactions": "^7.6.20",
+    "@storybook/addon-links": "^7.6.20",
+    "@storybook/addon-onboarding": "^1.0.11",
+    "@storybook/blocks": "^7.6.20",
+    "@storybook/react": "^7.6.20",
+    "@storybook/react-vite": "^7.6.20",
+    "@storybook/test": "^7.6.20",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "@vitejs/plugin-react": "^4.3.0",
     "@vitest/ui": "^1.0.0",
+    "chromatic": "^13.3.5",
     "eslint": "^8.50.0",
     "eslint-plugin-jsx-a11y": "^6.8.0",
     "eslint-plugin-react": "^7.33.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "prettier": "^3.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "storybook": "^7.6.20",
     "typescript": "^5.0.2",
     "vite": "^5.4.0",
     "vitest": "^1.0.0"
@@ -67,9 +79,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/conekta/conekta-elements.git",
+    "url": "git+https://github.com/conekta/conekta-elements.git",
     "directory": "webApp"
   },
+  "bugs": {
+    "url": "https://github.com/conekta/conekta-elements/issues"
+  },
   "author": "Conekta",
-  "license": "MIT"
+  "license": "MIT",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
 }
