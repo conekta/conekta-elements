@@ -18,7 +18,7 @@ export const ApplePayButton = ({
   const validatedBorderRadius = borderRadius;
 
   const isDisabled = disabled || loading;
-  const opacity = disabled ? 0.5 : 1;
+  const opacity = isDisabled ? 0.5 : 1;
   const cursor = isDisabled ? 'not-allowed' : 'pointer';
   const variantClass = `apple-pay-button-${variant}`;
 
