@@ -67,4 +67,5 @@ jobs:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           workingDir: webApp
           exitZeroOnChanges: true  
-          exitOnceUploaded: true  
+          exitOnceUploaded: true
+          skip: "dependabot/**" # 👈 Option to skip Chromatic for certain branches
