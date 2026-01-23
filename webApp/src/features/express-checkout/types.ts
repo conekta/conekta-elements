@@ -16,7 +16,7 @@ export interface ApplePayButtonProps {
   onClick?: () => void;
   disabled?: boolean;
   loading?: boolean;
-  variant?: 'black' | 'white' | 'white-outline';
+  variant?: 'black' | 'white' | 'white-with-line';
   appearance?: 'light' | 'dark' | 'auto';
   borderRadius?: string;
   height?: number;
