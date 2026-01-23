@@ -23,7 +23,7 @@ export const APPLE_PAY_BUTTON_STYLES = `
       -apple-pay-button-style: white;
     }
     .apple-pay-button-white-with-line {
-      -apple-pay-button-style: white-outline;
+      -apple-pay-button-style: white-with-line;
     }
     .apple-pay-button-legacy {
       display: none !important;

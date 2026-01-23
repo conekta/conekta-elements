@@ -24,7 +24,7 @@ const meta: Meta<typeof ApplePayButton> = {
     },
     variant: {
       control: 'select',
-      options: ['black', 'white', 'white-outline'],
+      options: ['black', 'white', 'white-with-line'],
       description: 'Variante visual del botón (solo para botón nativo de Apple Pay)',
     },
     appearance: {
@@ -76,7 +76,7 @@ export const WhiteVariant: Story = {
 
 export const WhiteOutlineVariant: Story = {
   args: {
-    variant: 'white-outline',
+    variant: 'white-with-line',
     appearance: 'auto',
     onClick: () => console.warn('White outline variant clicked'),
   },
