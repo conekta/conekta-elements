@@ -22,17 +22,8 @@ export const ApplePayButton = ({
   const cursor = isDisabled ? 'not-allowed' : 'pointer';
   const variantClass = `apple-pay-button-${variant}`;
 
-  const getBackgroundColor = () => {
-    if (appearance === 'light') return '#fff';
-    if (appearance === 'dark') return '#1E293B';
-    return '#1E293B';
-  };
-
-  const getTextColor = () => {
-    if (appearance === 'light') return '#000';
-    return '#fff';
-  };
-
+  const backgroundColor = appearance === 'light' ? '#fff' : '#1E293B';
+  const textColor = appearance === 'light' ? '#000' : '#fff';
   const shouldHaveHoverEffect = appearance === 'dark' || appearance === 'auto';
 
   const handleClick = () => {
@@ -41,14 +32,12 @@ export const ApplePayButton = ({
     }
   };
 
-  const spinnerColor = appearance === 'light' ? '#000' : '#fff';
-
   return (
     <>
       <style>{APPLE_PAY_BUTTON_STYLES}</style>
 
       <Box pos="relative" w={validatedWidth} style={{ minWidth: '140px' }}>
-        {loading && <Spinner color={spinnerColor} />}
+        {loading && <Spinner color={textColor} />}
         
         <Box
           className={`apple-pay-button ${variantClass}`}
@@ -83,8 +72,8 @@ export const ApplePayButton = ({
             borderRadius: validatedBorderRadius,
             cursor,
             opacity,
-            backgroundColor: getBackgroundColor(),
-            color: getTextColor(),
+            backgroundColor,
+            color: textColor,
             border: 'none',
             display: 'flex',
             alignItems: 'center',
@@ -114,7 +103,7 @@ export const ApplePayButton = ({
               width="24"
               height="24"
               viewBox="0 0 24 24"
-              fill={getTextColor()}
+              fill={textColor}
               xmlns="http://www.w3.org/2000/svg"
               style={{ flexShrink: 0 }}
             >
