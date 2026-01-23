@@ -60,6 +60,7 @@ export const ApplePayButton = ({
             padding: 0,
             border: 'none',
             background: 'transparent',
+            cursor: "pointer",
           }}
         />
 
@@ -85,6 +86,7 @@ export const ApplePayButton = ({
             fontSize: '16px',
             transition: shouldHaveHoverEffect ? 'opacity 0.2s ease, transform 0.1s ease' : 'none',
             padding: 0,
+            cursor: "pointer",
           }}
         >
           <Box style={{ 
