@@ -1,6 +1,7 @@
 import { Box } from '@mantine/core';
 import type { ApplePayButtonProps } from '../types';
 import { APPLE_PAY_BUTTON_STYLES } from '../constants/applePay';
+import { Spinner } from './Spinner';
 
 export const ApplePayButton = ({
   onClick = () => {},
@@ -40,66 +41,14 @@ export const ApplePayButton = ({
     }
   };
 
-  const Spinner = () => {
-    const spinnerColor = appearance === 'light' ? '#000' : '#fff';
-    
-    return (
-      <Box
-        pos="absolute"
-        style={{
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          zIndex: 10,
-        }}
-      >
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          style={{
-            animation: 'spin 1s linear infinite',
-          }}
-        >
-          <circle
-            cx="12"
-            cy="12"
-            r="10"
-            stroke={spinnerColor}
-            strokeWidth="3"
-            strokeOpacity="0.25"
-          />
-          <path
-            d="M12 2a10 10 0 0 1 10 10"
-            stroke={spinnerColor}
-            strokeWidth="3"
-            strokeLinecap="round"
-          />
-        </svg>
-      </Box>
-    );
-  };
+  const spinnerColor = appearance === 'light' ? '#000' : '#fff';
 
   return (
     <>
       <style>{APPLE_PAY_BUTTON_STYLES}</style>
-      <style>
-        {`
-          @keyframes spin {
-            from {
-              transform: rotate(0deg);
-            }
-            to {
-              transform: rotate(360deg);
-            }
-          }
-        `}
-      </style>
 
       <Box pos="relative" w={validatedWidth} style={{ minWidth: '140px' }}>
-        {loading && <Spinner />}
+        {loading && <Spinner color={spinnerColor} />}
         
         <Box
           className={`apple-pay-button ${variantClass}`}
