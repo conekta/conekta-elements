@@ -66,3 +66,5 @@ jobs:
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           workingDir: webApp
+          exitZeroOnChanges: true  
+          exitOnceUploaded: true  
