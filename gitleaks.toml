@@ -1,0 +1,18 @@
+title = "gitleaks config"
+
+[extend]
+# NO REMOVER.
+useDefault = true
+
+[allowlist]
+description = "Archivos y palabras permitidas"
+paths = [
+  '''./gitleaks.toml''',
+]
+regexes = [
+  "pk_test_123456789"
+]
+stopwords = [
+  "pk_test_123456789",
+  "TOKEN456",
+]
