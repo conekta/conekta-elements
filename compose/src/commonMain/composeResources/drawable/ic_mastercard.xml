@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <group
+        android:scaleY="-1"
+        android:pivotY="12">
+        <group>
+            <!-- Overlap central -->
+            <path
+                android:fillColor="#FF5F00"
+                android:fillType="evenOdd"
+                android:pathData="M8.20752,5.27629 H14.2917 V16.4781 H8.20752 V5.27629 Z"/>
+            
+            <!-- Círculo izquierdo (rojo) -->
+            <path
+                android:fillColor="#EB001B"
+                android:fillType="evenOdd"
+                android:pathData="M8.5941,10.8741 C8.5941,13.1467 9.63266,15.1707 11.2499,16.475 C10.067,17.429 8.57479,17.9981 6.95274,17.9981 C3.11277,17.9981 0,14.8085 0,10.8741 C0,6.93959 3.11277,3.75 6.95274,3.75 C8.57479,3.75 10.067,4.31913 11.2499,5.27316 C9.63266,6.57766 8.5941,8.6015 8.5941,10.8741 Z"/>
+            
+            <!-- Círculo derecho (naranja) -->
+            <path
+                android:fillColor="#F79E1B"
+                android:fillType="evenOdd"
+                android:pathData="M22.5,10.8759 C22.5,14.8104 19.3871,17.9999 15.5473,17.9999 C13.9253,17.9999 12.4328,17.4308 11.2502,16.4768 C12.8674,15.1725 13.9059,13.1485 13.9059,10.8759 C13.9059,8.60332 12.8674,6.5793 11.2502,5.27496 C12.4328,4.32093 13.9253,3.75181 15.5473,3.75181 C19.3871,3.75181 22.5,6.94141 22.5,10.8759 Z"/>
+        </group>
+    </group>
+</vector>

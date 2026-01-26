@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="15dp"
+    android:viewportWidth="22.5"
+    android:viewportHeight="14.25">
+    <!-- Mastercard logo - original from Figma -->
+    <group>
+        <path
+            android:fillColor="#FF5F00"
+            android:pathData="M8.20752,12.7237H14.2917V1.52188H8.20752V12.7237Z"
+            android:fillType="evenOdd"/>
+        <path
+            android:fillColor="#EB001B"
+            android:pathData="M8.5941,7.12592C8.5941,4.85334 9.63266,2.82932 11.2499,1.52502C10.067,0.570989 8.57479,0.00185537 6.95274,0.00185537C3.11277,0.00185537 0,3.19146 0,7.12592C0,11.0604 3.11277,14.25 6.95274,14.25C8.57479,14.25 10.067,13.6809 11.2499,12.7268C9.63266,11.4223 8.5941,9.3985 8.5941,7.12592Z"
+            android:fillType="evenOdd"/>
+        <path
+            android:fillColor="#F79E1B"
+            android:pathData="M22.5,7.12406C22.5,11.0585 19.3871,14.2481 15.5473,14.2481C13.9253,14.2481 12.4328,13.679 11.2502,12.725C12.8674,11.4207 13.9059,9.39664 13.9059,7.12406C13.9059,4.85169 12.8674,2.82766 11.2502,1.52316C12.4328,0.569133 13.9253,0 15.5473,0C19.3871,0 22.5,3.1896 22.5,7.12406Z"
+            android:fillType="evenOdd"/>
+    </group>
+</vector>
