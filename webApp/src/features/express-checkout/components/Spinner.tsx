@@ -1,10 +1,11 @@
 import '../styles/spinner.css';
+import { COLORS } from '../constants/styles';
 
 interface SpinnerProps {
   color?: string;
 }
 
-export const Spinner = ({ color = '#fff' }: SpinnerProps) => {
+export const Spinner = ({ color = COLORS.WHITE }: SpinnerProps) => {
   return (
     <div className="spinner-container">
       <svg
