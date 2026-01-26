@@ -1,7 +1,8 @@
 import { Box } from '@mantine/core';
 import type { ApplePayButtonProps } from '../types';
-import { APPLE_PAY_BUTTON_STYLES } from '../constants/applePay';
+import { COLORS, OPACITY, MIN_BUTTON_WIDTH, MIN_BUTTON_HEIGHT } from '../constants/styles';
 import { Spinner } from './Spinner';
+import '../styles/applePay.css';
 
 export const ApplePayButton = ({
   onClick = () => {},
@@ -13,35 +14,21 @@ export const ApplePayButton = ({
   height = 56,
   width = 245,
 }: ApplePayButtonProps) => {
-  const validatedHeight = Math.max(30, height);
-  const validatedWidth = typeof width === 'number' ? Math.max(140, width) : width;
+  const validatedHeight = Math.max(MIN_BUTTON_HEIGHT, height);
+  const validatedWidth = typeof width === 'number' ? Math.max(MIN_BUTTON_WIDTH, width) : width;
   const validatedBorderRadius = borderRadius;
 
   const isDisabled = disabled || loading;
-  const opacity = isDisabled ? 0.5 : 1;
+  const opacity = isDisabled ? OPACITY.DISABLED : OPACITY.ENABLED;
   const cursor = isDisabled ? 'not-allowed' : 'pointer';
   const variantClass = `apple-pay-button-${variant}`;
 
-  const backgroundColor = appearance === 'light' ? '#fff' : '#1E293B';
-  const textColor = appearance === 'light' ? '#000' : '#fff';
+  const backgroundColor = appearance === 'light' ? COLORS.WHITE : COLORS.DARK_BLUE;
+  const textColor = appearance === 'light' ? COLORS.BLACK : COLORS.WHITE;
   const shouldHaveHoverEffect = appearance === 'dark' || appearance === 'auto';
 
   return (
-    <>
-      <style>{APPLE_PAY_BUTTON_STYLES}</style>
-      <style>
-        {`
-          .apple-pay-button[data-hover-effect="true"]:hover:not(:disabled) {
-            opacity: 0.8 !important;
-          }
-          
-          .apple-pay-button-legacy[data-hover-effect="true"]:hover:not(:disabled) {
-            opacity: 0.8 !important;
-          }
-        `}
-      </style>
-
-      <Box pos="relative" w={validatedWidth} style={{ minWidth: '140px' }}>
+    <Box pos="relative" w={validatedWidth} style={{ minWidth: `${MIN_BUTTON_WIDTH}px` }}>
         {loading && <Spinner color={textColor} />}
         
         <Box
@@ -110,6 +97,5 @@ export const ApplePayButton = ({
           </Box>
         </Box>
       </Box>
-    </>
   );
 };
