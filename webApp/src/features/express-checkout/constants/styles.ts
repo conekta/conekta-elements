@@ -1,17 +1,9 @@
-// Color constants
-export const COLORS = {
-  WHITE: '#fff',
-  BLACK: '#000',
-  DARK_BLUE: '#1E293B',
-} as const;
+// Re-export constants from shared module
+import { CDNResources } from 'shared';
 
-// Opacity constants
-export const OPACITY = {
-  DISABLED: 0.5,
-  ENABLED: 1,
-  HOVER: 0.8,
-} as const;
+const resources = CDNResources.getInstance();
 
-// Size constants
-export const MIN_BUTTON_WIDTH = 140;
-export const MIN_BUTTON_HEIGHT = 30;
+export const COLORS = resources.Colors;
+export const OPACITY = resources.Opacity;
+export const MIN_BUTTON_WIDTH = resources.ButtonSizes.MIN_BUTTON_WIDTH;
+export const MIN_BUTTON_HEIGHT = resources.ButtonSizes.MIN_BUTTON_HEIGHT;
