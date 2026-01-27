@@ -7,7 +7,8 @@
     "ecmaFeatures": {
       "jsx": true
     },
-    "project": true
+    "project": "./tsconfig.eslint.json",
+    "tsconfigRootDir": "."
   },
   "env": {
     "browser": true,
@@ -73,6 +74,7 @@
     "dist/",
     "build/",
     "*.config.js",
-    "*.config.ts"
+    "*.config.ts",
+    "src/index.tsx"
   ]
 }
