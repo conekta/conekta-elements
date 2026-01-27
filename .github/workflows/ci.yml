@@ -55,7 +55,9 @@ jobs:
       
       - name: Install dependencies
         run: npm ci
-      
+      - name: Lint
+        working-directory: webApp
+        run: npm run lint
       - name: Build
         run: npm run build
       
