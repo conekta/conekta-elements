@@ -12,8 +12,15 @@ export interface PaymentResult {
   data?: unknown;
 }
 
+export interface ApplePayTokenResult {
+  token: string;
+  paymentMethod: unknown;
+  billingContact?: unknown;
+  shippingContact?: unknown;
+}
+
 export interface ApplePayButtonProps {
-  onClick?: () => void;
+  onPaymentAuthorized?: (result: ApplePayTokenResult) => void | Promise<void>;
   disabled?: boolean;
   loading?: boolean;
   variant?: 'black' | 'white' | 'white-with-line';

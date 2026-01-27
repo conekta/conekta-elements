@@ -12,4 +12,5 @@ export type {
   ExpressCheckoutProps,
   ApplePayButtonProps,
   PaymentResult,
+  ApplePayTokenResult,
 } from './features/express-checkout';

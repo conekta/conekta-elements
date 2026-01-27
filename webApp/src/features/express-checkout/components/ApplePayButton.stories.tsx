@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { ApplePayButton } from './ApplePayButton';
 
-// Component configuration for Storybook
 const meta: Meta<typeof ApplePayButton> = {
   title: 'Components/ApplePayButton',
   component: ApplePayButton,
@@ -10,9 +9,9 @@ const meta: Meta<typeof ApplePayButton> = {
   },
   tags: ['autodocs'],
   argTypes: {
-    onClick: {
-      action: 'clicked',
-      description: 'Function to execute when the button is clicked',
+    onPaymentAuthorized: {
+      action: 'payment-authorized',
+      description: 'Callback function called when Apple Pay payment is authorized with the token result',
     },
     disabled: {
       control: 'boolean',
@@ -50,19 +49,17 @@ const meta: Meta<typeof ApplePayButton> = {
 export default meta;
 type Story = StoryObj<typeof ApplePayButton>;
 
-// Default story
 export const Default: Story = {
   args: {
-    onClick: () => console.warn('Apple Pay clicked'),
+    onPaymentAuthorized: async (result) => console.warn('Apple Pay authorized:', result),
   },
 };
 
-// Variants
 export const BlackVariant: Story = {
   args: {
     variant: 'black',
     appearance: 'auto',
-    onClick: () => console.warn('Black variant clicked'),
+    onPaymentAuthorized: async (result) => console.warn('Black variant authorized:', result),
   },
 };
 
@@ -70,7 +67,7 @@ export const WhiteVariant: Story = {
   args: {
     variant: 'white',
     appearance: 'auto',
-    onClick: () => console.warn('White variant clicked'),
+    onPaymentAuthorized: async (result) => console.warn('White variant authorized:', result),
   },
 };
 
@@ -78,15 +75,14 @@ export const WhiteOutlineVariant: Story = {
   args: {
     variant: 'white-with-line',
     appearance: 'auto',
-    onClick: () => console.warn('White outline variant clicked'),
+    onPaymentAuthorized: async (result) => console.warn('White outline variant authorized:', result),
   },
 };
 
-// Appearances
 export const LightAppearance: Story = {
   args: {
     appearance: 'light',
-    onClick: () => console.warn('Light appearance clicked'),
+    onPaymentAuthorized: async (result) => console.warn('Light appearance authorized:', result),
   },
   parameters: {
     backgrounds: { default: 'dark' },
@@ -96,29 +92,28 @@ export const LightAppearance: Story = {
 export const DarkAppearance: Story = {
   args: {
     appearance: 'dark',
-    onClick: () => console.warn('Dark appearance clicked'),
+    onPaymentAuthorized: async (result) => console.warn('Dark appearance authorized:', result),
   },
 };
 
 export const AutoAppearance: Story = {
   args: {
     appearance: 'auto',
-    onClick: () => console.warn('Auto appearance clicked'),
+    onPaymentAuthorized: async (result) => console.warn('Auto appearance authorized:', result),
   },
 };
 
-// States
 export const Disabled: Story = {
   args: {
     disabled: true,
-    onClick: () => console.warn('This should not trigger'),
+    onPaymentAuthorized: async (result) => console.warn('This should not trigger:', result),
   },
 };
 
 export const Loading: Story = {
   args: {
     loading: true,
-    onClick: () => console.warn('This should not trigger while loading'),
+    onPaymentAuthorized: async (result) => console.warn('This should not trigger while loading:', result),
   },
 };
 
@@ -126,19 +121,18 @@ export const LoadingLight: Story = {
   args: {
     loading: true,
     appearance: 'light',
-    onClick: () => console.warn('This should not trigger while loading'),
+    onPaymentAuthorized: async (result) => console.warn('This should not trigger while loading:', result),
   },
   parameters: {
     backgrounds: { default: 'dark' },
   },
 };
 
-// Sizes
 export const SmallSize: Story = {
   args: {
     height: 40,
     width: 160,
-    onClick: () => console.warn('Small button clicked'),
+    onPaymentAuthorized: async (result) => console.warn('Small button authorized:', result),
   },
 };
 
@@ -146,7 +140,7 @@ export const LargeSize: Story = {
   args: {
     height: 64,
     width: 300,
-    onClick: () => console.warn('Large button clicked'),
+    onPaymentAuthorized: async (result) => console.warn('Large button authorized:', result),
   },
 };
 
@@ -154,14 +148,14 @@ export const MinimumSize: Story = {
   args: {
     height: 30,
     width: 140,
-    onClick: () => console.warn('Minimum size button clicked'),
+    onPaymentAuthorized: async (result) => console.warn('Minimum size button authorized:', result),
   },
 };
 
 export const FullWidth: Story = {
   args: {
     width: '100%',
-    onClick: () => console.warn('Full width button clicked'),
+    onPaymentAuthorized: async (result) => console.warn('Full width button authorized:', result),
   },
   decorators: [
     (Story) => (
@@ -172,18 +166,17 @@ export const FullWidth: Story = {
   ],
 };
 
-// Border radius
 export const RoundedCorners: Story = {
   args: {
     borderRadius: '16px',
-    onClick: () => console.warn('Rounded corners clicked'),
+    onPaymentAuthorized: async (result) => console.warn('Rounded corners authorized:', result),
   },
 };
 
 export const SharpCorners: Story = {
   args: {
     borderRadius: '0px',
-    onClick: () => console.warn('Sharp corners clicked'),
+    onPaymentAuthorized: async (result) => console.warn('Sharp corners authorized:', result),
   },
 };
 
@@ -191,11 +184,10 @@ export const PillShape: Story = {
   args: {
     borderRadius: '28px',
     height: 56,
-    onClick: () => console.warn('Pill shape clicked'),
+    onPaymentAuthorized: async (result) => console.warn('Pill shape authorized:', result),
   },
 };
 
-// Special combinations
 export const CustomStyled: Story = {
   args: {
     variant: 'black',
@@ -203,7 +195,7 @@ export const CustomStyled: Story = {
     borderRadius: '12px',
     height: 60,
     width: 280,
-    onClick: () => console.warn('Custom styled clicked'),
+    onPaymentAuthorized: async (result) => console.warn('Custom styled authorized:', result),
   },
 };
 
@@ -212,6 +204,6 @@ export const CompactButton: Story = {
     height: 36,
     width: 150,
     borderRadius: '6px',
-    onClick: () => console.warn('Compact button clicked'),
+    onPaymentAuthorized: async (result) => console.warn('Compact button authorized:', result),
   },
 };

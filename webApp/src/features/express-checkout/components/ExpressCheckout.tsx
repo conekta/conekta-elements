@@ -1,31 +1,33 @@
 import { Stack, Group, Text } from '@mantine/core';
 import { ApplePayButton } from './ApplePayButton';
-import type { ExpressCheckoutProps } from '../types';
+import type { ExpressCheckoutProps, ApplePayTokenResult } from '../types';
+import { DEFAULT_LAYOUT } from '../constants/styles';
 
 export const ExpressCheckout = ({
   publicKey,
   amount,
   currency,
-  layout = 'horizontal',
+  layout = DEFAULT_LAYOUT,
   spacing = 12,
 }: ExpressCheckoutProps) => {
   const validatedSpacing = Math.max(8, spacing);
 
-  const handleApplePayClick = () => {
-    console.log('Apple Pay clicked', { publicKey, amount, currency });
+  const handleApplePayAuthorized = async (result: ApplePayTokenResult) => {
+    // TODO: Send token to backend for processing
+    console.log('Apple Pay authorized', { publicKey, amount, currency, token: result.token });
   };
 
-  const Container = layout === 'horizontal' ? Group : Stack;
+  const Container = layout === DEFAULT_LAYOUT ? Group : Stack;
 
   return (
     <Stack gap="md" w="100%">
       <Container gap={validatedSpacing}>
         <ApplePayButton
-          onClick={handleApplePayClick}
+          onPaymentAuthorized={handleApplePayAuthorized}
           appearance="light"
         />
         <ApplePayButton
-          onClick={handleApplePayClick}
+          onPaymentAuthorized={handleApplePayAuthorized}
         />
       </Container>
       <Text size="xs" c="dimmed">

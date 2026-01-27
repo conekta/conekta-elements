@@ -7,4 +7,5 @@ export type {
   ExpressCheckoutProps, 
   ApplePayButtonProps,
   PaymentResult,
+  ApplePayTokenResult,
 } from './types';
