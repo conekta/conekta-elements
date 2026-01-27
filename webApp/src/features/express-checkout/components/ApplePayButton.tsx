@@ -1,16 +1,23 @@
 import { Box } from '@mantine/core';
 import type { ApplePayButtonProps } from '../types';
-import { COLORS, OPACITY, MIN_BUTTON_WIDTH, MIN_BUTTON_HEIGHT } from '../constants/styles';
+import { 
+  COLORS, 
+  OPACITY, 
+  MIN_BUTTON_WIDTH, 
+  MIN_BUTTON_HEIGHT,
+  DEFAULT_VARIANT,
+  DEFAULT_APPEARANCE,
+} from '../constants/styles';
 import { Spinner } from './Spinner';
 import { CDN } from '../../../utils/cdn';
 import '../styles/applePay.css';
 
 export const ApplePayButton = ({
-  onClick = () => {},
+  onPaymentAuthorized,
   disabled = false,
   loading = false,
-  variant = 'black',
-  appearance = 'auto',
+  variant = DEFAULT_VARIANT,
+  appearance = DEFAULT_APPEARANCE,
   borderRadius = '8px',
   height = 56,
   width = 245,
@@ -20,13 +27,27 @@ export const ApplePayButton = ({
   const validatedBorderRadius = borderRadius;
 
   const isDisabled = disabled || loading;
+  const isLightMode = appearance === 'light';
+  const isDarkMode = appearance === 'dark' || appearance === 'auto';
+  
   const opacity = isDisabled ? OPACITY.DISABLED : OPACITY.ENABLED;
   const cursor = isDisabled ? 'not-allowed' : 'pointer';
   const variantClass = `apple-pay-button-${variant}`;
+  const backgroundColor = isLightMode ? COLORS.WHITE : COLORS.DARK_BLUE;
+  const textColor = isLightMode ? COLORS.BLACK : COLORS.WHITE;
+  const shouldHaveHoverEffect = isDarkMode;
 
-  const backgroundColor = appearance === 'light' ? COLORS.WHITE : COLORS.DARK_BLUE;
-  const textColor = appearance === 'light' ? COLORS.BLACK : COLORS.WHITE;
-  const shouldHaveHoverEffect = appearance === 'dark' || appearance === 'auto';
+  const handleClick = async () => {
+    if (!onPaymentAuthorized || isDisabled) return;
+    
+    // TODO: Integrate with Apple Pay SDK to get the actual token
+    const mockTokenResult = {
+      token: 'mock_apple_pay_token',
+      paymentMethod: {},
+    };
+    
+    await onPaymentAuthorized(mockTokenResult);
+  };
 
   return (
     <Box pos="relative" w={validatedWidth} style={{ minWidth: `${MIN_BUTTON_WIDTH}px` }}>
@@ -36,7 +57,7 @@ export const ApplePayButton = ({
           component="button"
           type="button"
           className={`apple-pay-button ${variantClass}`}
-          onClick={onClick}
+          onClick={handleClick}
           disabled={isDisabled}
           data-hover-effect={shouldHaveHoverEffect}
           style={{
@@ -57,7 +78,7 @@ export const ApplePayButton = ({
           component="button"
           type="button"
           className="apple-pay-button-legacy"
-          onClick={onClick}
+          onClick={handleClick}
           disabled={isDisabled}
           data-hover-effect={shouldHaveHoverEffect}
           style={{
@@ -84,7 +105,7 @@ export const ApplePayButton = ({
             style={{ 
               visibility: loading ? 'hidden' : 'visible',
               height: '24px',
-              filter: appearance === 'light' ? 'invert(1)' : 'none',
+              filter: isLightMode ? 'invert(1)' : 'none',
             }}
           />
         </Box>
