@@ -1,16 +1,16 @@
 import { Stack, Group, Text } from '@mantine/core';
 import { ApplePayButton } from './ApplePayButton';
 import type { ExpressCheckoutProps, ApplePayTokenResult } from '../types';
-import { DEFAULT_LAYOUT } from '../constants/styles';
+import { DEFAULT_LAYOUT, DEFAULT_SPACING, MIN_SPACING } from '../constants/styles';
 
 export const ExpressCheckout = ({
   publicKey,
   amount,
   currency,
   layout = DEFAULT_LAYOUT,
-  spacing = 12,
+  spacing = DEFAULT_SPACING,
 }: ExpressCheckoutProps) => {
-  const validatedSpacing = Math.max(8, spacing);
+  const validatedSpacing = Math.max(MIN_SPACING, spacing);
 
   const handleApplePayAuthorized = async (result: ApplePayTokenResult) => {
     // TODO: Send token to backend for processing
