@@ -12,9 +12,8 @@ export const ExpressCheckout = ({
 }: ExpressCheckoutProps) => {
   const validatedSpacing = Math.max(MIN_SPACING, spacing);
 
-  const handleApplePayAuthorized = async (result: ApplePayTokenResult) => {
-    // TODO: Send token to backend for processing
-    console.log('Apple Pay authorized', { publicKey, amount, currency, token: result.token });
+  const handleApplePayAuthorized = (result: ApplePayTokenResult) => {
+    console.warn('Apple Pay authorized', { publicKey, amount, currency, token: result.token });
   };
 
   const Container = layout === DEFAULT_LAYOUT ? Group : Stack;

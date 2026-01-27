@@ -51,7 +51,7 @@ type Story = StoryObj<typeof ApplePayButton>;
 
 export const Default: Story = {
   args: {
-    onPaymentAuthorized: async (result) => console.warn('Apple Pay authorized:', result),
+    onPaymentAuthorized: (result) => console.warn('Apple Pay authorized:', result),
   },
 };
 
@@ -59,7 +59,7 @@ export const BlackVariant: Story = {
   args: {
     variant: 'black',
     appearance: 'auto',
-    onPaymentAuthorized: async (result) => console.warn('Black variant authorized:', result),
+    onPaymentAuthorized: (result) => console.warn('Black variant authorized:', result),
   },
 };
 
@@ -67,7 +67,7 @@ export const WhiteVariant: Story = {
   args: {
     variant: 'white',
     appearance: 'auto',
-    onPaymentAuthorized: async (result) => console.warn('White variant authorized:', result),
+    onPaymentAuthorized: (result) => console.warn('White variant authorized:', result),
   },
 };
 
@@ -75,14 +75,14 @@ export const WhiteOutlineVariant: Story = {
   args: {
     variant: 'white-with-line',
     appearance: 'auto',
-    onPaymentAuthorized: async (result) => console.warn('White outline variant authorized:', result),
+    onPaymentAuthorized: (result) => console.warn('White outline variant authorized:', result),
   },
 };
 
 export const LightAppearance: Story = {
   args: {
     appearance: 'light',
-    onPaymentAuthorized: async (result) => console.warn('Light appearance authorized:', result),
+    onPaymentAuthorized: (result) => console.warn('Light appearance authorized:', result),
   },
   parameters: {
     backgrounds: { default: 'dark' },
@@ -92,28 +92,28 @@ export const LightAppearance: Story = {
 export const DarkAppearance: Story = {
   args: {
     appearance: 'dark',
-    onPaymentAuthorized: async (result) => console.warn('Dark appearance authorized:', result),
+    onPaymentAuthorized: (result) => console.warn('Dark appearance authorized:', result),
   },
 };
 
 export const AutoAppearance: Story = {
   args: {
     appearance: 'auto',
-    onPaymentAuthorized: async (result) => console.warn('Auto appearance authorized:', result),
+    onPaymentAuthorized: (result) => console.warn('Auto appearance authorized:', result),
   },
 };
 
 export const Disabled: Story = {
   args: {
     disabled: true,
-    onPaymentAuthorized: async (result) => console.warn('This should not trigger:', result),
+    onPaymentAuthorized: (result) => console.warn('This should not trigger:', result),
   },
 };
 
 export const Loading: Story = {
   args: {
     loading: true,
-    onPaymentAuthorized: async (result) => console.warn('This should not trigger while loading:', result),
+    onPaymentAuthorized: (result) => console.warn('This should not trigger while loading:', result),
   },
 };
 
@@ -121,7 +121,7 @@ export const LoadingLight: Story = {
   args: {
     loading: true,
     appearance: 'light',
-    onPaymentAuthorized: async (result) => console.warn('This should not trigger while loading:', result),
+    onPaymentAuthorized: (result) => console.warn('This should not trigger while loading:', result),
   },
   parameters: {
     backgrounds: { default: 'dark' },
@@ -132,7 +132,7 @@ export const SmallSize: Story = {
   args: {
     height: 40,
     width: 160,
-    onPaymentAuthorized: async (result) => console.warn('Small button authorized:', result),
+    onPaymentAuthorized: (result) => console.warn('Small button authorized:', result),
   },
 };
 
@@ -140,7 +140,7 @@ export const LargeSize: Story = {
   args: {
     height: 64,
     width: 300,
-    onPaymentAuthorized: async (result) => console.warn('Large button authorized:', result),
+    onPaymentAuthorized: (result) => console.warn('Large button authorized:', result),
   },
 };
 
@@ -148,14 +148,14 @@ export const MinimumSize: Story = {
   args: {
     height: 30,
     width: 140,
-    onPaymentAuthorized: async (result) => console.warn('Minimum size button authorized:', result),
+    onPaymentAuthorized: (result) => console.warn('Minimum size button authorized:', result),
   },
 };
 
 export const FullWidth: Story = {
   args: {
     width: '100%',
-    onPaymentAuthorized: async (result) => console.warn('Full width button authorized:', result),
+    onPaymentAuthorized: (result) => console.warn('Full width button authorized:', result),
   },
   decorators: [
     (Story) => (
@@ -169,14 +169,14 @@ export const FullWidth: Story = {
 export const RoundedCorners: Story = {
   args: {
     borderRadius: '16px',
-    onPaymentAuthorized: async (result) => console.warn('Rounded corners authorized:', result),
+    onPaymentAuthorized: (result) => console.warn('Rounded corners authorized:', result),
   },
 };
 
 export const SharpCorners: Story = {
   args: {
     borderRadius: '0px',
-    onPaymentAuthorized: async (result) => console.warn('Sharp corners authorized:', result),
+    onPaymentAuthorized: (result) => console.warn('Sharp corners authorized:', result),
   },
 };
 
@@ -184,7 +184,7 @@ export const PillShape: Story = {
   args: {
     borderRadius: '28px',
     height: 56,
-    onPaymentAuthorized: async (result) => console.warn('Pill shape authorized:', result),
+    onPaymentAuthorized: (result) => console.warn('Pill shape authorized:', result),
   },
 };
 
@@ -195,7 +195,7 @@ export const CustomStyled: Story = {
     borderRadius: '12px',
     height: 60,
     width: 280,
-    onPaymentAuthorized: async (result) => console.warn('Custom styled authorized:', result),
+    onPaymentAuthorized: (result) => console.warn('Custom styled authorized:', result),
   },
 };
 
@@ -204,6 +204,6 @@ export const CompactButton: Story = {
     height: 36,
     width: 150,
     borderRadius: '6px',
-    onPaymentAuthorized: async (result) => console.warn('Compact button authorized:', result),
+    onPaymentAuthorized: (result) => console.warn('Compact button authorized:', result),
   },
 };

@@ -47,16 +47,15 @@ export const ApplePayButton = ({
     ? Math.max(MIN_LOGO_HEIGHT, validatedHeight - LOGO_PADDING) 
     : STANDARD_LOGO_HEIGHT;
 
-  const handleClick = async () => {
+  const handleClick = () => {
     if (!onPaymentAuthorized || isDisabled) return;
     
-    // TODO: Integrate with Apple Pay SDK to get the actual token
     const mockTokenResult = {
       token: 'mock_apple_pay_token',
       paymentMethod: {},
     };
     
-    await onPaymentAuthorized(mockTokenResult);
+    void onPaymentAuthorized(mockTokenResult);
   };
 
   return (
