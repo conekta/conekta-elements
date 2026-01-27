@@ -64,7 +64,6 @@ kotlin {
     }
 }
 
-
 publishing {
     repositories {
         maven {

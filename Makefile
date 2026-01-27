@@ -8,3 +8,7 @@ build:
 	./gradlew clean build
 update-yar-lock:
 	./gradlew kotlinUpgradeYarnLock
+lint-fix:
+	./gradlew ktlintFormat
+lint-check:
+	./gradlew ktlintCheck
