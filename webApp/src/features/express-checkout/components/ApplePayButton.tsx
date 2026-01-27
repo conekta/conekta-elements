@@ -7,6 +7,13 @@ import {
   MIN_BUTTON_HEIGHT,
   DEFAULT_VARIANT,
   DEFAULT_APPEARANCE,
+  DEFAULT_BORDER_RADIUS,
+  DEFAULT_BUTTON_HEIGHT,
+  DEFAULT_BUTTON_WIDTH,
+  COMPACT_BUTTON_THRESHOLD,
+  MIN_LOGO_HEIGHT,
+  LOGO_PADDING,
+  STANDARD_LOGO_HEIGHT,
 } from '../constants/styles';
 import { Spinner } from './Spinner';
 import { CDN } from '../../../utils/cdn';
@@ -18,9 +25,9 @@ export const ApplePayButton = ({
   loading = false,
   variant = DEFAULT_VARIANT,
   appearance = DEFAULT_APPEARANCE,
-  borderRadius = '8px',
-  height = 56,
-  width = 245,
+  borderRadius = DEFAULT_BORDER_RADIUS,
+  height = DEFAULT_BUTTON_HEIGHT,
+  width = DEFAULT_BUTTON_WIDTH,
 }: ApplePayButtonProps) => {
   const validatedHeight = Math.max(MIN_BUTTON_HEIGHT, height);
   const validatedWidth = typeof width === 'number' ? Math.max(MIN_BUTTON_WIDTH, width) : width;
@@ -36,6 +43,9 @@ export const ApplePayButton = ({
   const backgroundColor = isLightMode ? COLORS.WHITE : COLORS.DARK_BLUE;
   const textColor = isLightMode ? COLORS.BLACK : COLORS.WHITE;
   const shouldHaveHoverEffect = isDarkMode;
+  const logoHeight = validatedHeight < COMPACT_BUTTON_THRESHOLD 
+    ? Math.max(MIN_LOGO_HEIGHT, validatedHeight - LOGO_PADDING) 
+    : STANDARD_LOGO_HEIGHT;
 
   const handleClick = async () => {
     if (!onPaymentAuthorized || isDisabled) return;
@@ -104,7 +114,7 @@ export const ApplePayButton = ({
             alt="Apple Pay"
             style={{ 
               visibility: loading ? 'hidden' : 'visible',
-              height: '24px',
+              height: `${logoHeight}px`,
               filter: isLightMode ? 'invert(1)' : 'none',
             }}
           />
