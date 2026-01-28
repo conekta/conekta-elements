@@ -8,13 +8,14 @@ import kotlin.math.round
 @OptIn(ExperimentalJsExport::class)
 @JsExport
 class Amount(
-    private val value: Double,
+    private val value: Long,
 ) {
     fun apiFormat(): Double = value / 100.0
 
     fun toFixed(decimals: Int): String {
+        val majorUnitValue = apiFormat()
         val multiplier = 10.0.pow(decimals)
-        val rounded = round(value * multiplier) / multiplier
+        val rounded = round(majorUnitValue * multiplier) / multiplier
         return rounded.toString().let { str ->
             val parts = str.split('.')
             val intPart = parts[0]

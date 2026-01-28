@@ -10,7 +10,6 @@ androidx-activity = "1.12.2"
 androidx-lifecycle = "2.9.6"
 ktlint = "12.1.2"
 
-
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlinStdlib" }
