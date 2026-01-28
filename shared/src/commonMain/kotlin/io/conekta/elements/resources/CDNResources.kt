@@ -29,8 +29,7 @@ object CDNResources {
     }
 
     object ApplePay {
-        const val SUPPORTED_METHODS = "https://apple.com/apple-pay"
-        const val METHOD_NAME = "https://apple.com/apple-pay"
+        const val METHOD_IDENTIFIER = "https://apple.com/apple-pay"
         val MERCHANT_CAPABILITIES = arrayOf("supports3DS")
         val SUPPORTED_NETWORKS = arrayOf("amex", "masterCard", "visa")
         const val VERSION = 3

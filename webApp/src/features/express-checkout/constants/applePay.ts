@@ -3,12 +3,8 @@ import { CDNResources } from 'shared';
 
 const resources = CDNResources.getInstance();
 
-// Web-specific constant
 export const APPLE_PAY_SDK_URL = 'https://applepay.cdn-apple.com/jsapi/1.latest/apple-pay-sdk.js';
-
-// Re-export constants from shared module
-export const APPLE_PAY_SUPPORTED_METHODS = resources.ApplePay.SUPPORTED_METHODS;
-export const APPLE_PAY_METHOD_NAME = resources.ApplePay.METHOD_NAME;
+export const APPLE_PAY_METHOD_IDENTIFIER = resources.ApplePay.METHOD_IDENTIFIER;
 export const APPLE_PAY_MERCHANT_CAPABILITIES: ApplePayMerchantCapability[] = resources.ApplePay.MERCHANT_CAPABILITIES as ApplePayMerchantCapability[];
 export const APPLE_PAY_SUPPORTED_NETWORKS = resources.ApplePay.SUPPORTED_NETWORKS;
 export const APPLE_PAY_VERSION = resources.ApplePay.VERSION;
