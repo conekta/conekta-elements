@@ -5,7 +5,7 @@ publish-local:
 js-build:
 	./gradlew clean :shared:jsBrowserDevelopmentLibraryDistribution
 build:
-	./gradlew clean build
+	./gradlew clean assemble
 update-yar-lock:
 	./gradlew kotlinUpgradeYarnLock
 lint-fix:
