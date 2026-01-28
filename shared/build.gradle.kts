@@ -81,3 +81,8 @@ publishing {
     publications {
     }
 }
+
+// Disable browser tests, use only Node.js for testing
+tasks.named("jsBrowserTest") {
+    enabled = false
+}
