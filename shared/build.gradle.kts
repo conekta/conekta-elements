@@ -14,6 +14,7 @@ kotlin {
     js {
         outputModuleName = "shared"
         browser()
+        nodejs()
         binaries.library()
         generateTypeScriptDefinitions()
         compilerOptions {
