@@ -4,24 +4,67 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class AmountTest {
+    // apiFormat() tests - Conversion from cents to decimal
+
     @Test
-    fun `apiFormat divides by 100`() {
+    fun `apiFormat converts cents to decimal format`() {
         val amount = Amount(12599L)
         assertEquals(125.99, amount.apiFormat())
     }
 
     @Test
-    fun `toFixed formats with correct decimals`() {
-        // Test with an amount that will round up
-        val amount = Amount(12599L) // Represents 125.99
-        assertEquals("125.99", amount.toFixed(2))
-        assertEquals("126.0", amount.toFixed(1))
-        assertEquals("126", amount.toFixed(0))
+    fun `apiFormat converts zero cents to zero decimal`() {
+        val amount = Amount(0L)
+        assertEquals(0.0, amount.apiFormat())
+    }
 
-        // Test with an amount that will round down
-        val amount2 = Amount(12544L) // Represents 125.44
-        assertEquals("125.44", amount2.toFixed(2))
-        assertEquals("125.4", amount2.toFixed(1))
-        assertEquals("125", amount2.toFixed(0))
+    @Test
+    fun `apiFormat converts whole dollar amount`() {
+        val amount = Amount(10000L)
+        assertEquals(100.0, amount.apiFormat())
+    }
+
+    // toFixed() tests - Formatting with different decimal places
+
+    @Test
+    fun `toFixed with 2 decimals formats amount correctly`() {
+        val amount = Amount(12599L)
+        assertEquals("125.99", amount.toFixed(2))
+    }
+
+    @Test
+    fun `toFixed with 1 decimal rounds up when needed`() {
+        val amount = Amount(12599L) // 125.99 rounds to 126.0
+        assertEquals("126.0", amount.toFixed(1))
+    }
+
+    @Test
+    fun `toFixed with 1 decimal rounds down when needed`() {
+        val amount = Amount(12544L) // 125.44 rounds to 125.4
+        assertEquals("125.4", amount.toFixed(1))
+    }
+
+    @Test
+    fun `toFixed with 0 decimals rounds to nearest integer rounding up`() {
+        val amount = Amount(12599L) // 125.99 rounds to 126
+        assertEquals("126", amount.toFixed(0))
+    }
+
+    @Test
+    fun `toFixed with 0 decimals rounds to nearest integer rounding down`() {
+        val amount = Amount(12544L) // 125.44 rounds to 125
+        assertEquals("125", amount.toFixed(0))
+    }
+
+    @Test
+    fun `toFixed formats zero amount correctly`() {
+        val amount = Amount(0L)
+        assertEquals("0.00", amount.toFixed(2))
+    }
+
+    @Test
+    fun `toFixed formats whole dollar amount with decimals`() {
+        val amount = Amount(10000L)
+        assertEquals("100.00", amount.toFixed(2))
     }
 }
