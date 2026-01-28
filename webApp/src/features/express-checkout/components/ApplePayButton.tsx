@@ -15,7 +15,7 @@ import {
   LOGO_PADDING,
   STANDARD_LOGO_HEIGHT,
 } from '../constants/styles';
-import { Spinner } from './Spinner';
+import { Spinner } from '../../../shared/components';
 import { CDN } from '../../../utils/cdn';
 import '../styles/applePay.css';
 

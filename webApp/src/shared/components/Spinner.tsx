@@ -1,11 +1,13 @@
 import '../styles/spinner.css';
-import { COLORS } from '../constants/styles';
+import { CDNResources } from 'shared';
+
+const resources = CDNResources.getInstance();
 
 interface SpinnerProps {
   color?: string;
 }
 
-export const Spinner = ({ color = COLORS.WHITE }: SpinnerProps) => {
+export const Spinner = ({ color = resources.Colors.WHITE }: SpinnerProps) => {
   return (
     <div className="spinner-container">
       <svg
