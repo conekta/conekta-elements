@@ -1,9 +1,17 @@
+/* Common button styles */
+.apple-pay-button,
+.apple-pay-button-legacy {
+  padding: 0;
+  border: none;
+}
+
 /* Apple Pay button native styles */
 @supports (-webkit-appearance: -apple-pay-button) {
   .apple-pay-button {
     display: inline-block;
     appearance: -apple-pay-button;
     -webkit-appearance: -apple-pay-button;
+    background: transparent;
   }
   
   .apple-pay-button-black {

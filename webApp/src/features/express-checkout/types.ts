@@ -29,5 +29,3 @@ export interface ApplePayButtonProps {
   height?: number;
   width?: number | string;
 }
-
-export type ApplePayMerchantCapability = 'supports3DS' | 'supportsEMV' | 'supportsCredit' | 'supportsDebit';

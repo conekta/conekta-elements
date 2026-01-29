@@ -41,7 +41,6 @@ export const ApplePayButton = ({
   const variantClass = `apple-pay-button-${variant}`;
   const backgroundColor = isLightMode ? COLORS.WHITE : COLORS.BLACK;
   const textColor = isLightMode ? COLORS.BLACK : COLORS.WHITE;
-  const shouldHaveHoverEffect = isDarkMode;
   const logoHeight = validatedHeight < COMPACT_BUTTON_THRESHOLD 
     ? Math.max(MIN_LOGO_HEIGHT, validatedHeight - LOGO_PADDING) 
     : STANDARD_LOGO_HEIGHT;
@@ -67,17 +66,14 @@ export const ApplePayButton = ({
           className={`apple-pay-button ${variantClass}`}
           onClick={handleClick}
           disabled={isDisabled}
-          data-hover-effect={shouldHaveHoverEffect}
+          data-hover-effect={isDarkMode}
           style={{
             height: `${validatedHeight}px`,
             width: '100%',
             borderRadius,
             opacity,
             display: 'inline-block',
-            transition: shouldHaveHoverEffect ? 'opacity 0.2s ease' : 'none',
-            padding: 0,
-            border: 'none',
-            background: 'transparent',
+            transition: isDarkMode ? 'opacity 0.2s ease' : 'none',
             cursor,
           }}
         />
@@ -88,22 +84,19 @@ export const ApplePayButton = ({
           className="apple-pay-button-legacy"
           onClick={handleClick}
           disabled={isDisabled}
-          data-hover-effect={shouldHaveHoverEffect}
+          data-hover-effect={isDarkMode}
           style={{
             height: `${validatedHeight}px`,
             width: '100%',
             borderRadius,
             opacity,
             backgroundColor,
-            color: textColor,
-            border: 'none',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             fontWeight: 600,
             fontSize: '16px',
-            transition: shouldHaveHoverEffect ? 'opacity 0.2s ease, transform 0.1s ease' : 'none',
-            padding: 0,
+            transition: isDarkMode ? 'opacity 0.2s ease' : 'none',
             cursor,
           }}
         >
