@@ -2,6 +2,7 @@ import { Stack, Group, Text } from '@mantine/core';
 import { ApplePayButton } from './ApplePayButton';
 import type { ExpressCheckoutProps, ApplePayTokenResult } from '../types';
 import { DEFAULT_LAYOUT, DEFAULT_SPACING, MIN_SPACING } from '../constants/styles';
+import { Amount } from 'shared';
 
 export const ExpressCheckout = ({
   publicKey,
@@ -11,6 +12,7 @@ export const ExpressCheckout = ({
   spacing = DEFAULT_SPACING,
 }: ExpressCheckoutProps) => {
   const validatedSpacing = Math.max(MIN_SPACING, spacing);
+  const amountInstance = new Amount(BigInt(amount));
 
   const handleApplePayAuthorized = (result: ApplePayTokenResult) => {
     console.warn('Apple Pay authorized', { publicKey, amount, currency, token: result.token });
@@ -30,7 +32,7 @@ export const ExpressCheckout = ({
         />
       </Container>
       <Text size="xs" c="dimmed">
-        Amount: {(amount / 100).toFixed(2)} {currency}
+        Amount: {amountInstance.toFixed(2)} {currency}
       </Text>
     </Stack>
   );
