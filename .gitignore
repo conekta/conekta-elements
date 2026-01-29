@@ -18,3 +18,4 @@ webApp/dist/
 webApp/build-storybook.log
 webApp/storybook.log
 storybook-static
+.env
