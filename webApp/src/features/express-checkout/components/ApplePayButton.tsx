@@ -31,7 +31,6 @@ export const ApplePayButton = ({
 }: ApplePayButtonProps) => {
   const validatedHeight = Math.max(MIN_BUTTON_HEIGHT, height);
   const validatedWidth = typeof width === 'number' ? Math.max(MIN_BUTTON_WIDTH, width) : width;
-  const validatedBorderRadius = borderRadius;
 
   const isDisabled = disabled || loading;
   const isLightMode = appearance === 'light';
@@ -72,7 +71,7 @@ export const ApplePayButton = ({
           style={{
             height: `${validatedHeight}px`,
             width: '100%',
-            borderRadius: validatedBorderRadius,
+            borderRadius,
             opacity,
             display: 'inline-block',
             transition: shouldHaveHoverEffect ? 'opacity 0.2s ease' : 'none',
@@ -93,7 +92,7 @@ export const ApplePayButton = ({
           style={{
             height: `${validatedHeight}px`,
             width: '100%',
-            borderRadius: validatedBorderRadius,
+            borderRadius,
             opacity,
             backgroundColor,
             color: textColor,
