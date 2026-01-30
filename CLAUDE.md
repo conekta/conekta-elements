@@ -28,7 +28,7 @@ Root `package.json` defines npm workspaces: `webApp/` and `shared/build/dist/js/
 | Components    | Mantine 7.5                                   |
 | State         | Zustand 4.5                                   |
 | Build         | Vite 5.4 (web), Gradle 8.14 (KMP)            |
-| Test          | Vitest 1.0 + React Testing Library + happy-dom|
+| Test          | Vitest 2.1+ + React Testing Library + happy-dom|
 | Storybook     | Storybook 7.6 + Chromatic                     |
 | Lint          | ESLint 8 + Prettier 3 (TS), KtLint 1.5 (Kotlin) |
 | CI            | GitHub Actions (aws-runner-set)               |
