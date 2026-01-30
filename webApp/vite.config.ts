@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
@@ -9,4 +9,21 @@ export default defineConfig({
     emptyOutDir: true,
   },
   server: { port: 8080 },
+  test: {
+    globals: true,
+    environment: 'happy-dom',
+    setupFiles: './vitest.setup.ts',
+    css: true,
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      exclude: [
+        'node_modules/',
+        'test/',
+        '**/*.d.ts',
+        '**/*.config.*',
+        '**/dist/**',
+      ],
+    },
+  },
 });
