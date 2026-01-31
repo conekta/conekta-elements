@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.androidLibrary) apply false
     alias(libs.plugins.android.lint) apply false
     alias(libs.plugins.ktlint) apply false
+    alias(libs.plugins.kotlinSerialization) apply false
 }
 
 subprojects {

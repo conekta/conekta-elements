@@ -1,5 +1,5 @@
 // Providers
-export { ConektaProvider } from './providers/ConektaProvider';
+export { ConektaProvider, useConektaClient } from './providers/ConektaProvider';
 
 // Express Checkout
 export {
