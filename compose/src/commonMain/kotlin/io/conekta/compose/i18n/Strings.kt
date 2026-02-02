@@ -1,9 +1,7 @@
 package io.conekta.compose.i18n
 
-import cafe.adriel.lyricist.LyricistStrings
-
 /**
- * Language enum for Lyricist
+ * Language enum for supported languages
  */
 enum class Language(val code: String) {
     ES("es"),
@@ -11,9 +9,8 @@ enum class Language(val code: String) {
 }
 
 /**
- * String resources interface for internalization
+ * String resources data class for internationalization
  */
-@LyricistStrings(languageTag = Language::class, defaultLanguageTag = "ES")
 data class Strings(
     // Validation error messages
     val validationRequired: String,

@@ -62,10 +62,10 @@ import io.conekta.elements.tokenizer.models.CardBrand
  */
 @Composable
 fun ConektaLogoImage(modifier: Modifier = Modifier) {
-    val strings = strings()
+    val currentStrings = strings
     AsyncImage(
         model = CardBrandAssets.CONEKTA_LOGO,
-        contentDescription = strings.contentDescriptionConektaLogo,
+        contentDescription = currentStrings.contentDescriptionConektaLogo,
         modifier = modifier,
         contentScale = ContentScale.Fit
     )
@@ -80,7 +80,7 @@ fun CardBrandIcon(
     modifier: Modifier = Modifier
 ) {
     val cdnUrl = CardBrandAssets.getCardBrandUrl(brand) ?: return // Don't render unknown brands
-    val strings = strings()
+    val currentStrings = strings
 
     val contentDescription = when (brand) {
         CardBrand.VISA -> strings.contentDescriptionVisaCard

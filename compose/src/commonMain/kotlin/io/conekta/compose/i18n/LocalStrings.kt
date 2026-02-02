@@ -1,17 +1,21 @@
 package io.conekta.compose.i18n
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 import cafe.adriel.lyricist.Lyricist
 import cafe.adriel.lyricist.ProvideStrings
-import cafe.adriel.lyricist.rememberStrings
 
 /**
  * Lyricist instance for internationalization
  */
-val lyricist = Lyricist(Language.ES, Strings::languageTag) {
-    language(Language.ES, StringsEs)
-    language(Language.EN, StringsEn)
-}
+val lyricist = Lyricist(
+    defaultLanguageTag = Language.ES.code,
+    translations = mapOf(
+        Language.ES.code to StringsEs,
+        Language.EN.code to StringsEn
+    )
+)
 
 /**
  * CompositionLocal for accessing strings
@@ -21,15 +25,18 @@ val LocalStrings = staticCompositionLocalOf { StringsEs }
 /**
  * Composable wrapper to provide strings to the composition tree
  */
-fun provideStrings(
-    languageTag: Language = Language.ES,
-    content: @androidx.compose.runtime.Composable () -> Unit
+@Composable
+fun ProvideConektaStrings(
+    language: Language = Language.ES,
+    content: @Composable () -> Unit
 ) {
-    ProvideStrings(lyricist, languageTag, LocalStrings, content)
+    lyricist.languageTag = language.code
+    ProvideStrings(lyricist, LocalStrings, content)
 }
 
 /**
- * Remember strings hook for accessing current strings
+ * Get current strings from the composition
  */
-@androidx.compose.runtime.Composable
-fun strings(): Strings = rememberStrings()
+val strings: Strings
+    @Composable
+    get() = LocalStrings.current
