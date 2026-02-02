@@ -13,16 +13,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import io.conekta.elements.assets.CardBrandAssets
-import io.conekta.elements.compose.generated.resources.*
 import io.conekta.elements.tokenizer.models.CardBrand
-import org.jetbrains.compose.resources.painterResource
 
 /**
  * Shared UI Components using CDN-hosted assets
  *
  * ## Architecture Decision
  *
- * These components load assets from **Conekta's CDN** with local resources as fallback.
+ * These components load assets exclusively from **Conekta's CDN**.
  *
  * ### Why CDN Assets?
  *
@@ -39,18 +37,13 @@ import org.jetbrains.compose.resources.painterResource
  * - `amex.svg` - American Express logo
  * - `conekta-logo-24px.svg` - Conekta brand logo
  *
- * ### Fallback Strategy
- *
- * If CDN fails, components use local resources from `composeResources/drawable/`
- *
  * ### How It Works
  *
  * ```kotlin
- * // AsyncImage loads from CDN with local fallback
+ * // AsyncImage loads from CDN
  * AsyncImage(
  *     model = CardBrandAssets.CardBrands.VISA,
- *     contentDescription = "Visa",
- *     error = painterResource(Res.drawable.ic_visa) // Fallback
+ *     contentDescription = "Visa"
  * )
  * ```
  *
@@ -64,7 +57,7 @@ import org.jetbrains.compose.resources.painterResource
  */
 
 /**
- * Renders the Conekta logo from CDN with local fallback
+ * Renders the Conekta logo from CDN
  */
 @Composable
 fun ConektaLogoImage(modifier: Modifier = Modifier) {
@@ -72,13 +65,12 @@ fun ConektaLogoImage(modifier: Modifier = Modifier) {
         model = CardBrandAssets.CONEKTA_LOGO,
         contentDescription = "Conekta Logo",
         modifier = modifier,
-        error = painterResource(Res.drawable.ic_conekta_logo), // Fallback to local resource
         contentScale = ContentScale.Fit
     )
 }
 
 /**
- * Renders a card brand icon from CDN with local fallback
+ * Renders a card brand icon from CDN
  */
 @Composable
 fun CardBrandIcon(
@@ -87,18 +79,10 @@ fun CardBrandIcon(
 ) {
     val cdnUrl = CardBrandAssets.getCardBrandUrl(brand) ?: return // Don't render unknown brands
 
-    val fallbackResource = when (brand) {
-        CardBrand.VISA -> Res.drawable.ic_visa
-        CardBrand.MASTERCARD -> Res.drawable.ic_mastercard
-        CardBrand.AMEX -> Res.drawable.ic_amex
-        CardBrand.UNKNOWN -> return
-    }
-
     AsyncImage(
         model = cdnUrl,
         contentDescription = "$brand card",
         modifier = modifier,
-        error = painterResource(fallbackResource), // Fallback to local resource
         contentScale = ContentScale.Fit
     )
 }
