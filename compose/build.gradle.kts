@@ -5,7 +5,6 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     `maven-publish`
-
 }
 group = project.property("conekta.group") as String
 version = project.property("conekta.version") as String
@@ -123,7 +122,6 @@ kotlin {
             }
         }
     }
-
 }
 publishing {
     repositories {

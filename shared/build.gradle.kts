@@ -16,10 +16,12 @@ kotlin {
     js {
         outputModuleName = "shared"
         browser()
+        nodejs()
         binaries.library()
         generateTypeScriptDefinitions()
         compilerOptions {
             target = "es2015"
+            freeCompilerArgs.add("-Xes-long-as-bigint")
         }
     }
     androidLibrary {
@@ -92,7 +94,6 @@ kotlin {
     }
 }
 
-
 publishing {
     repositories {
         maven {
@@ -107,4 +108,9 @@ publishing {
 
     publications {
     }
+}
+
+// Disable browser tests, use only Node.js for testing
+tasks.named("jsBrowserTest") {
+    enabled = false
 }

@@ -1,3 +1,16 @@
+// Providers
 export { ConektaProvider } from './providers/ConektaProvider';
-export { ExpressCheckout } from './features/express-checkout';
-export type { ExpressCheckoutProps } from './features/express-checkout';
+
+// Express Checkout
+export {
+  ExpressCheckout,
+  ApplePayButton,
+} from './features/express-checkout';
+
+// Types
+export type {
+  ExpressCheckoutProps,
+  ApplePayButtonProps,
+  PaymentResult,
+  ApplePayTokenResult,
+} from './features/express-checkout';

@@ -1,2 +1,11 @@
+// Public API
 export { ExpressCheckout } from './components/ExpressCheckout';
-export type { ExpressCheckoutProps } from './types';
+export { ApplePayButton } from './components/ApplePayButton';
+
+// Public Types
+export type { 
+  ExpressCheckoutProps, 
+  ApplePayButtonProps,
+  PaymentResult,
+  ApplePayTokenResult,
+} from './types';
