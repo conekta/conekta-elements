@@ -287,7 +287,7 @@ private fun TokenizerContent(
                     // For now, return a mock token
                     onSuccess(
                         TokenResult(
-                            token = "tok_test_${System.currentTimeMillis()}",
+                            token = "tok_test_mock_${cardDigits.takeLast(4)}",
                             cardBrand = detectedBrand.name,
                             lastFour = cardDigits.takeLast(4)
                         )
