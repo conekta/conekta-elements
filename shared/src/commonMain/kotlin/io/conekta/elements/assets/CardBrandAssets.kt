@@ -23,8 +23,8 @@ object CardBrandAssets {
     private const val CPANEL_ASSETS_PATH = "/cpanel/statics/assets"
     private const val CHECKOUT_IMG_PATH = "/checkout/img"
 
-    private val AWS_S3_URL = "${CDNResources.baseCdnUrl}$CPANEL_ASSETS_PATH"
-    private val AWS_S3_URL_CHECKOUT = "${CDNResources.baseCdnUrl}$CHECKOUT_IMG_PATH"
+    private const val AWS_S3_URL = "${CDNResources.baseCdnUrl}$CPANEL_ASSETS_PATH"
+    private const val AWS_S3_URL_CHECKOUT = "${CDNResources.baseCdnUrl}$CHECKOUT_IMG_PATH"
 
     /**
      * Conekta logo (24px height optimized)
