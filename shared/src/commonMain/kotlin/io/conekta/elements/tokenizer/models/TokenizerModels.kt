@@ -34,6 +34,11 @@ enum class CardBrand {
     VISA,
     MASTERCARD,
     AMEX,
-    UNKNOWN
+    UNKNOWN;
+
+    /**
+     * Check if this brand is UNKNOWN
+     */
+    fun isUNKNOWN(): Boolean = this == UNKNOWN
 }
 

@@ -2,13 +2,18 @@ package io.conekta.elements.tokenizer.validators
 
 /**
  * Validation error messages
+ *
+ * Note: Default values are in English for backward compatibility.
+ * For internationalization, provide localized strings from your i18n system.
+ *
+ * @see io.conekta.compose.i18n.Strings for i18n integration
  */
 data class ValidationErrorMessages(
-    val required: String = "This field is required",
-    val invalidCard: String = "Invalid card number",
-    val expiredCard: String = "Card expired",
-    val invalidCvv: String = "Invalid CVV",
-    val onlyDigits: String = "Only digits allowed"
+    val required: String,
+    val invalidCard: String,
+    val expiredCard: String,
+    val invalidCvv: String,
+    val onlyDigits: String
 )
 
 /**

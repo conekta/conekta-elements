@@ -83,6 +83,9 @@ kotlin {
                 implementation(libs.coil.compose)
                 implementation(libs.coil.network.ktor)
                 implementation(libs.ktor.client.core)
+
+                // Lyricist for i18n
+                implementation(libs.lyricist)
             }
         }
 

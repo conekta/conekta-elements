@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import io.conekta.compose.i18n.strings
 import io.conekta.elements.assets.CardBrandAssets
 import io.conekta.elements.tokenizer.models.CardBrand
 
@@ -61,9 +62,10 @@ import io.conekta.elements.tokenizer.models.CardBrand
  */
 @Composable
 fun ConektaLogoImage(modifier: Modifier = Modifier) {
+    val strings = strings()
     AsyncImage(
         model = CardBrandAssets.CONEKTA_LOGO,
-        contentDescription = "Conekta Logo",
+        contentDescription = strings.contentDescriptionConektaLogo,
         modifier = modifier,
         contentScale = ContentScale.Fit
     )
@@ -78,10 +80,18 @@ fun CardBrandIcon(
     modifier: Modifier = Modifier
 ) {
     val cdnUrl = CardBrandAssets.getCardBrandUrl(brand) ?: return // Don't render unknown brands
+    val strings = strings()
+
+    val contentDescription = when (brand) {
+        CardBrand.VISA -> strings.contentDescriptionVisaCard
+        CardBrand.MASTERCARD -> strings.contentDescriptionMastercardCard
+        CardBrand.AMEX -> strings.contentDescriptionAmexCard
+        CardBrand.UNKNOWN -> strings.contentDescriptionCardBrand
+    }
 
     AsyncImage(
         model = cdnUrl,
-        contentDescription = "$brand card",
+        contentDescription = contentDescription,
         modifier = modifier,
         contentScale = ContentScale.Fit
     )
@@ -100,7 +110,7 @@ fun CardBrandIconsRow(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        if (detectedBrand != null && detectedBrand != CardBrand.UNKNOWN) {
+        if (detectedBrand != null && !detectedBrand.isUNKNOWN()) {
             // Show only detected brand
             CardBrandIcon(
                 brand = detectedBrand,

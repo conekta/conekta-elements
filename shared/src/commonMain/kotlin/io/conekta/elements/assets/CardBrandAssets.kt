@@ -1,5 +1,6 @@
 package io.conekta.elements.assets
 
+import io.conekta.elements.resources.CDNResources
 import io.conekta.elements.tokenizer.models.CardBrand
 
 /**
@@ -15,11 +16,15 @@ import io.conekta.elements.tokenizer.models.CardBrand
  * - Main assets: https://assets.conekta.com/cpanel/statics/assets
  * - Checkout assets: https://assets.conekta.com/checkout/img
  *
+ * @see CDNResources for base CDN URL configuration
  * @see [Web implementation](https://github.com/conekta/int-payment-component/blob/main/src/app/util/constants.ts)
  */
 object CardBrandAssets {
-    private const val AWS_S3_URL = "https://assets.conekta.com/cpanel/statics/assets"
-    private const val AWS_S3_URL_CHECKOUT = "https://assets.conekta.com/checkout/img"
+    private const val CPANEL_ASSETS_PATH = "/cpanel/statics/assets"
+    private const val CHECKOUT_IMG_PATH = "/checkout/img"
+
+    private val AWS_S3_URL = "${CDNResources.baseCdnUrl}$CPANEL_ASSETS_PATH"
+    private val AWS_S3_URL_CHECKOUT = "${CDNResources.baseCdnUrl}$CHECKOUT_IMG_PATH"
 
     /**
      * Conekta logo (24px height optimized)
