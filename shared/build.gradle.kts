@@ -4,7 +4,6 @@ plugins {
     alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.android.lint)
     alias(libs.plugins.kotlinx.serialization)
-    alias(libs.plugins.composeMultiplatform)
     `maven-publish`
 }
 group = project.property("conekta.group") as String
@@ -71,9 +70,6 @@ kotlin {
 
             // Logging
             implementation(libs.kermit)
-
-            // Compose UI for Color
-            implementation(compose.ui)
         }
 
         androidMain.dependencies {

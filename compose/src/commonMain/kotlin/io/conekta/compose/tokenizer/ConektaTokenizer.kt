@@ -45,12 +45,12 @@ import io.conekta.compose.components.CheckCircleIcon
 import io.conekta.compose.components.ConektaButton
 import io.conekta.compose.components.ConektaTextField
 import io.conekta.compose.components.ConektaLogoImage
+import io.conekta.compose.theme.ConektaColors
+import io.conekta.compose.theme.ConektaTheme
 import io.conekta.elements.tokenizer.models.CardBrand
 import io.conekta.elements.tokenizer.models.TokenResult
 import io.conekta.elements.tokenizer.models.TokenizerConfig
 import io.conekta.elements.tokenizer.models.TokenizerError
-import io.conekta.elements.theme.ConektaColors
-import io.conekta.compose.theme.ConektaTheme
 
 /**
  * Conekta Tokenizer - Main public API

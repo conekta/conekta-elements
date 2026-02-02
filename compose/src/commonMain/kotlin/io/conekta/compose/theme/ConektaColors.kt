@@ -1,4 +1,4 @@
-package io.conekta.elements.theme
+package io.conekta.compose.theme
 
 import androidx.compose.ui.graphics.Color
 
