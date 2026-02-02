@@ -1,0 +1,55 @@
+package io.conekta.elements.assets
+
+import io.conekta.elements.tokenizer.models.CardBrand
+
+/**
+ * CDN URLs for card brand logos and Conekta assets
+ *
+ * These assets are hosted on Conekta's CDN to ensure:
+ * - Always up-to-date branding
+ * - Smaller app bundle size
+ * - Consistency across web and mobile platforms
+ * - Easy updates without app releases
+ *
+ * CDN Base URLs:
+ * - Main assets: https://assets.conekta.com/cpanel/statics/assets
+ * - Checkout assets: https://assets.conekta.com/checkout/img
+ *
+ * @see [Web implementation](https://github.com/conekta/int-payment-component/blob/main/src/app/util/constants.ts)
+ */
+object CardBrandAssets {
+    private const val AWS_S3_URL = "https://assets.conekta.com/cpanel/statics/assets"
+    private const val AWS_S3_URL_CHECKOUT = "https://assets.conekta.com/checkout/img"
+
+    /**
+     * Conekta logo (24px height optimized)
+     */
+    const val CONEKTA_LOGO = "$AWS_S3_URL/brands/logos/conekta-logo-24px.svg"
+
+    /**
+     * Card brand logos (optimized for card forms)
+     */
+    object CardBrands {
+        const val VISA = "$AWS_S3_URL/brands/logos/visa.svg"
+        const val MASTERCARD = "$AWS_S3_URL/brands/logos/mastercard.svg"
+        const val AMEX = "$AWS_S3_URL/brands/logos/amex.svg"
+
+        /**
+         * All card brands combined logo
+         */
+        const val ALL_CARDS = "$AWS_S3_URL/brands/logos/MC%3AVisa%3AAMEX-rounded.svg"
+    }
+
+    /**
+     * Get CDN URL for a specific card brand
+     * Returns null for UNKNOWN brands
+     */
+    fun getCardBrandUrl(brand: CardBrand): String? {
+        return when (brand) {
+            CardBrand.VISA -> CardBrands.VISA
+            CardBrand.MASTERCARD -> CardBrands.MASTERCARD
+            CardBrand.AMEX -> CardBrands.AMEX
+            CardBrand.UNKNOWN -> null
+        }
+    }
+}

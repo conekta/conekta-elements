@@ -13,7 +13,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.conekta.compose.theme.ConektaColors
+import io.conekta.elements.theme.ConektaColors
 
 /**
  * Conekta styled text field component

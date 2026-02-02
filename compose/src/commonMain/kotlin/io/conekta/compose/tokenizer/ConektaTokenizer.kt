@@ -5,6 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -27,7 +29,7 @@ import io.conekta.elements.tokenizer.models.CardBrand
 import io.conekta.elements.tokenizer.models.TokenResult
 import io.conekta.elements.tokenizer.models.TokenizerConfig
 import io.conekta.elements.tokenizer.models.TokenizerError
-import io.conekta.compose.theme.ConektaColors
+import io.conekta.elements.theme.ConektaColors
 import io.conekta.compose.theme.ConektaTheme
 
 /**
@@ -317,13 +319,11 @@ private fun TokenizerHeader(
             )
         }
         
-        TextButton(onClick = onInfoClick) {
-            Text(
-                text = "ℹ",
-                style = TextStyle(
-                    fontSize = 20.sp,
-                    color = ConektaColors.Neutral7
-                )
+        IconButton(onClick = onInfoClick) {
+            Icon(
+                imageVector = Icons.Default.Info,
+                contentDescription = "Información de seguridad",
+                tint = ConektaColors.Neutral7
             )
         }
     }

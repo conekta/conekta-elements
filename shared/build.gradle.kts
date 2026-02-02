@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.android.lint)
+    alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.composeMultiplatform)
     `maven-publish`
 }
 group = project.property("conekta.group") as String
@@ -56,8 +58,34 @@ kotlin {
     }
     sourceSets {
         commonMain.dependencies {
-            // put your Multiplatform dependencies here
+            // Ktor HTTP Client
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.json)
+            implementation(libs.ktor.client.logging)
+
+            // Serialization
+            implementation(libs.kotlinx.serialization.json)
+
+            // Logging
+            implementation(libs.kermit)
+
+            // Compose UI for Color
+            implementation(compose.ui)
         }
+
+        androidMain.dependencies {
+            implementation(libs.ktor.client.okhttp)
+        }
+
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
+        }
+
+        jsMain.dependencies {
+            implementation(libs.ktor.client.js)
+        }
+
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }

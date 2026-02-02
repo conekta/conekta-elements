@@ -1,4 +1,4 @@
-package io.conekta.compose.theme
+package io.conekta.elements.theme
 
 import androidx.compose.ui.graphics.Color
 
@@ -18,4 +18,3 @@ object ConektaColors {
     val Shadow = Color(0x292C4CF5)
     val Error = Color(0xFFDC2626) // Red color for validation errors
 }
-
