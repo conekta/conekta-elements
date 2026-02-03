@@ -3,9 +3,11 @@ package io.conekta.compose.i18n
 /**
  * Language enum for supported languages
  */
-enum class Language(val code: String) {
+enum class Language(
+    val code: String,
+) {
     ES("es"),
-    EN("en")
+    EN("en"),
 }
 
 /**
@@ -18,11 +20,10 @@ data class Strings(
     val validationExpiredCard: String,
     val validationInvalidCvv: String,
     val validationOnlyDigits: String,
-
     // Content descriptions for accessibility
     val contentDescriptionConektaLogo: String,
     val contentDescriptionVisaCard: String,
     val contentDescriptionMastercardCard: String,
     val contentDescriptionAmexCard: String,
-    val contentDescriptionCardBrand: String
+    val contentDescriptionCardBrand: String,
 )

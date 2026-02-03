@@ -13,7 +13,7 @@ data class ValidationErrorMessages(
     val invalidCard: String,
     val expiredCard: String,
     val invalidCvv: String,
-    val onlyDigits: String
+    val onlyDigits: String,
 )
 
 /**
@@ -22,7 +22,7 @@ data class ValidationErrorMessages(
 fun isValidCardNumber(cardNumber: String): Boolean {
     val digits = cardNumber.filter { it.isDigit() }
     if (digits.length < 13 || digits.length > 19) return false
-    
+
     return luhnCheck(digits)
 }
 
@@ -32,21 +32,21 @@ fun isValidCardNumber(cardNumber: String): Boolean {
 private fun luhnCheck(cardNumber: String): Boolean {
     var sum = 0
     var alternate = false
-    
+
     for (i in cardNumber.length - 1 downTo 0) {
         var digit = cardNumber[i].toString().toInt()
-        
+
         if (alternate) {
             digit *= 2
             if (digit > 9) {
                 digit -= 9
             }
         }
-        
+
         sum += digit
         alternate = !alternate
     }
-    
+
     return sum % 10 == 0
 }
 
@@ -55,13 +55,16 @@ private fun luhnCheck(cardNumber: String): Boolean {
  * Note: Actual implementation should use kotlinx-datetime for multiplatform support
  * For now, we'll do basic validation
  */
-fun isValidExpiryDate(month: String, year: String): Boolean {
+fun isValidExpiryDate(
+    month: String,
+    year: String,
+): Boolean {
     val monthInt = month.toIntOrNull() ?: return false
     val yearInt = year.toIntOrNull() ?: return false
-    
+
     if (monthInt !in 1..12) return false
     if (year.length != 2) return false
-    
+
     // TODO: Add actual date comparison using kotlinx-datetime
     // For now, just validate format
     return true
@@ -70,11 +73,13 @@ fun isValidExpiryDate(month: String, year: String): Boolean {
 /**
  * Validate CVV
  */
-fun isValidCvv(cvv: String, cardBrand: String = ""): Boolean {
+fun isValidCvv(
+    cvv: String,
+    cardBrand: String = "",
+): Boolean {
     val digits = cvv.filter { it.isDigit() }
     return when (cardBrand.uppercase()) {
         "AMEX" -> digits.length == 4
         else -> digits.length == 3
     }
 }
-

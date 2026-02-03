@@ -1,7 +1,6 @@
 package io.conekta.compose.i18n
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 import cafe.adriel.lyricist.Lyricist
 import cafe.adriel.lyricist.ProvideStrings
@@ -9,13 +8,15 @@ import cafe.adriel.lyricist.ProvideStrings
 /**
  * Lyricist instance for internationalization
  */
-val lyricist = Lyricist(
-    defaultLanguageTag = Language.ES.code,
-    translations = mapOf(
-        Language.ES.code to StringsEs,
-        Language.EN.code to StringsEn
+val lyricist =
+    Lyricist(
+        defaultLanguageTag = Language.ES.code,
+        translations =
+            mapOf(
+                Language.ES.code to StringsEs,
+                Language.EN.code to StringsEn,
+            ),
     )
-)
 
 /**
  * CompositionLocal for accessing strings
@@ -28,7 +29,7 @@ val LocalStrings = staticCompositionLocalOf { StringsEs }
 @Composable
 fun ProvideConektaStrings(
     language: Language = Language.ES,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     lyricist.languageTag = language.code
     ProvideStrings(lyricist, LocalStrings, content)

@@ -6,7 +6,7 @@ package io.conekta.elements.tokenizer.models
 data class TokenizerConfig(
     val publicKey: String,
     val merchantName: String = "Demo Store",
-    val collectCardholderName: Boolean = true
+    val collectCardholderName: Boolean = true,
 )
 
 /**
@@ -15,16 +15,25 @@ data class TokenizerConfig(
 data class TokenResult(
     val token: String,
     val cardBrand: String,
-    val lastFour: String
+    val lastFour: String,
 )
 
 /**
  * Error during tokenization
  */
 sealed class TokenizerError {
-    data class ValidationError(val message: String) : TokenizerError()
-    data class NetworkError(val message: String) : TokenizerError()
-    data class ApiError(val code: String, val message: String) : TokenizerError()
+    data class ValidationError(
+        val message: String,
+    ) : TokenizerError()
+
+    data class NetworkError(
+        val message: String,
+    ) : TokenizerError()
+
+    data class ApiError(
+        val code: String,
+        val message: String,
+    ) : TokenizerError()
 }
 
 /**
@@ -34,11 +43,11 @@ enum class CardBrand {
     VISA,
     MASTERCARD,
     AMEX,
-    UNKNOWN;
+    UNKNOWN,
+    ;
 
     /**
      * Check if this brand is UNKNOWN
      */
     fun isUNKNOWN(): Boolean = this == UNKNOWN
 }
-

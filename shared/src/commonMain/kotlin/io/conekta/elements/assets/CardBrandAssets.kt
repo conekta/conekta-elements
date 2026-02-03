@@ -23,8 +23,8 @@ object CardBrandAssets {
     private const val CPANEL_ASSETS_PATH = "/cpanel/statics/assets"
     private const val CHECKOUT_IMG_PATH = "/checkout/img"
 
-    private const val AWS_S3_URL = "${CDNResources.baseCdnUrl}$CPANEL_ASSETS_PATH"
-    private const val AWS_S3_URL_CHECKOUT = "${CDNResources.baseCdnUrl}$CHECKOUT_IMG_PATH"
+    private const val AWS_S3_URL = "${CDNResources.BASE_CDN_URL}$CPANEL_ASSETS_PATH"
+    private const val AWS_S3_URL_CHECKOUT = "${CDNResources.BASE_CDN_URL}$CHECKOUT_IMG_PATH"
 
     /**
      * Conekta logo (24px height optimized)
@@ -49,12 +49,11 @@ object CardBrandAssets {
      * Get CDN URL for a specific card brand
      * Returns null for UNKNOWN brands
      */
-    fun getCardBrandUrl(brand: CardBrand): String? {
-        return when (brand) {
+    fun getCardBrandUrl(brand: CardBrand): String? =
+        when (brand) {
             CardBrand.VISA -> CardBrands.VISA
             CardBrand.MASTERCARD -> CardBrands.MASTERCARD
             CardBrand.AMEX -> CardBrands.AMEX
             CardBrand.UNKNOWN -> null
         }
-    }
 }

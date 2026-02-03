@@ -10,17 +10,17 @@ object CDNResources {
      * Base CDN URL for all Conekta assets
      * This is the single source of truth for the CDN domain
      */
-    const val baseCdnUrl = "https://assets.conekta.com"
+    const val BASE_CDN_URL = "https://assets.conekta.com"
 
-    @Deprecated("Use baseCdnUrl instead", ReplaceWith("baseCdnUrl"))
-    private const val CDN_BASE_URL = baseCdnUrl
+    @Deprecated("Use BASE_CDN_URL instead", ReplaceWith("BASE_CDN_URL"))
+    private const val CDN_BASE_URL = BASE_CDN_URL
 
     object Icons {
-        private const val ICONS_PATH = "$baseCdnUrl/checkout/img/logos"
+        private const val ICONS_PATH = "$BASE_CDN_URL/checkout/img/logos"
         const val APPLE = "$ICONS_PATH/logo-apple-with-text.svg"
         const val VISA = "$ICONS_PATH/logo-visa.svg"
         const val MASTERCARD = "$ICONS_PATH/logo-mastercard.svg"
-        const val SPINNER = "$baseCdnUrl/checkout/img/icons/spinner.svg"
+        const val SPINNER = "$BASE_CDN_URL/checkout/img/icons/spinner.svg"
     }
 
     object Colors {

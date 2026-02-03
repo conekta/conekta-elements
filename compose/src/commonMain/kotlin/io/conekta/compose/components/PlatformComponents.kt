@@ -1,6 +1,5 @@
 package io.conekta.compose.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
@@ -57,9 +56,6 @@ import io.conekta.elements.tokenizer.models.CardBrand
  * @see io.conekta.compose.components.CardBrandIcon
  */
 
-/**
- * Renders the Conekta logo from CDN
- */
 @Composable
 fun ConektaLogoImage(modifier: Modifier = Modifier) {
     val currentStrings = strings
@@ -67,7 +63,7 @@ fun ConektaLogoImage(modifier: Modifier = Modifier) {
         model = CardBrandAssets.CONEKTA_LOGO,
         contentDescription = currentStrings.contentDescriptionConektaLogo,
         modifier = modifier,
-        contentScale = ContentScale.Fit
+        contentScale = ContentScale.Fit,
     )
 }
 
@@ -77,23 +73,24 @@ fun ConektaLogoImage(modifier: Modifier = Modifier) {
 @Composable
 fun CardBrandIcon(
     brand: CardBrand,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val cdnUrl = CardBrandAssets.getCardBrandUrl(brand) ?: return // Don't render unknown brands
     val currentStrings = strings
 
-    val contentDescription = when (brand) {
-        CardBrand.VISA -> strings.contentDescriptionVisaCard
-        CardBrand.MASTERCARD -> strings.contentDescriptionMastercardCard
-        CardBrand.AMEX -> strings.contentDescriptionAmexCard
-        CardBrand.UNKNOWN -> strings.contentDescriptionCardBrand
-    }
+    val contentDescription =
+        when (brand) {
+            CardBrand.VISA -> strings.contentDescriptionVisaCard
+            CardBrand.MASTERCARD -> strings.contentDescriptionMastercardCard
+            CardBrand.AMEX -> strings.contentDescriptionAmexCard
+            CardBrand.UNKNOWN -> strings.contentDescriptionCardBrand
+        }
 
     AsyncImage(
         model = cdnUrl,
         contentDescription = contentDescription,
         modifier = modifier,
-        contentScale = ContentScale.Fit
+        contentScale = ContentScale.Fit,
     )
 }
 
@@ -104,17 +101,17 @@ fun CardBrandIcon(
 @Composable
 fun CardBrandIconsRow(
     detectedBrand: CardBrand?,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         if (detectedBrand != null && !detectedBrand.isUNKNOWN()) {
             // Show only detected brand
             CardBrandIcon(
                 brand = detectedBrand,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(24.dp),
             )
         } else {
             // Show all supported brands
@@ -133,7 +130,6 @@ fun CheckCircleIcon(modifier: Modifier = Modifier) {
     Icon(
         imageVector = Icons.Default.CheckCircle,
         contentDescription = "Check",
-        modifier = modifier
+        modifier = modifier,
     )
 }
-

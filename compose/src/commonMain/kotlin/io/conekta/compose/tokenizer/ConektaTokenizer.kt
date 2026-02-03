@@ -1,8 +1,6 @@
 package io.conekta.compose.tokenizer
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -39,22 +37,20 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.conekta.compose.components.CardBrandIcon
 import io.conekta.compose.components.CardBrandIconsRow
 import io.conekta.compose.components.CheckCircleIcon
 import io.conekta.compose.components.ConektaButton
-import io.conekta.compose.components.ConektaTextField
 import io.conekta.compose.components.ConektaLogoImage
+import io.conekta.compose.components.ConektaTextField
 import io.conekta.compose.theme.ConektaColors
 import io.conekta.compose.theme.ConektaTheme
-import io.conekta.elements.tokenizer.models.CardBrand
 import io.conekta.elements.tokenizer.models.TokenResult
 import io.conekta.elements.tokenizer.models.TokenizerConfig
 import io.conekta.elements.tokenizer.models.TokenizerError
 
 /**
  * Conekta Tokenizer - Main public API
- * 
+ *
  * A composable that renders a complete card tokenization form
  * following Conekta's design system.
  *
@@ -80,17 +76,17 @@ fun ConektaTokenizer(
     config: TokenizerConfig,
     onSuccess: (TokenResult) -> Unit,
     onError: (TokenizerError) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     ConektaTheme {
         Surface(
             modifier = modifier.fillMaxSize(),
-            color = Color.White
+            color = Color.White,
         ) {
             TokenizerContent(
                 config = config,
                 onSuccess = onSuccess,
-                onError = onError
+                onError = onError,
             )
         }
     }
@@ -100,7 +96,7 @@ fun ConektaTokenizer(
 private fun TokenizerContent(
     config: TokenizerConfig,
     onSuccess: (TokenResult) -> Unit,
-    onError: (TokenizerError) -> Unit
+    onError: (TokenizerError) -> Unit,
 ) {
     var cardholderName by remember { mutableStateOf(TextFieldValue("")) }
     var cardNumber by remember { mutableStateOf(TextFieldValue("")) }
@@ -108,56 +104,59 @@ private fun TokenizerContent(
     var cvv by remember { mutableStateOf(TextFieldValue("")) }
     var showProtectionSheet by remember { mutableStateOf(false) }
     var isProcessing by remember { mutableStateOf(false) }
-    
+
     // Error states for each field
     var cardholderNameError by remember { mutableStateOf(false) }
     var cardNumberError by remember { mutableStateOf(false) }
     var expiryDateError by remember { mutableStateOf(false) }
     var cvvError by remember { mutableStateOf(false) }
-    
+
     // Error messages for each field
     var cardholderNameErrorMsg by remember { mutableStateOf<String?>(null) }
     var cardNumberErrorMsg by remember { mutableStateOf<String?>(null) }
     var expiryDateErrorMsg by remember { mutableStateOf<String?>(null) }
     var cvvErrorMsg by remember { mutableStateOf<String?>(null) }
-    
-    val detectedBrand = remember(cardNumber.text) {
-        CardFormatters.detectCardBrand(cardNumber.text)
-    }
-    
+
+    val detectedBrand =
+        remember(cardNumber.text) {
+            CardFormatters.detectCardBrand(cardNumber.text)
+        }
+
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         // Header
         TokenizerHeader(
             merchantName = config.merchantName,
-            onInfoClick = { showProtectionSheet = true }
+            onInfoClick = { showProtectionSheet = true },
         )
-        
+
         Spacer(modifier = Modifier.height(8.dp))
-        
+
         // Title
         Text(
             text = "Información de la tarjeta",
-            style = TextStyle(
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = ConektaColors.DarkIndigo,
-                lineHeight = 28.sp
-            )
+            style =
+                TextStyle(
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = ConektaColors.DarkIndigo,
+                    lineHeight = 28.sp,
+                ),
         )
-        
+
         Spacer(modifier = Modifier.height(8.dp))
-        
+
         // Form
         if (config.collectCardholderName) {
             ConektaTextField(
                 value = cardholderName,
-                onValueChange = { 
+                onValueChange = {
                     cardholderName = it
                     cardholderNameError = false // Clear error on input
                     cardholderNameErrorMsg = null
@@ -168,10 +167,10 @@ private fun TokenizerContent(
                 imeAction = ImeAction.Next,
                 enabled = !isProcessing,
                 isError = cardholderNameError,
-                errorMessage = cardholderNameErrorMsg
+                errorMessage = cardholderNameErrorMsg,
             )
         }
-        
+
         // Card Number with brand icon
         ConektaTextField(
             value = cardNumber,
@@ -190,15 +189,15 @@ private fun TokenizerContent(
             trailingContent = {
                 // Show card brand icons
                 CardBrandIconsRow(
-                    detectedBrand = detectedBrand
+                    detectedBrand = detectedBrand,
                 )
-            }
+            },
         )
-        
+
         // Expiry and CVV Row
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             ConektaTextField(
                 value = expiryDate,
@@ -214,9 +213,9 @@ private fun TokenizerContent(
                 modifier = Modifier.weight(1f),
                 enabled = !isProcessing,
                 isError = expiryDateError,
-                errorMessage = expiryDateErrorMsg
+                errorMessage = expiryDateErrorMsg,
             )
-            
+
             ConektaTextField(
                 value = cvv,
                 onValueChange = { newValue ->
@@ -231,12 +230,12 @@ private fun TokenizerContent(
                 modifier = Modifier.weight(1f),
                 enabled = !isProcessing,
                 isError = cvvError,
-                errorMessage = cvvErrorMsg
+                errorMessage = cvvErrorMsg,
             )
         }
-        
+
         Spacer(modifier = Modifier.weight(1f))
-        
+
         // Submit Button
         ConektaButton(
             text = if (isProcessing) "Procesando..." else "Continuar",
@@ -250,36 +249,36 @@ private fun TokenizerContent(
                 expiryDateErrorMsg = null
                 cvvError = false
                 cvvErrorMsg = null
-                
+
                 // Validate all fields
                 val cardDigits = cardNumber.text.filter { it.isDigit() }
                 var hasError = false
-                
+
                 // Validate each field and mark errors
                 if (config.collectCardholderName && cardholderName.text.isBlank()) {
                     cardholderNameError = true
                     cardholderNameErrorMsg = "Este dato es necesario"
                     hasError = true
                 }
-                
+
                 if (cardNumber.text.isBlank() || !CardFormatters.isValidCardNumber(cardDigits)) {
                     cardNumberError = true
                     cardNumberErrorMsg = "Este dato es necesario"
                     hasError = true
                 }
-                
+
                 if (expiryDate.text.isBlank() || !CardFormatters.isValidExpiryDate(expiryDate.text)) {
                     expiryDateError = true
                     expiryDateErrorMsg = "Este dato es necesario"
                     hasError = true
                 }
-                
+
                 if (cvv.text.isBlank() || !CardFormatters.isValidCvv(cvv.text, detectedBrand)) {
                     cvvError = true
                     cvvErrorMsg = "Este dato es necesario"
                     hasError = true
                 }
-                
+
                 // If there are no errors, proceed with tokenization
                 if (!hasError) {
                     isProcessing = true
@@ -289,22 +288,22 @@ private fun TokenizerContent(
                         TokenResult(
                             token = "tok_test_mock_${cardDigits.takeLast(4)}",
                             cardBrand = detectedBrand.name,
-                            lastFour = cardDigits.takeLast(4)
-                        )
+                            lastFour = cardDigits.takeLast(4),
+                        ),
                     )
                     isProcessing = false
                 }
                 // If there are errors, they are already displayed below each input
             },
-            enabled = !isProcessing
+            enabled = !isProcessing,
         )
     }
-    
+
     // Payment Protection Sheet
     if (showProtectionSheet) {
         PaymentProtectionSheet(
             merchantName = config.merchantName,
-            onDismiss = { showProtectionSheet = false }
+            onDismiss = { showProtectionSheet = false },
         )
     }
 }
@@ -312,38 +311,39 @@ private fun TokenizerContent(
 @Composable
 private fun TokenizerHeader(
     merchantName: String,
-    onInfoClick: () -> Unit
+    onInfoClick: () -> Unit,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Column {
             Text(
                 text = "PAGA SEGURO CON",
-                style = TextStyle(
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = ConektaColors.Neutral7,
-                    lineHeight = 16.sp,
-                    letterSpacing = 0.5.sp
-                )
+                style =
+                    TextStyle(
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = ConektaColors.Neutral7,
+                        lineHeight = 16.sp,
+                        letterSpacing = 0.5.sp,
+                    ),
             )
-            
+
             Spacer(modifier = Modifier.height(4.dp))
-            
+
             // Conekta Logo
             ConektaLogoImage(
-                modifier = Modifier.height(20.dp)
+                modifier = Modifier.height(20.dp),
             )
         }
-        
+
         IconButton(onClick = onInfoClick) {
             Icon(
                 imageVector = Icons.Default.Info,
                 contentDescription = "Información de seguridad",
-                tint = ConektaColors.Neutral7
+                tint = ConektaColors.Neutral7,
             )
         }
     }
@@ -353,87 +353,93 @@ private fun TokenizerHeader(
 @Composable
 private fun PaymentProtectionSheet(
     merchantName: String,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
 ) {
-    val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = false
-    )
+    val sheetState =
+        rememberModalBottomSheetState(
+            skipPartiallyExpanded = false,
+        )
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        dragHandle = { 
+        dragHandle = {
             BottomSheetDefaults.DragHandle(
-                color = ConektaColors.Neutral5
-            ) 
+                color = ConektaColors.Neutral5,
+            )
         },
         containerColor = ConektaColors.Surface,
         shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
-        scrimColor = Color.Black.copy(alpha = 0.5f)
+        scrimColor = Color.Black.copy(alpha = 0.5f),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 32.dp)
-                .padding(bottom = 32.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp)
+                    .padding(bottom = 32.dp),
         ) {
             // Close button (X) at top right
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
+                horizontalArrangement = Arrangement.End,
             ) {
                 IconButton(onClick = onDismiss) {
                     Text(
                         text = "✕",
-                        style = TextStyle(
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Normal,
-                            color = ConektaColors.DarkIndigo
-                        )
+                        style =
+                            TextStyle(
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Normal,
+                                color = ConektaColors.DarkIndigo,
+                            ),
                     )
                 }
             }
-            
+
             Spacer(modifier = Modifier.height(8.dp))
-            
+
             // Title with check icon
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 // Green check icon from Figma
                 CheckCircleIcon(
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(24.dp),
                 )
-                
+
                 Spacer(modifier = Modifier.width(8.dp))
-                
+
                 Text(
                     text = "Tu pago está protegido",
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = ConektaColors.DarkIndigo,
-                        lineHeight = 20.sp
-                    )
+                    style =
+                        TextStyle(
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = ConektaColors.DarkIndigo,
+                            lineHeight = 20.sp,
+                        ),
                 )
             }
-            
+
             Spacer(modifier = Modifier.height(16.dp))
-            
+
             // Description text
             Text(
-                text = "Conekta es el portal que usa $merchantName para procesar sus pagos en línea de manera segura y confiable.",
-                style = TextStyle(
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Normal,
-                    color = ConektaColors.Neutral8,
-                    lineHeight = 22.sp
-                ),
-                modifier = Modifier.fillMaxWidth()
+                text =
+                    "Conekta es el portal que usa $merchantName para procesar sus pagos en línea " +
+                        "de manera segura y confiable.",
+                style =
+                    TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Normal,
+                        color = ConektaColors.Neutral8,
+                        lineHeight = 22.sp,
+                    ),
+                modifier = Modifier.fillMaxWidth(),
             )
         }
     }
 }
-

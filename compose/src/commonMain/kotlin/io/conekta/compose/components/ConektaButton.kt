@@ -24,30 +24,32 @@ fun ConektaButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true
+    enabled: Boolean = true,
 ) {
     Button(
         onClick = onClick,
-        modifier = modifier
-            .fillMaxWidth()
-            .height(48.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(48.dp),
         enabled = enabled,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = ConektaColors.CoreIndigo,
-            contentColor = Color.White,
-            disabledContainerColor = ConektaColors.Neutral5,
-            disabledContentColor = ConektaColors.Neutral7
-        ),
-        shape = RoundedCornerShape(4.dp)
+        colors =
+            ButtonDefaults.buttonColors(
+                containerColor = ConektaColors.CoreIndigo,
+                contentColor = Color.White,
+                disabledContainerColor = ConektaColors.Neutral5,
+                disabledContentColor = ConektaColors.Neutral7,
+            ),
+        shape = RoundedCornerShape(4.dp),
     ) {
         Text(
             text = text,
-            style = TextStyle(
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                lineHeight = 24.sp
-            )
+            style =
+                TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    lineHeight = 24.sp,
+                ),
         )
     }
 }
-
