@@ -11,9 +11,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import io.conekta.compose.i18n.strings
 import io.conekta.elements.assets.CardBrandAssets
+import io.conekta.elements.compose.generated.resources.Res
+import io.conekta.elements.compose.generated.resources.content_description_amex_card
+import io.conekta.elements.compose.generated.resources.content_description_card_brand
+import io.conekta.elements.compose.generated.resources.content_description_conekta_logo
+import io.conekta.elements.compose.generated.resources.content_description_mastercard_card
+import io.conekta.elements.compose.generated.resources.content_description_visa_card
 import io.conekta.elements.tokenizer.models.CardBrand
+import org.jetbrains.compose.resources.stringResource
 
 /**
  * Shared UI Components using CDN-hosted assets
@@ -58,10 +64,9 @@ import io.conekta.elements.tokenizer.models.CardBrand
 
 @Composable
 fun ConektaLogoImage(modifier: Modifier = Modifier) {
-    val currentStrings = strings
     AsyncImage(
         model = CardBrandAssets.CONEKTA_LOGO,
-        contentDescription = currentStrings.contentDescriptionConektaLogo,
+        contentDescription = stringResource(Res.string.content_description_conekta_logo),
         modifier = modifier,
         contentScale = ContentScale.Fit,
     )
@@ -76,14 +81,13 @@ fun CardBrandIcon(
     modifier: Modifier = Modifier,
 ) {
     val cdnUrl = CardBrandAssets.getCardBrandUrl(brand) ?: return // Don't render unknown brands
-    val currentStrings = strings
 
     val contentDescription =
         when (brand) {
-            CardBrand.VISA -> strings.contentDescriptionVisaCard
-            CardBrand.MASTERCARD -> strings.contentDescriptionMastercardCard
-            CardBrand.AMEX -> strings.contentDescriptionAmexCard
-            CardBrand.UNKNOWN -> strings.contentDescriptionCardBrand
+            CardBrand.VISA -> stringResource(Res.string.content_description_visa_card)
+            CardBrand.MASTERCARD -> stringResource(Res.string.content_description_mastercard_card)
+            CardBrand.AMEX -> stringResource(Res.string.content_description_amex_card)
+            CardBrand.UNKNOWN -> stringResource(Res.string.content_description_card_brand)
         }
 
     AsyncImage(

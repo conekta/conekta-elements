@@ -1,0 +1,15 @@
+<resources>
+    <!-- Validation error messages -->
+    <string name="validation_required">This field is required</string>
+    <string name="validation_invalid_card">Invalid card number</string>
+    <string name="validation_expired_card">Card expired</string>
+    <string name="validation_invalid_cvv">Invalid CVV</string>
+    <string name="validation_only_digits">Only digits allowed</string>
+
+    <!-- Content descriptions for accessibility -->
+    <string name="content_description_conekta_logo">Conekta Logo</string>
+    <string name="content_description_visa_card">Visa card</string>
+    <string name="content_description_mastercard_card">Mastercard card</string>
+    <string name="content_description_amex_card">American Express card</string>
+    <string name="content_description_card_brand">card</string>
+</resources>
