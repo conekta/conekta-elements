@@ -12,4 +12,22 @@
     <string name="content_description_mastercard_card">Mastercard card</string>
     <string name="content_description_amex_card">American Express card</string>
     <string name="content_description_card_brand">card</string>
+    <string name="content_description_security_info">Security information</string>
+    <string name="content_description_close">Close</string>
+
+    <!-- Tokenizer UI -->
+    <string name="card_information_title">Card information</string>
+    <string name="pay_securely_with">PAY SECURELY WITH</string>
+    <string name="payment_protected">Your payment is protected</string>
+    <string name="conekta_description">Conekta is the portal that %s uses to process their online payments securely and reliably.</string>
+
+    <!-- Form labels and placeholders -->
+    <string name="label_cardholder_name">Cardholder name</string>
+    <string name="placeholder_cardholder_name">Name as it appears on card</string>
+    <string name="label_card_number">Card number</string>
+    <string name="label_expiry">Expiration</string>
+    <string name="placeholder_expiry">MM/YY</string>
+    <string name="label_cvv">Security code</string>
+    <string name="placeholder_cvv">CVV</string>
+    <string name="content_description_check">Verified</string>
 </resources>

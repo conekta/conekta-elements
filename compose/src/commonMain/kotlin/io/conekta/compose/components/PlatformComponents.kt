@@ -111,14 +111,13 @@ fun CardBrandIconsRow(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        if (detectedBrand != null && !detectedBrand.isUNKNOWN()) {
-            // Show only detected brand
+        val brandToShow = detectedBrand?.takeIf { !it.isUNKNOWN() }
+        if (brandToShow != null) {
             CardBrandIcon(
-                brand = detectedBrand,
+                brand = brandToShow,
                 modifier = Modifier.size(24.dp),
             )
         } else {
-            // Show all supported brands
             CardBrandIcon(brand = CardBrand.VISA, modifier = Modifier.size(24.dp))
             CardBrandIcon(brand = CardBrand.MASTERCARD, modifier = Modifier.size(24.dp))
             CardBrandIcon(brand = CardBrand.AMEX, modifier = Modifier.size(24.dp))

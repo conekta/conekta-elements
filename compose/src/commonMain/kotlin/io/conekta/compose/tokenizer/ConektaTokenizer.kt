@@ -44,9 +44,24 @@ import io.conekta.compose.components.ConektaLogoImage
 import io.conekta.compose.components.ConektaTextField
 import io.conekta.compose.theme.ConektaColors
 import io.conekta.compose.theme.ConektaTheme
+import io.conekta.elements.compose.generated.resources.Res
+import io.conekta.elements.compose.generated.resources.card_information_title
+import io.conekta.elements.compose.generated.resources.conekta_description
+import io.conekta.elements.compose.generated.resources.content_description_close
+import io.conekta.elements.compose.generated.resources.content_description_security_info
+import io.conekta.elements.compose.generated.resources.label_card_number
+import io.conekta.elements.compose.generated.resources.label_cardholder_name
+import io.conekta.elements.compose.generated.resources.label_cvv
+import io.conekta.elements.compose.generated.resources.label_expiry
+import io.conekta.elements.compose.generated.resources.pay_securely_with
+import io.conekta.elements.compose.generated.resources.payment_protected
+import io.conekta.elements.compose.generated.resources.placeholder_cardholder_name
+import io.conekta.elements.compose.generated.resources.placeholder_cvv
+import io.conekta.elements.compose.generated.resources.placeholder_expiry
 import io.conekta.elements.tokenizer.models.TokenResult
 import io.conekta.elements.tokenizer.models.TokenizerConfig
 import io.conekta.elements.tokenizer.models.TokenizerError
+import org.jetbrains.compose.resources.stringResource
 
 /**
  * Conekta Tokenizer - Main public API
@@ -140,7 +155,7 @@ private fun TokenizerContent(
 
         // Title
         Text(
-            text = "Información de la tarjeta",
+            text = stringResource(Res.string.card_information_title),
             style =
                 TextStyle(
                     fontSize = 20.sp,
@@ -161,8 +176,8 @@ private fun TokenizerContent(
                     cardholderNameError = false // Clear error on input
                     cardholderNameErrorMsg = null
                 },
-                label = "Nombre en la tarjeta",
-                placeholder = "Nombre como aparece en la tarjeta",
+                label = stringResource(Res.string.label_cardholder_name),
+                placeholder = stringResource(Res.string.placeholder_cardholder_name),
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next,
                 enabled = !isProcessing,
@@ -179,7 +194,7 @@ private fun TokenizerContent(
                 cardNumberError = false // Clear error on input
                 cardNumberErrorMsg = null
             },
-            label = "Número de tarjeta",
+            label = stringResource(Res.string.label_card_number),
             placeholder = "0000 0000 0000 0000",
             keyboardType = KeyboardType.Number,
             imeAction = ImeAction.Next,
@@ -206,8 +221,8 @@ private fun TokenizerContent(
                     expiryDateError = false // Clear error on input
                     expiryDateErrorMsg = null
                 },
-                label = "Expiración",
-                placeholder = "MM/YY",
+                label = stringResource(Res.string.label_expiry),
+                placeholder = stringResource(Res.string.placeholder_expiry),
                 keyboardType = KeyboardType.Number,
                 imeAction = ImeAction.Next,
                 modifier = Modifier.weight(1f),
@@ -223,8 +238,8 @@ private fun TokenizerContent(
                     cvvError = false // Clear error on input
                     cvvErrorMsg = null
                 },
-                label = "Código de seguridad",
-                placeholder = "CVV",
+                label = stringResource(Res.string.label_cvv),
+                placeholder = stringResource(Res.string.placeholder_cvv),
                 keyboardType = KeyboardType.Number,
                 imeAction = ImeAction.Done,
                 modifier = Modifier.weight(1f),
@@ -320,7 +335,7 @@ private fun TokenizerHeader(
     ) {
         Column {
             Text(
-                text = "PAGA SEGURO CON",
+                text = stringResource(Res.string.pay_securely_with),
                 style =
                     TextStyle(
                         fontSize = 10.sp,
@@ -342,7 +357,7 @@ private fun TokenizerHeader(
         IconButton(onClick = onInfoClick) {
             Icon(
                 imageVector = Icons.Default.Info,
-                contentDescription = "Información de seguridad",
+                contentDescription = stringResource(Res.string.content_description_security_info),
                 tint = ConektaColors.Neutral7,
             )
         }
@@ -386,7 +401,7 @@ private fun PaymentProtectionSheet(
             ) {
                 IconButton(onClick = onDismiss) {
                     Text(
-                        text = "✕",
+                        text = stringResource(Res.string.content_description_close),
                         style =
                             TextStyle(
                                 fontSize = 24.sp,
@@ -413,7 +428,7 @@ private fun PaymentProtectionSheet(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Text(
-                    text = "Tu pago está protegido",
+                    text = stringResource(Res.string.payment_protected),
                     style =
                         TextStyle(
                             fontSize = 16.sp,
@@ -428,9 +443,7 @@ private fun PaymentProtectionSheet(
 
             // Description text
             Text(
-                text =
-                    "Conekta es el portal que usa $merchantName para procesar sus pagos en línea " +
-                        "de manera segura y confiable.",
+                text = stringResource(Res.string.conekta_description, merchantName),
                 style =
                     TextStyle(
                         fontSize = 14.sp,
