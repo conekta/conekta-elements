@@ -72,12 +72,18 @@ kotlin {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.material3)
+                implementation(compose.materialIconsExtended)
                 implementation(compose.ui)
                 implementation(compose.components.resources)
                 implementation(compose.preview)
                 implementation(libs.androidx.lifecycle.viewmodelCompose)
                 implementation(libs.androidx.lifecycle.runtimeCompose)
                 api(project(":shared"))
+
+                // Coil for async image loading from CDN
+                implementation(libs.coil.compose)
+                implementation(libs.coil.network.ktor)
+                implementation(libs.ktor.client.core)
             }
         }
 
@@ -94,6 +100,7 @@ kotlin {
                 // dependencies declared in commonMain.
                 implementation(compose.preview)
                 implementation(libs.androidx.activity.compose)
+                implementation(libs.ktor.client.okhttp)
             }
         }
 
@@ -109,9 +116,10 @@ kotlin {
             dependencies {
                 // Add iOS-specific dependencies here. This a source set created by Kotlin Gradle
                 // Plugin (KGP) that each specific iOS target (e.g., iosX64) depends on as
-                // part of KMP’s default source set hierarchy. Note that this source set depends
+                // part of KMP's default source set hierarchy. Note that this source set depends
                 // on common by default and will correctly pull the iOS artifacts of any
                 // KMP dependencies declared in commonMain.
+                implementation(libs.ktor.client.darwin)
             }
         }
     }
