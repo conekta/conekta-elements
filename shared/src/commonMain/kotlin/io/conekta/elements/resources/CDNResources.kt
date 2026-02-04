@@ -12,9 +12,6 @@ object CDNResources {
      */
     const val BASE_CDN_URL = "https://assets.conekta.com"
 
-    @Deprecated("Use BASE_CDN_URL instead", ReplaceWith("BASE_CDN_URL"))
-    private const val CDN_BASE_URL = BASE_CDN_URL
-
     object Icons {
         private const val ICONS_PATH = "$BASE_CDN_URL/checkout/img/logos"
         const val APPLE = "$ICONS_PATH/logo-apple-with-text.svg"

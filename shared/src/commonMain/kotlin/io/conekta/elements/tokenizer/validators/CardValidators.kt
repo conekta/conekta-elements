@@ -1,5 +1,7 @@
 package io.conekta.elements.tokenizer.validators
 
+import io.conekta.elements.tokenizer.models.CardBrand
+
 /**
  * Validation error messages
  *
@@ -79,7 +81,7 @@ fun isValidCvv(
 ): Boolean {
     val digits = cvv.filter { it.isDigit() }
     return when (cardBrand.uppercase()) {
-        "AMEX" -> digits.length == 4
+        CardBrand.AMEX.name -> digits.length == 4
         else -> digits.length == 3
     }
 }

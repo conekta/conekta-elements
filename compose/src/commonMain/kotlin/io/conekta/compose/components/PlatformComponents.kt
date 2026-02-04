@@ -15,6 +15,7 @@ import io.conekta.elements.assets.CardBrandAssets
 import io.conekta.elements.compose.generated.resources.Res
 import io.conekta.elements.compose.generated.resources.content_description_amex_card
 import io.conekta.elements.compose.generated.resources.content_description_card_brand
+import io.conekta.elements.compose.generated.resources.content_description_check
 import io.conekta.elements.compose.generated.resources.content_description_conekta_logo
 import io.conekta.elements.compose.generated.resources.content_description_mastercard_card
 import io.conekta.elements.compose.generated.resources.content_description_visa_card
@@ -132,7 +133,7 @@ fun CardBrandIconsRow(
 fun CheckCircleIcon(modifier: Modifier = Modifier) {
     Icon(
         imageVector = Icons.Default.CheckCircle,
-        contentDescription = "Check",
+        contentDescription = stringResource(Res.string.content_description_check),
         modifier = modifier,
     )
 }
