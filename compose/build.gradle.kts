@@ -1,5 +1,3 @@
-import java.net.URLClassLoader
-
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.android.kotlin.multiplatform.library)
@@ -151,183 +149,32 @@ publishing {
     }
 }
 
-tasks.register("validateStringsOrder") {
+tasks.register<ValidateStringsOrderTask>("validateStringsOrder") {
     group = "verification"
     description = "Validates that all string resources are in alphabetical order"
 
-    val projectDirPath = layout.projectDirectory.asFile
-    val resourcesDir = projectDirPath.resolve("src/commonMain/composeResources")
+    val resourcesDir = project.projectDir.resolve("src/commonMain/composeResources")
 
-    val stringsFiles =
+    projectDirPath = project.projectDir
+    stringsFiles =
         project.fileTree(resourcesDir) {
             include("**/strings.xml")
         }
-
-    inputs.files(stringsFiles)
-
-    doLast {
-        var hasErrors = false
-        val errorMessages = mutableListOf<String>()
-
-        stringsFiles.forEach { file ->
-            val relativePath = file.relativeTo(projectDirPath)
-            println("Validating: $relativePath")
-
-            val stringNames = mutableListOf<String>()
-            val lines = file.readLines()
-
-            lines.forEach { line ->
-                // Extract string name attributes
-                val stringMatch = Regex("""<string\s+name="([^"]+)"""").find(line)
-                if (stringMatch != null) {
-                    stringNames.add(stringMatch.groupValues[1])
-                }
-            }
-
-            // Check if sorted
-            val sortedNames = stringNames.sorted()
-            if (stringNames != sortedNames) {
-                hasErrors = true
-                errorMessages.add("\n❌ File: $relativePath")
-                errorMessages.add("   Strings are NOT in alphabetical order!")
-                errorMessages.add("   Expected order:")
-
-                // Find and report misplaced strings
-                stringNames.forEachIndexed { index, name ->
-                    if (index < sortedNames.size && name != sortedNames[index]) {
-                        errorMessages.add("   Position ${index + 1}: Found '$name', expected '${sortedNames[index]}'")
-                    }
-                }
-            } else {
-                println("✓ Strings in $relativePath are correctly sorted")
-            }
-        }
-
-        if (hasErrors) {
-            errorMessages.forEach { println(it) }
-            throw GradleException("\n⚠️  String validation failed! Please sort the strings alphabetically.")
-        } else {
-            println("\n✓ All string resources are in alphabetical order!")
-        }
-    }
 }
 
-tasks.register("validateStringsSpelling") {
+tasks.register<ValidateStringsSpellingTask>("validateStringsSpelling") {
     group = "verification"
     description = "Validates spelling and grammar in all string resources"
 
-    val projectDirPath = layout.projectDirectory.asFile
-    val resourcesDir = projectDirPath.resolve("src/commonMain/composeResources")
+    val resourcesDir = project.projectDir.resolve("src/commonMain/composeResources")
 
-    // Add languageTool configuration to the task classpath
-    val languageToolClasspathFiles = configurations.getByName("languageTool").files
-
-    val stringsFiles =
+    projectDirPath = project.projectDir
+    stringsFiles =
         project.fileTree(resourcesDir) {
             include("**/strings.xml")
         }
 
-    inputs.files(stringsFiles)
-    inputs.files(languageToolClasspathFiles)
-
-    doLast {
-
-        // Create a URLClassLoader with the languageTool dependencies
-        val urls = languageToolClasspathFiles.map { it.toURI().toURL() }.toTypedArray()
-        val classLoader = URLClassLoader(urls, this::class.java.classLoader)
-
-        val languageToolClass = classLoader.loadClass("org.languagetool.JLanguageTool")
-        val languagesClass = classLoader.loadClass("org.languagetool.Languages")
-
-        var hasErrors = false
-        val errorMessages = mutableListOf<String>()
-
-        stringsFiles.forEach { file ->
-            val relativePath = file.relativeTo(projectDirPath)
-            val locale =
-                when {
-                    file.path.contains("values-en") -> "en-US"
-                    else -> "es" // Default to Spanish
-                }
-
-            println("Validating spelling in: $relativePath (locale: $locale)")
-
-            // Get language instance
-            val getLanguageForShortCodeMethod = languagesClass.getMethod("getLanguageForShortCode", String::class.java)
-            val language = getLanguageForShortCodeMethod.invoke(null, locale)
-
-            // Create JLanguageTool instance
-            val languageClass = classLoader.loadClass("org.languagetool.Language")
-            val constructor = languageToolClass.getConstructor(languageClass)
-            val langTool = constructor.newInstance(language)
-
-            // Parse XML and check each string
-            val lines = file.readLines()
-            lines.forEachIndexed { lineIndex, line ->
-                val stringMatch = Regex("""<string\s+name="([^"]+)"[^>]*>([^<]+)</string>""").find(line)
-                if (stringMatch != null) {
-                    val stringName = stringMatch.groupValues[1]
-                    val text =
-                        stringMatch.groupValues[2]
-                            .replace("&amp;", "&")
-                            .replace("&lt;", "<")
-                            .replace("&gt;", ">")
-                            .replace("&quot;", "\"")
-                            .replace("%s", "PLACEHOLDER")
-                            .replace("%d", "NUMBER")
-
-                    // Skip validation for certain strings
-                    if (text.matches(Regex("^[A-Z/]+$")) ||
-                        // All caps like "MM/YY" or "CVV"
-                        text.contains("Conekta") ||
-                        // Brand names
-                        text.contains("Mastercard") ||
-                        text.contains("American Express") ||
-                        text.contains("Visa")
-                    ) {
-                        return@forEachIndexed
-                    }
-
-                    // Check spelling
-                    val checkMethod = languageToolClass.getMethod("check", String::class.java)
-                    val matches = checkMethod.invoke(langTool, text) as List<*>
-
-                    if (matches.isNotEmpty()) {
-                        matches.forEach { match ->
-                            val getMessage = match!!::class.java.getMethod("getMessage")
-                            val getShortMessage = match::class.java.getMethod("getShortMessage")
-                            val getSuggestedReplacements = match::class.java.getMethod("getSuggestedReplacements")
-
-                            val message = getMessage.invoke(match) as String
-                            val shortMessage =
-                                try {
-                                    getShortMessage.invoke(match) as String
-                                } catch (e: Exception) {
-                                    ""
-                                }
-                            val suggestions = getSuggestedReplacements.invoke(match) as List<*>
-
-                            hasErrors = true
-                            errorMessages.add("\n⚠️  File: $relativePath:${lineIndex + 1}")
-                            errorMessages.add("   String: $stringName")
-                            errorMessages.add("   Text: \"$text\"")
-                            errorMessages.add("   Issue: ${shortMessage.ifEmpty { message }}")
-                            if (suggestions.isNotEmpty()) {
-                                errorMessages.add("   Suggestions: ${suggestions.take(3).joinToString(", ")}")
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        if (hasErrors) {
-            errorMessages.forEach { println(it) }
-            throw GradleException("\n⚠️  Spelling/grammar validation failed! Please fix the issues above.")
-        } else {
-            println("\n✓ All string resources have correct spelling and grammar!")
-        }
-    }
+    languageToolClasspath = configurations.getByName("languageTool")
 }
 
 // Run validation automatically with check task
