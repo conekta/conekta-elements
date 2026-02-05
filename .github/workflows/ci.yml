@@ -137,6 +137,14 @@ jobs:
           name: kmp-coverage
           path: .
 
+      - name: Debug downloaded coverage files
+        run: |
+          echo "JS coverage:"
+          find webApp/coverage -type f | sort || true
+          echo "KMP coverage:"
+          find shared/build/reports -type f | grep -i kover | sort || true
+          find compose/build/reports -type f | grep -i kover | sort || true
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v7.0.0
         with:
