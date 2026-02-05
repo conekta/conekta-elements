@@ -139,6 +139,7 @@ jobs:
 
       - name: Debug downloaded coverage files
         run: |
+          ls -la
           echo "JS coverage:"
           find webApp/coverage -type f | sort || true
           echo "KMP coverage:"

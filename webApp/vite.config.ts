@@ -19,6 +19,7 @@ export default defineConfig({
       exclude: [
         'node_modules/',
         'dist/',
+        '.storybook/**',
         'storybook-static/',
         '**/*.stories.tsx',
         '**/*.config.ts',
