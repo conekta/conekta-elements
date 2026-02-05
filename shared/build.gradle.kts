@@ -106,4 +106,34 @@ tasks.named("jsBrowserTest") {
 
 // Kover configuration for code coverage
 // Reports will be generated at build/reports/kover/
-// Use: ./gradlew koverXmlReport koverHtmlReport
+// XML reports are generated automatically with check task for SonarQube integration
+kover {
+    reports {
+        filters {
+            excludes {
+                classes(
+                    "*.*Test*",
+                    "*.test.*",
+                    "*.*Mock*",
+                )
+            }
+        }
+
+        total {
+            xml {
+                onCheck = false // XML generated explicitly via koverXmlReport task
+                title = "Shared Library Coverage"
+            }
+
+            html {
+                onCheck = false // HTML reports on-demand only
+            }
+        }
+
+        verify {
+            rule {
+                minBound(0) // No minimum coverage requirement for now
+            }
+        }
+    }
+}
