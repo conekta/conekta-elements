@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.android.lint)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.kover)
     `maven-publish`
 }
 group = project.property("conekta.group") as String
@@ -28,14 +29,6 @@ kotlin {
         compileSdk = 36
         minSdk = 24
 
-        withHostTestBuilder {
-        }
-
-        withDeviceTestBuilder {
-            sourceSetTreeName = "test"
-        }.configure {
-            instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        }
         androidResources.enable = true
     }
     val xcfName = "composeKit"
@@ -110,3 +103,7 @@ publishing {
 tasks.named("jsBrowserTest") {
     enabled = false
 }
+
+// Kover configuration for code coverage
+// Reports will be generated at build/reports/kover/
+// Use: ./gradlew koverXmlReport koverHtmlReport

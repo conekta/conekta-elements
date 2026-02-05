@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.android.lint)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kover)
     `maven-publish`
 }
 
@@ -182,3 +183,7 @@ tasks.named("check") {
     dependsOn("validateStringsOrder")
     dependsOn("validateStringsSpelling")
 }
+
+// Kover configuration for code coverage
+// Reports will be generated at build/reports/kover/
+// Use: ./gradlew koverXmlReport koverHtmlReport
