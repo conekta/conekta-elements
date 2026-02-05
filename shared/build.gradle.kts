@@ -113,18 +113,5 @@ tasks.named("jsBrowserTest") {
 }
 
 // Kover configuration for code coverage
-kover {
-    reports {
-        // Generate XML report for SonarCloud
-        xml {
-            onCheck = true
-            reportFile = layout.buildDirectory.file("reports/kover/report.xml")
-        }
-
-        // Generate HTML report for local viewing
-        html {
-            onCheck = false
-            reportDir = layout.buildDirectory.dir("reports/kover/html")
-        }
-    }
-}
+// Reports will be generated at build/reports/kover/
+// Use: ./gradlew koverXmlReport koverHtmlReport
