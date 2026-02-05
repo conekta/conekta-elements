@@ -158,13 +158,14 @@ tasks.register("validateStringsOrder") {
     val projectDirPath = layout.projectDirectory.asFile
     val resourcesDir = projectDirPath.resolve("src/commonMain/composeResources")
 
+    val stringsFiles =
+        project.fileTree(resourcesDir) {
+            include("**/strings.xml")
+        }
+
+    inputs.files(stringsFiles)
+
     doLast {
-
-        val stringsFiles =
-            fileTree(resourcesDir) {
-                include("**/strings.xml")
-            }
-
         var hasErrors = false
         val errorMessages = mutableListOf<String>()
 
@@ -219,18 +220,21 @@ tasks.register("validateStringsSpelling") {
     val resourcesDir = projectDirPath.resolve("src/commonMain/composeResources")
 
     // Add languageTool configuration to the task classpath
-    val languageToolClasspath = configurations.getByName("languageTool")
+    val languageToolClasspathFiles = configurations.getByName("languageTool").files
+
+    val stringsFiles =
+        project.fileTree(resourcesDir) {
+            include("**/strings.xml")
+        }
+
+    inputs.files(stringsFiles)
+    inputs.files(languageToolClasspathFiles)
 
     doLast {
 
         // Create a URLClassLoader with the languageTool dependencies
-        val urls = languageToolClasspath.files.map { it.toURI().toURL() }.toTypedArray()
+        val urls = languageToolClasspathFiles.map { it.toURI().toURL() }.toTypedArray()
         val classLoader = URLClassLoader(urls, this::class.java.classLoader)
-
-        val stringsFiles =
-            fileTree(resourcesDir) {
-                include("**/strings.xml")
-            }
 
         val languageToolClass = classLoader.loadClass("org.languagetool.JLanguageTool")
         val languagesClass = classLoader.loadClass("org.languagetool.Languages")
