@@ -13,6 +13,7 @@ ktor = "2.3.7"
 kotlinx-serialization = "1.6.2"
 kermit = "2.0.2"
 ktlint = "12.1.2"
+languagetool = "6.4"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -34,6 +35,9 @@ ktor-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", 
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
+languagetool-core = { module = "org.languagetool:languagetool-core", version.ref = "languagetool" }
+languagetool-es = { module = "org.languagetool:language-es", version.ref = "languagetool" }
+languagetool-en = { module = "org.languagetool:language-en", version.ref = "languagetool" }
 
 [plugins]
 androidLibrary = { id = "com.android.library", version.ref = "agp" }

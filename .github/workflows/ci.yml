@@ -38,6 +38,12 @@ jobs:
       - name: linter check
         run: make lint-check
 
+      - name: Validate strings order
+        run: ./gradlew :compose:validateStringsOrder
+
+      - name: Validate strings spelling
+        run: ./gradlew :compose:validateStringsSpelling
+
       - name: Publish dry run
         run: make publish-local
 

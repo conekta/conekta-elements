@@ -6,6 +6,15 @@ plugins {
     alias(libs.plugins.composeCompiler)
     `maven-publish`
 }
+
+val languageTool by configurations.creating
+
+dependencies {
+    languageTool(libs.languagetool.core)
+    languageTool(libs.languagetool.es)
+    languageTool(libs.languagetool.en)
+}
+
 group = project.property("conekta.group") as String
 version = project.property("conekta.version") as String
 compose.resources {
@@ -138,4 +147,38 @@ publishing {
 
     publications {
     }
+}
+
+tasks.register<ValidateStringsOrderTask>("validateStringsOrder") {
+    group = "verification"
+    description = "Validates that all string resources are in alphabetical order"
+
+    val resourcesDir = project.projectDir.resolve("src/commonMain/composeResources")
+
+    projectDirPath = project.projectDir
+    stringsFiles =
+        project.fileTree(resourcesDir) {
+            include("**/strings.xml")
+        }
+}
+
+tasks.register<ValidateStringsSpellingTask>("validateStringsSpelling") {
+    group = "verification"
+    description = "Validates spelling and grammar in all string resources"
+
+    val resourcesDir = project.projectDir.resolve("src/commonMain/composeResources")
+
+    projectDirPath = project.projectDir
+    stringsFiles =
+        project.fileTree(resourcesDir) {
+            include("**/strings.xml")
+        }
+
+    languageToolClasspath = configurations.getByName("languageTool")
+}
+
+// Run validation automatically with check task
+tasks.named("check") {
+    dependsOn("validateStringsOrder")
+    dependsOn("validateStringsSpelling")
 }
