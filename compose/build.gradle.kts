@@ -196,7 +196,7 @@ kover {
                     "*.test.*",
                     "*.*Mock*",
                     "*.composeResources.*",
-                    "*ComposableSingletons*"
+                    "*ComposableSingletons*",
                 )
             }
         }

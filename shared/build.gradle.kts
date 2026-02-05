@@ -114,7 +114,7 @@ kover {
                 classes(
                     "*.*Test*",
                     "*.test.*",
-                    "*.*Mock*"
+                    "*.*Mock*",
                 )
             }
         }
