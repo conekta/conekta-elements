@@ -11,7 +11,7 @@ export default defineConfig({
   server: { port: 8080 },
   test: {
     globals: true,
-    environment: 'jsdom',
+    environment: 'node',
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov', 'html'],
