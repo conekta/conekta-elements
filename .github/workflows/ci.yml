@@ -40,8 +40,8 @@ jobs:
         with:
           name: kmp-coverage
           path: |
-            shared/build/reports/kover/xml/report.xml
-            compose/build/reports/kover/xml/report.xml
+            shared/build/reports/kover/**/*.xml
+            compose/build/reports/kover/**/*.xml
           if-no-files-found: error
 
       - name: linter check

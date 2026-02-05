@@ -17,4 +17,4 @@ lint-fix:
 lint-check:
 	./gradlew ktlintCheck
 shared-test:
-	./gradlew :shared:allTests
+	./gradlew :shared:allTests :shared:koverXmlReport :compose:koverXmlReport
