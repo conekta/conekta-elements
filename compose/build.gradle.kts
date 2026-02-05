@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.android.lint)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kover)
     `maven-publish`
 }
 
@@ -181,4 +182,21 @@ tasks.register<ValidateStringsSpellingTask>("validateStringsSpelling") {
 tasks.named("check") {
     dependsOn("validateStringsOrder")
     dependsOn("validateStringsSpelling")
+}
+
+// Kover configuration for code coverage
+kover {
+    reports {
+        // Generate XML report for SonarCloud
+        xml {
+            onCheck = true
+            reportFile = layout.buildDirectory.file("reports/kover/report.xml")
+        }
+
+        // Generate HTML report for local viewing
+        html {
+            onCheck = false
+            reportDir = layout.buildDirectory.dir("reports/kover/html")
+        }
+    }
 }

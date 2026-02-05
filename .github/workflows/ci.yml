@@ -79,9 +79,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
       
-      - name: Run tests
+      - name: Run tests with coverage
         working-directory: webApp
-        run: npm run test:ci
+        run: npm run test:coverage
       - name: Lint
         working-directory: webApp
         run: npm run lint
@@ -98,3 +98,23 @@ jobs:
           exitZeroOnChanges: true
           exitOnceUploaded: true
           skip: "@(renovate/**|dependabot/**)"
+
+  sonarcloud:
+    runs-on: aws-runner-set
+    needs: [build_kmp, build_js]
+    if: always() && (needs.build_kmp.result == 'success' && needs.build_js.result == 'success')
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for better analysis
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarqube-scan-action@v7.0.0
+        with:
+          args: >
+            -Dsonar.qualitygate.wait=true
+            -Dsonar.projectVersion=${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref_name }}
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: https://sonarcloud.io
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -9,4 +9,21 @@ export default defineConfig({
     emptyOutDir: true,
   },
   server: { port: 8080 },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'lcov', 'html'],
+      reportsDirectory: './coverage',
+      exclude: [
+        'node_modules/',
+        'dist/',
+        'storybook-static/',
+        '**/*.stories.tsx',
+        '**/*.config.ts',
+        '**/*.d.ts',
+      ],
+    },
+  },
 });

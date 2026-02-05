@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.android.lint)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.kover)
     `maven-publish`
 }
 group = project.property("conekta.group") as String
@@ -109,4 +110,21 @@ publishing {
 // Disable browser tests, use only Node.js for testing
 tasks.named("jsBrowserTest") {
     enabled = false
+}
+
+// Kover configuration for code coverage
+kover {
+    reports {
+        // Generate XML report for SonarCloud
+        xml {
+            onCheck = true
+            reportFile = layout.buildDirectory.file("reports/kover/report.xml")
+        }
+
+        // Generate HTML report for local viewing
+        html {
+            onCheck = false
+            reportDir = layout.buildDirectory.dir("reports/kover/html")
+        }
+    }
 }
