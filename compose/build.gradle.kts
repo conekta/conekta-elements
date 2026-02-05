@@ -159,9 +159,11 @@ tasks.register("validateStringsOrder") {
     val resourcesDir = projectDirPath.resolve("src/commonMain/composeResources")
 
     doLast {
-        val stringsFiles = fileTree(resourcesDir) {
-            include("**/strings.xml")
-        }
+
+        val stringsFiles =
+            fileTree(resourcesDir) {
+                include("**/strings.xml")
+            }
 
         var hasErrors = false
         val errorMessages = mutableListOf<String>()
@@ -220,13 +222,15 @@ tasks.register("validateStringsSpelling") {
     val languageToolClasspath = configurations.getByName("languageTool")
 
     doLast {
+
         // Create a URLClassLoader with the languageTool dependencies
         val urls = languageToolClasspath.files.map { it.toURI().toURL() }.toTypedArray()
         val classLoader = URLClassLoader(urls, this::class.java.classLoader)
 
-        val stringsFiles = fileTree(resourcesDir) {
-            include("**/strings.xml")
-        }
+        val stringsFiles =
+            fileTree(resourcesDir) {
+                include("**/strings.xml")
+            }
 
         val languageToolClass = classLoader.loadClass("org.languagetool.JLanguageTool")
         val languagesClass = classLoader.loadClass("org.languagetool.Languages")
@@ -236,10 +240,11 @@ tasks.register("validateStringsSpelling") {
 
         stringsFiles.forEach { file ->
             val relativePath = file.relativeTo(projectDirPath)
-            val locale = when {
-                file.path.contains("values-en") -> "en-US"
-                else -> "es" // Default to Spanish
-            }
+            val locale =
+                when {
+                    file.path.contains("values-en") -> "en-US"
+                    else -> "es" // Default to Spanish
+                }
 
             println("Validating spelling in: $relativePath (locale: $locale)")
 
@@ -258,20 +263,24 @@ tasks.register("validateStringsSpelling") {
                 val stringMatch = Regex("""<string\s+name="([^"]+)"[^>]*>([^<]+)</string>""").find(line)
                 if (stringMatch != null) {
                     val stringName = stringMatch.groupValues[1]
-                    val text = stringMatch.groupValues[2]
-                        .replace("&amp;", "&")
-                        .replace("&lt;", "<")
-                        .replace("&gt;", ">")
-                        .replace("&quot;", "\"")
-                        .replace("%s", "PLACEHOLDER")
-                        .replace("%d", "NUMBER")
+                    val text =
+                        stringMatch.groupValues[2]
+                            .replace("&amp;", "&")
+                            .replace("&lt;", "<")
+                            .replace("&gt;", ">")
+                            .replace("&quot;", "\"")
+                            .replace("%s", "PLACEHOLDER")
+                            .replace("%d", "NUMBER")
 
                     // Skip validation for certain strings
-                    if (text.matches(Regex("^[A-Z/]+$")) || // All caps like "MM/YY" or "CVV"
-                        text.contains("Conekta") || // Brand names
+                    if (text.matches(Regex("^[A-Z/]+$")) ||
+                        // All caps like "MM/YY" or "CVV"
+                        text.contains("Conekta") ||
+                        // Brand names
                         text.contains("Mastercard") ||
                         text.contains("American Express") ||
-                        text.contains("Visa")) {
+                        text.contains("Visa")
+                    ) {
                         return@forEachIndexed
                     }
 
@@ -286,11 +295,12 @@ tasks.register("validateStringsSpelling") {
                             val getSuggestedReplacements = match::class.java.getMethod("getSuggestedReplacements")
 
                             val message = getMessage.invoke(match) as String
-                            val shortMessage = try {
-                                getShortMessage.invoke(match) as String
-                            } catch (e: Exception) {
-                                ""
-                            }
+                            val shortMessage =
+                                try {
+                                    getShortMessage.invoke(match) as String
+                                } catch (e: Exception) {
+                                    ""
+                                }
                             val suggestions = getSuggestedReplacements.invoke(match) as List<*>
 
                             hasErrors = true
