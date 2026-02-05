@@ -29,6 +29,10 @@ kotlin {
         compileSdk = 36
         minSdk = 24
 
+        // Enable JVM host tests so commonTest can produce Kover/Jacoco coverage.
+        withHostTestBuilder {
+        }
+
         androidResources.enable = true
     }
     val xcfName = "composeKit"
