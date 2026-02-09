@@ -30,4 +30,7 @@
     <string name="validation_invalid_cvv">Invalid CVV</string>
     <string name="validation_only_digits">Only digits allowed</string>
     <string name="validation_required">This field is required</string>
+    <string name="button_continue">Continue</string>
+    <string name="button_processing">Processing…</string>
+    <string name="error_field_required">This field is required</string>
 </resources>

@@ -45,10 +45,13 @@ import io.conekta.compose.components.ConektaTextField
 import io.conekta.compose.theme.ConektaColors
 import io.conekta.compose.theme.ConektaTheme
 import io.conekta.elements.compose.generated.resources.Res
+import io.conekta.elements.compose.generated.resources.button_continue
+import io.conekta.elements.compose.generated.resources.button_processing
 import io.conekta.elements.compose.generated.resources.card_information_title
 import io.conekta.elements.compose.generated.resources.conekta_description
 import io.conekta.elements.compose.generated.resources.content_description_close
 import io.conekta.elements.compose.generated.resources.content_description_security_info
+import io.conekta.elements.compose.generated.resources.error_field_required
 import io.conekta.elements.compose.generated.resources.label_card_number
 import io.conekta.elements.compose.generated.resources.label_cardholder_name
 import io.conekta.elements.compose.generated.resources.label_cvv
@@ -131,6 +134,11 @@ private fun TokenizerContent(
     var cardNumberErrorMsg by remember { mutableStateOf<String?>(null) }
     var expiryDateErrorMsg by remember { mutableStateOf<String?>(null) }
     var cvvErrorMsg by remember { mutableStateOf<String?>(null) }
+    
+    // Strings
+    val buttonContinue = stringResource(Res.string.button_continue)
+    val buttonProcessing = stringResource(Res.string.button_processing)
+    val errorRequired = stringResource(Res.string.error_field_required)
 
     val detectedBrand =
         remember(cardNumber.text) {
@@ -253,7 +261,7 @@ private fun TokenizerContent(
 
         // Submit Button
         ConektaButton(
-            text = if (isProcessing) "Procesando..." else "Continuar",
+            text = if (isProcessing) buttonProcessing else buttonContinue,
             onClick = {
                 // Clear all errors first
                 cardholderNameError = false
@@ -268,29 +276,29 @@ private fun TokenizerContent(
                 // Validate all fields
                 val cardDigits = cardNumber.text.filter { it.isDigit() }
                 var hasError = false
-
+                
                 // Validate each field and mark errors
                 if (config.collectCardholderName && cardholderName.text.isBlank()) {
                     cardholderNameError = true
-                    cardholderNameErrorMsg = "Este dato es necesario"
+                    cardholderNameErrorMsg = errorRequired
                     hasError = true
                 }
 
                 if (cardNumber.text.isBlank() || !CardFormatters.isValidCardNumber(cardDigits)) {
                     cardNumberError = true
-                    cardNumberErrorMsg = "Este dato es necesario"
+                    cardNumberErrorMsg = errorRequired
                     hasError = true
                 }
 
                 if (expiryDate.text.isBlank() || !CardFormatters.isValidExpiryDate(expiryDate.text)) {
                     expiryDateError = true
-                    expiryDateErrorMsg = "Este dato es necesario"
+                    expiryDateErrorMsg = errorRequired
                     hasError = true
                 }
 
                 if (cvv.text.isBlank() || !CardFormatters.isValidCvv(cvv.text, detectedBrand)) {
                     cvvError = true
-                    cvvErrorMsg = "Este dato es necesario"
+                    cvvErrorMsg = errorRequired
                     hasError = true
                 }
 

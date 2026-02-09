@@ -101,27 +101,25 @@ fun CardBrandIcon(
 
 /**
  * Renders card brand icons in a row
- * Shows only the detected brand, or all brands if none detected
+ * Shows only the detected brand when recognized
  */
 @Composable
 fun CardBrandIconsRow(
     detectedBrand: CardBrand?,
     modifier: Modifier = Modifier,
 ) {
-    Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-    ) {
-        val brandToShow = detectedBrand?.takeIf { !it.isUNKNOWN() }
-        if (brandToShow != null) {
+    // Solo mostrar icono cuando se detecta una marca válida
+    val brandToShow = detectedBrand?.takeIf { !it.isUNKNOWN() }
+    
+    if (brandToShow != null) {
+        Row(
+            modifier = modifier,
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
             CardBrandIcon(
                 brand = brandToShow,
                 modifier = Modifier.size(24.dp),
             )
-        } else {
-            CardBrandIcon(brand = CardBrand.VISA, modifier = Modifier.size(24.dp))
-            CardBrandIcon(brand = CardBrand.MASTERCARD, modifier = Modifier.size(24.dp))
-            CardBrandIcon(brand = CardBrand.AMEX, modifier = Modifier.size(24.dp))
         }
     }
 }

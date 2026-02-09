@@ -14,12 +14,10 @@ object CardFormatters {
     /**
      * Format card number with spaces every 4 digits
      * Returns TextFieldValue to preserve cursor position
+     * Limits input to 16 digits
      */
     fun formatCardNumber(value: TextFieldValue): TextFieldValue {
-        val digits = value.text.filter { it.isDigit() }
-        if (digits.length > 16) {
-            return value
-        }
+        val digits = value.text.filter { it.isDigit() }.take(16)
 
         val formatted = digits.chunked(4).joinToString(" ")
         val cursorPosition = minOf(formatted.length, value.selection.start + (formatted.length - value.text.length))
@@ -33,12 +31,10 @@ object CardFormatters {
     /**
      * Format expiry date as MM/YY
      * Returns TextFieldValue to preserve cursor position
+     * Limits input to 4 digits (MMYY)
      */
     fun formatExpiryDate(value: TextFieldValue): TextFieldValue {
-        val digits = value.text.filter { it.isDigit() }
-        if (digits.length > 4) {
-            return value
-        }
+        val digits = value.text.filter { it.isDigit() }.take(4)
 
         val formatted =
             when {
@@ -56,19 +52,16 @@ object CardFormatters {
     }
 
     /**
-     * Format CVV (3-4 digits)
+     * Format CVV (3 digits for most cards, 4 for AMEX)
      * Returns TextFieldValue to preserve cursor position
+     * Limits input to 3 or 4 digits depending on card brand
      */
     fun formatCvv(
         value: TextFieldValue,
         brand: CardBrand,
     ): TextFieldValue {
         val maxLength = if (brand == CardBrand.AMEX) 4 else 3
-        val digits = value.text.filter { it.isDigit() }
-
-        if (digits.length > maxLength) {
-            return value
-        }
+        val digits = value.text.filter { it.isDigit() }.take(maxLength)
 
         return TextFieldValue(
             text = digits,

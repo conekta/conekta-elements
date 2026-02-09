@@ -30,4 +30,7 @@
     <string name="validation_invalid_cvv">CVV inválido</string>
     <string name="validation_only_digits">Solo se permiten dígitos</string>
     <string name="validation_required">Este campo es obligatorio</string>
+    <string name="button_continue">Continuar</string>
+    <string name="button_processing">Procesando…</string>
+    <string name="error_field_required">Este campo es obligatorio</string>
 </resources>
