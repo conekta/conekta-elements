@@ -115,13 +115,11 @@ fun CardBrandIconsRow(
         val brandToShow = detectedBrand?.takeIf { !it.isUNKNOWN() }
 
         if (brandToShow != null) {
-            // Mostrar solo la marca detectada
             CardBrandIcon(
                 brand = brandToShow,
                 modifier = Modifier.size(32.dp),
             )
         } else {
-            // Mostrar todas las marcas disponibles
             CardBrandIcon(
                 brand = CardBrand.VISA,
                 modifier =
