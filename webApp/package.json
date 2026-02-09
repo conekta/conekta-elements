@@ -1,6 +1,6 @@
 {
   "name": "@conekta/elements-web",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "Conekta Elements - React UI components for payment processing",
   "type": "module",
   "main": "./dist/index.js",
