@@ -6,8 +6,33 @@ SDK de UI para tokenización de tarjetas en Android usando Jetpack Compose.
 
 ```kotlin
 dependencies {
-    implementation("io.conekta:compose:1.0.0")
+    implementation("io.conekta.elements:compose:1.0.12")
 }
+```
+
+### Configuraci\u00f3n de Coil (requerida)
+
+La librer\u00eda usa Coil para cargar iconos de tarjetas (SVG) desde CDN. Crea una clase `Application` e inicializa Coil:
+
+```kotlin
+import android.app.Application
+import coil3.ImageLoader
+import coil3.SingletonImageLoader
+import io.conekta.compose.ConektaImageLoader
+
+class MyApp : Application(), SingletonImageLoader.Factory {
+    override fun newImageLoader(context: android.content.Context): ImageLoader {
+        return ConektaImageLoader.newImageLoader(context)
+    }
+}
+```
+
+Registra en tu `AndroidManifest.xml`:
+
+```xml
+<application
+    android:name=".MyApp"
+    ... >
 ```
 
 ## Uso Básico
