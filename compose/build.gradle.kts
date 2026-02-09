@@ -90,10 +90,11 @@ kotlin {
                 implementation(libs.androidx.lifecycle.runtimeCompose)
                 api(project(":shared"))
 
-                // Coil for async image loading from CDN
-                implementation(libs.coil.compose)
-                implementation(libs.coil.network.ktor)
-                implementation(libs.ktor.client.core)
+                // Coil for async image loading from CDN (exported as api for consumers)
+                api(libs.coil.compose)
+                api(libs.coil.network.ktor)
+                api(libs.coil.svg)
+                api(libs.ktor.client.core)
             }
         }
 
@@ -110,7 +111,7 @@ kotlin {
                 // dependencies declared in commonMain.
                 implementation(compose.preview)
                 implementation(libs.androidx.activity.compose)
-                implementation(libs.ktor.client.okhttp)
+                api(libs.ktor.client.okhttp)
             }
         }
 
@@ -129,7 +130,7 @@ kotlin {
                 // part of KMP's default source set hierarchy. Note that this source set depends
                 // on common by default and will correctly pull the iOS artifacts of any
                 // KMP dependencies declared in commonMain.
-                implementation(libs.ktor.client.darwin)
+                api(libs.ktor.client.darwin)
             }
         }
     }
