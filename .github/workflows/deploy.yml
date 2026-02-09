@@ -37,7 +37,7 @@ jobs:
 
       - name: Setup Gradle
         if: steps.validate.outputs.skip == 'false'
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       - uses: android-actions/setup-android@v3
         if: steps.validate.outputs.skip == 'false'
@@ -62,7 +62,7 @@ jobs:
         run: |
           TAG="${GITHUB_REF_NAME}"
           VERSION="${TAG#v}"
-          MODULE_VERSION=$(node -p "require('./webApp/package.json').version")
+          MODULE_VERSION=$(grep -m1 '"version"' webApp/package.json | sed 's/.*: *"\(.*\)".*/\1/')
           echo "tag_version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "module_version=$MODULE_VERSION" >> "$GITHUB_OUTPUT"
           if [ "$VERSION" != "$MODULE_VERSION" ]; then
@@ -90,7 +90,7 @@ jobs:
 
       - name: Setup Gradle
         if: steps.validate.outputs.skip == 'false'
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       - uses: actions/setup-node@v6
         if: steps.validate.outputs.skip == 'false'
@@ -153,7 +153,7 @@ jobs:
 
       - name: Setup Gradle
         if: steps.validate.outputs.skip == 'false'
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       - name: Build XCFramework
         if: steps.validate.outputs.skip == 'false'
