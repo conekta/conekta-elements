@@ -115,6 +115,14 @@ kotlin {
             }
         }
 
+        getByName("androidHostTest") {
+            dependencies {
+                implementation(libs.robolectric)
+                implementation(libs.core)
+                implementation(libs.junit)
+            }
+        }
+
         getByName("androidDeviceTest") {
             dependencies {
                 implementation(libs.runner)

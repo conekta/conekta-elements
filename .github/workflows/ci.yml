@@ -35,6 +35,9 @@ jobs:
       - name: shared test
         run: make shared-test
 
+      - name: compose test
+        run: ./gradlew :compose:testAndroidHostTest
+
       - name: Upload KMP coverage artifacts
         uses: actions/upload-artifact@v6
         with:

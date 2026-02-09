@@ -32,7 +32,7 @@ Registra en tu `AndroidManifest.xml`:
 ```xml
 <application
     android:name=".MyApp"
-    ...>
+    ... >
 ```
 
 ## Uso Básico

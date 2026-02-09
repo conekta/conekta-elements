@@ -9,12 +9,13 @@ composeMultiplatform = "1.10.0"
 androidx-activity = "1.12.2"
 androidx-lifecycle = "2.9.6"
 coil = "3.3.0"
-ktor = "3.0.3"
+ktor = "3.1.0"
 kotlinx-serialization = "1.6.2"
 kermit = "2.0.2"
 ktlint = "12.1.2"
 languagetool = "6.4"
 kover = "0.9.3"
+robolectric = "4.14.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -40,6 +41,7 @@ kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 languagetool-core = { module = "org.languagetool:languagetool-core", version.ref = "languagetool" }
 languagetool-es = { module = "org.languagetool:language-es", version.ref = "languagetool" }
 languagetool-en = { module = "org.languagetool:language-en", version.ref = "languagetool" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 
 [plugins]
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
