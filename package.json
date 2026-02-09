@@ -12,6 +12,7 @@
     "publish-dry-run": "cd webApp && npm publish --dry-run",
     "prepublishOnly": "cd webApp && npm run build",
     "publish-app": "cd webApp && npm publish",
-    "prepare": "make js-build"
+    "sync-version": "VERSION=$(grep '^conekta.version=' gradle.properties | cut -d'=' -f2) && cd webApp && npm --no-git-tag-version --allow-same-version version \"$VERSION\"",
+    "prepare": "npm run sync-version && make js-build"
   }
 }
