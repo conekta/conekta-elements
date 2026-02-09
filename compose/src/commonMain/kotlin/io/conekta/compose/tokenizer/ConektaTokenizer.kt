@@ -134,7 +134,7 @@ private fun TokenizerContent(
     var cardNumberErrorMsg by remember { mutableStateOf<String?>(null) }
     var expiryDateErrorMsg by remember { mutableStateOf<String?>(null) }
     var cvvErrorMsg by remember { mutableStateOf<String?>(null) }
-    
+
     // Strings
     val buttonContinue = stringResource(Res.string.button_continue)
     val buttonProcessing = stringResource(Res.string.button_processing)
@@ -276,7 +276,7 @@ private fun TokenizerContent(
                 // Validate all fields
                 val cardDigits = cardNumber.text.filter { it.isDigit() }
                 var hasError = false
-                
+
                 // Validate each field and mark errors
                 if (config.collectCardholderName && cardholderName.text.isBlank()) {
                     cardholderNameError = true

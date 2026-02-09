@@ -109,7 +109,7 @@ fun CardBrandIconsRow(
     modifier: Modifier = Modifier,
 ) {
     val brandToShow = detectedBrand?.takeIf { !it.isUNKNOWN() }
-    
+
     if (brandToShow != null) {
         Row(
             modifier = modifier,
