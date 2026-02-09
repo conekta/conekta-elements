@@ -108,7 +108,6 @@ fun CardBrandIconsRow(
     detectedBrand: CardBrand?,
     modifier: Modifier = Modifier,
 ) {
-    // Solo mostrar icono cuando se detecta una marca válida
     val brandToShow = detectedBrand?.takeIf { !it.isUNKNOWN() }
     
     if (brandToShow != null) {
