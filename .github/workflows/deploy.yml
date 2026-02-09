@@ -125,7 +125,7 @@ jobs:
   deploy-xcframework:
     runs-on: macos-latest
     permissions:
-      contents: write
+      contents: read
     steps:
       - uses: actions/checkout@v6
 
@@ -170,12 +170,11 @@ jobs:
           echo "$CHECKSUM" > checksum.txt
           echo "XCFramework checksum: $CHECKSUM"
 
-      - name: Upload to release assets
+      - name: Upload XCFramework artifact
         if: steps.validate.outputs.skip == 'false'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release upload "${{ github.event.release.tag_name }}" \
-            compose/build/XCFrameworks/release/composeKit.xcframework.zip \
-            compose/build/XCFrameworks/release/checksum.txt \
-            --clobber
+        uses: actions/upload-artifact@v6
+        with:
+          name: composeKit-xcframework-${{ steps.validate.outputs.tag_version }}
+          path: |
+            compose/build/XCFrameworks/release/composeKit.xcframework.zip
+            compose/build/XCFrameworks/release/checksum.txt
