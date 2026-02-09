@@ -81,7 +81,7 @@ fun CardBrandIcon(
     brand: CardBrand,
     modifier: Modifier = Modifier,
 ) {
-    val cdnUrl = CardBrandAssets.getCardBrandUrl(brand) ?: return // Don't render unknown brands
+    val cdnUrl = CardBrandAssets.getCardBrandUrl(brand) ?: return
 
     val contentDescription =
         when (brand) {
@@ -108,16 +108,37 @@ fun CardBrandIconsRow(
     detectedBrand: CardBrand?,
     modifier: Modifier = Modifier,
 ) {
-    val brandToShow = detectedBrand?.takeIf { !it.isUNKNOWN() }
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        val brandToShow = detectedBrand?.takeIf { !it.isUNKNOWN() }
 
-    if (brandToShow != null) {
-        Row(
-            modifier = modifier,
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-        ) {
+        if (brandToShow != null) {
+            // Mostrar solo la marca detectada
             CardBrandIcon(
                 brand = brandToShow,
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier.size(32.dp),
+            )
+        } else {
+            // Mostrar todas las marcas disponibles
+            CardBrandIcon(
+                brand = CardBrand.VISA,
+                modifier =
+                    Modifier
+                        .size(24.dp),
+            )
+            CardBrandIcon(
+                brand = CardBrand.MASTERCARD,
+                modifier =
+                    Modifier
+                        .size(24.dp),
+            )
+            CardBrandIcon(
+                brand = CardBrand.AMEX,
+                modifier =
+                    Modifier
+                        .size(24.dp),
             )
         }
     }
