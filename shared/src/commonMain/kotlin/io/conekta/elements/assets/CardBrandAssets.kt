@@ -29,7 +29,7 @@ object CardBrandAssets {
     /**
      * Conekta logo (24px height optimized)
      */
-    const val CONEKTA_LOGO = "$AWS_S3_URL/cpanel/statics/assets/img/conekta-logo-blue-full.svg"
+    const val CONEKTA_LOGO = "$AWS_S3_URL/img/conekta-logo-blue-full.svg"
 
     /**
      * Card brand logos (optimized for card forms)
