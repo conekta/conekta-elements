@@ -34,8 +34,7 @@ object CardFormatters {
         )
     }
 
-    fun detectCardBrand(cardNumber: String): CardBrand =
-        CardInputFormatters.detectCardBrand(cardNumber)
+    fun detectCardBrand(cardNumber: String): CardBrand = CardInputFormatters.detectCardBrand(cardNumber)
 
     fun isValidCardNumber(cardNumber: String): Boolean = sharedIsValidCardNumber(cardNumber)
 
@@ -54,11 +53,15 @@ object CardFormatters {
         brand: CardBrand,
     ): Boolean = sharedIsValidCvv(cvv, brand.name)
 
-    private fun withCursor(formatted: String, original: TextFieldValue): TextFieldValue {
-        val cursorPosition = minOf(
-            formatted.length,
-            original.selection.start + (formatted.length - original.text.length),
-        )
+    private fun withCursor(
+        formatted: String,
+        original: TextFieldValue,
+    ): TextFieldValue {
+        val cursorPosition =
+            minOf(
+                formatted.length,
+                original.selection.start + (formatted.length - original.text.length),
+            )
         return TextFieldValue(
             text = formatted,
             selection = TextRange(cursorPosition),

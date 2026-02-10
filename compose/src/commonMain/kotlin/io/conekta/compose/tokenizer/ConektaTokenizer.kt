@@ -355,9 +355,10 @@ private fun TokenizerHeader(
 
             // Conekta Logo
             ConektaLogoImage(
-                modifier = Modifier
-                    .width(120.dp)
-                    .height(20.dp),
+                modifier =
+                    Modifier
+                        .width(120.dp)
+                        .height(20.dp),
             )
         }
 

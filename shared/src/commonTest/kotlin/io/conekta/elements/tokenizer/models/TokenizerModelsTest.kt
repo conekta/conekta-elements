@@ -10,10 +10,11 @@ import kotlin.test.assertTrue
 class TokenizerConfigTest {
     @Test
     fun `TokenizerConfig stores publicKey and merchantName`() {
-        val config = TokenizerConfig(
-            publicKey = "key_test_123",
-            merchantName = "My Store",
-        )
+        val config =
+            TokenizerConfig(
+                publicKey = "key_test_123",
+                merchantName = "My Store",
+            )
         assertEquals("key_test_123", config.publicKey)
         assertEquals("My Store", config.merchantName)
     }
@@ -32,10 +33,11 @@ class TokenizerConfigTest {
 
     @Test
     fun `TokenizerConfig collectCardholderName can be set to false`() {
-        val config = TokenizerConfig(
-            publicKey = "key_test_123",
-            collectCardholderName = false,
-        )
+        val config =
+            TokenizerConfig(
+                publicKey = "key_test_123",
+                collectCardholderName = false,
+            )
         assertFalse(config.collectCardholderName)
     }
 
@@ -65,11 +67,12 @@ class TokenizerConfigTest {
 class TokenResultTest {
     @Test
     fun `TokenResult stores token cardBrand and lastFour`() {
-        val result = TokenResult(
-            token = "tok_abc123",
-            cardBrand = "VISA",
-            lastFour = "4242",
-        )
+        val result =
+            TokenResult(
+                token = "tok_abc123",
+                cardBrand = "VISA",
+                lastFour = "4242",
+            )
         assertEquals("tok_abc123", result.token)
         assertEquals("VISA", result.cardBrand)
         assertEquals("4242", result.lastFour)
@@ -137,18 +140,20 @@ class TokenizerErrorTest {
 
     @Test
     fun `when expression covers all TokenizerError variants`() {
-        val errors: List<TokenizerError> = listOf(
-            TokenizerError.ValidationError("v"),
-            TokenizerError.NetworkError("n"),
-            TokenizerError.ApiError("c", "a"),
-        )
-        val types = errors.map { error ->
-            when (error) {
-                is TokenizerError.ValidationError -> "validation"
-                is TokenizerError.NetworkError -> "network"
-                is TokenizerError.ApiError -> "api"
+        val errors: List<TokenizerError> =
+            listOf(
+                TokenizerError.ValidationError("v"),
+                TokenizerError.NetworkError("n"),
+                TokenizerError.ApiError("c", "a"),
+            )
+        val types =
+            errors.map { error ->
+                when (error) {
+                    is TokenizerError.ValidationError -> "validation"
+                    is TokenizerError.NetworkError -> "network"
+                    is TokenizerError.ApiError -> "api"
+                }
             }
-        }
         assertEquals(listOf("validation", "network", "api"), types)
     }
 

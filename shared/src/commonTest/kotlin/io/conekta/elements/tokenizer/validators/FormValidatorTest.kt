@@ -8,12 +8,13 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class FormValidatorTest {
-    private val messages = ValidationMessages(
-        required = "Required",
-        cardMinLength = "Card too short",
-        expiryYearInvalid = "Invalid expiry",
-        cvvMinLength = "CVV too short",
-    )
+    private val messages =
+        ValidationMessages(
+            required = "Required",
+            cardMinLength = "Card too short",
+            expiryYearInvalid = "Invalid expiry",
+            cvvMinLength = "CVV too short",
+        )
 
     // FieldError
 
@@ -67,29 +68,31 @@ class FormValidatorTest {
 
     @Test
     fun `validateForm returns no errors for valid inputs`() {
-        val result = validateForm(
-            cardholderName = "John Doe",
-            cardNumber = "4242 4242 4242 4242",
-            expiryDate = "12/26",
-            cvv = "123",
-            detectedBrand = CardBrand.VISA,
-            collectCardholderName = true,
-            messages = messages,
-        )
+        val result =
+            validateForm(
+                cardholderName = "John Doe",
+                cardNumber = "4242 4242 4242 4242",
+                expiryDate = "12/26",
+                cvv = "123",
+                detectedBrand = CardBrand.VISA,
+                collectCardholderName = true,
+                messages = messages,
+            )
         assertFalse(result.hasError)
     }
 
     @Test
     fun `validateForm skips cardholderName when not collected`() {
-        val result = validateForm(
-            cardholderName = "",
-            cardNumber = "4242 4242 4242 4242",
-            expiryDate = "12/26",
-            cvv = "123",
-            detectedBrand = CardBrand.VISA,
-            collectCardholderName = false,
-            messages = messages,
-        )
+        val result =
+            validateForm(
+                cardholderName = "",
+                cardNumber = "4242 4242 4242 4242",
+                expiryDate = "12/26",
+                cvv = "123",
+                detectedBrand = CardBrand.VISA,
+                collectCardholderName = false,
+                messages = messages,
+            )
         assertFalse(result.cardholderName.isError)
     }
 
@@ -97,60 +100,64 @@ class FormValidatorTest {
 
     @Test
     fun `validateForm detects empty cardholderName when collected`() {
-        val result = validateForm(
-            cardholderName = "",
-            cardNumber = "4242 4242 4242 4242",
-            expiryDate = "12/26",
-            cvv = "123",
-            detectedBrand = CardBrand.VISA,
-            collectCardholderName = true,
-            messages = messages,
-        )
+        val result =
+            validateForm(
+                cardholderName = "",
+                cardNumber = "4242 4242 4242 4242",
+                expiryDate = "12/26",
+                cvv = "123",
+                detectedBrand = CardBrand.VISA,
+                collectCardholderName = true,
+                messages = messages,
+            )
         assertTrue(result.cardholderName.isError)
         assertEquals("Required", result.cardholderName.message)
     }
 
     @Test
     fun `validateForm detects empty cardNumber`() {
-        val result = validateForm(
-            cardholderName = "John",
-            cardNumber = "",
-            expiryDate = "12/26",
-            cvv = "123",
-            detectedBrand = CardBrand.VISA,
-            collectCardholderName = true,
-            messages = messages,
-        )
+        val result =
+            validateForm(
+                cardholderName = "John",
+                cardNumber = "",
+                expiryDate = "12/26",
+                cvv = "123",
+                detectedBrand = CardBrand.VISA,
+                collectCardholderName = true,
+                messages = messages,
+            )
         assertTrue(result.cardNumber.isError)
         assertEquals("Required", result.cardNumber.message)
     }
 
     @Test
     fun `validateForm detects empty expiryDate`() {
-        val result = validateForm(
-            cardholderName = "John",
-            cardNumber = "4242 4242 4242 4242",
-            expiryDate = "",
-            cvv = "123",
-            detectedBrand = CardBrand.VISA,
-            collectCardholderName = true,
-            messages = messages,
-        )
+        val result =
+            validateForm(
+                cardholderName = "John",
+                cardNumber = "4242 4242 4242 4242",
+                expiryDate = "",
+                cvv = "123",
+                detectedBrand = CardBrand.VISA,
+                collectCardholderName = true,
+                messages = messages,
+            )
         assertTrue(result.expiryDate.isError)
         assertEquals("Required", result.expiryDate.message)
     }
 
     @Test
     fun `validateForm detects empty cvv`() {
-        val result = validateForm(
-            cardholderName = "John",
-            cardNumber = "4242 4242 4242 4242",
-            expiryDate = "12/26",
-            cvv = "",
-            detectedBrand = CardBrand.VISA,
-            collectCardholderName = true,
-            messages = messages,
-        )
+        val result =
+            validateForm(
+                cardholderName = "John",
+                cardNumber = "4242 4242 4242 4242",
+                expiryDate = "12/26",
+                cvv = "",
+                detectedBrand = CardBrand.VISA,
+                collectCardholderName = true,
+                messages = messages,
+            )
         assertTrue(result.cvv.isError)
         assertEquals("Required", result.cvv.message)
     }
@@ -159,60 +166,64 @@ class FormValidatorTest {
 
     @Test
     fun `validateForm detects invalid card number`() {
-        val result = validateForm(
-            cardholderName = "John",
-            cardNumber = "1234",
-            expiryDate = "12/26",
-            cvv = "123",
-            detectedBrand = CardBrand.UNKNOWN,
-            collectCardholderName = true,
-            messages = messages,
-        )
+        val result =
+            validateForm(
+                cardholderName = "John",
+                cardNumber = "1234",
+                expiryDate = "12/26",
+                cvv = "123",
+                detectedBrand = CardBrand.UNKNOWN,
+                collectCardholderName = true,
+                messages = messages,
+            )
         assertTrue(result.cardNumber.isError)
         assertEquals("Card too short", result.cardNumber.message)
     }
 
     @Test
     fun `validateForm detects invalid expiry date`() {
-        val result = validateForm(
-            cardholderName = "John",
-            cardNumber = "4242 4242 4242 4242",
-            expiryDate = "13/26",
-            cvv = "123",
-            detectedBrand = CardBrand.VISA,
-            collectCardholderName = true,
-            messages = messages,
-        )
+        val result =
+            validateForm(
+                cardholderName = "John",
+                cardNumber = "4242 4242 4242 4242",
+                expiryDate = "13/26",
+                cvv = "123",
+                detectedBrand = CardBrand.VISA,
+                collectCardholderName = true,
+                messages = messages,
+            )
         assertTrue(result.expiryDate.isError)
         assertEquals("Invalid expiry", result.expiryDate.message)
     }
 
     @Test
     fun `validateForm detects invalid cvv`() {
-        val result = validateForm(
-            cardholderName = "John",
-            cardNumber = "4242 4242 4242 4242",
-            expiryDate = "12/26",
-            cvv = "12",
-            detectedBrand = CardBrand.VISA,
-            collectCardholderName = true,
-            messages = messages,
-        )
+        val result =
+            validateForm(
+                cardholderName = "John",
+                cardNumber = "4242 4242 4242 4242",
+                expiryDate = "12/26",
+                cvv = "12",
+                detectedBrand = CardBrand.VISA,
+                collectCardholderName = true,
+                messages = messages,
+            )
         assertTrue(result.cvv.isError)
         assertEquals("CVV too short", result.cvv.message)
     }
 
     @Test
     fun `validateForm detects multiple errors at once`() {
-        val result = validateForm(
-            cardholderName = "",
-            cardNumber = "",
-            expiryDate = "",
-            cvv = "",
-            detectedBrand = CardBrand.UNKNOWN,
-            collectCardholderName = true,
-            messages = messages,
-        )
+        val result =
+            validateForm(
+                cardholderName = "",
+                cardNumber = "",
+                expiryDate = "",
+                cvv = "",
+                detectedBrand = CardBrand.UNKNOWN,
+                collectCardholderName = true,
+                messages = messages,
+            )
         assertTrue(result.hasError)
         assertTrue(result.cardholderName.isError)
         assertTrue(result.cardNumber.isError)

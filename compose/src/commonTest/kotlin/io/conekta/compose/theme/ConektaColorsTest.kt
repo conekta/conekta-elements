@@ -59,17 +59,18 @@ class ConektaColorsTest {
 
     @Test
     fun `all colors are distinct`() {
-        val colors = listOf(
-            ConektaColors.Surface,
-            ConektaColors.DarkIndigo,
-            ConektaColors.Neutral8,
-            ConektaColors.Neutral7,
-            ConektaColors.Neutral5,
-            ConektaColors.Neutral4,
-            ConektaColors.CoreIndigo,
-            ConektaColors.Pearl100,
-            ConektaColors.Error,
-        )
+        val colors =
+            listOf(
+                ConektaColors.Surface,
+                ConektaColors.DarkIndigo,
+                ConektaColors.Neutral8,
+                ConektaColors.Neutral7,
+                ConektaColors.Neutral5,
+                ConektaColors.Neutral4,
+                ConektaColors.CoreIndigo,
+                ConektaColors.Pearl100,
+                ConektaColors.Error,
+            )
         val uniqueColors = colors.toSet()
         assertEquals(colors.size, uniqueColors.size)
     }

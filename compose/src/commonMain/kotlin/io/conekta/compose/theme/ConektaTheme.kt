@@ -39,31 +39,33 @@ private val ConektaLightColorScheme =
  */
 @Composable
 fun ConektaTheme(content: @Composable () -> Unit) {
-    val interFamily = FontFamily(
-        Font(Res.font.inter_regular, FontWeight.Normal),
-        Font(Res.font.inter_medium, FontWeight.Medium),
-        Font(Res.font.inter_semibold, FontWeight.SemiBold),
-        Font(Res.font.inter_bold, FontWeight.Bold),
-    )
+    val interFamily =
+        FontFamily(
+            Font(Res.font.inter_regular, FontWeight.Normal),
+            Font(Res.font.inter_medium, FontWeight.Medium),
+            Font(Res.font.inter_semibold, FontWeight.SemiBold),
+            Font(Res.font.inter_bold, FontWeight.Bold),
+        )
 
     val defaultTypography = Typography()
-    val conektaTypography = Typography(
-        displayLarge = defaultTypography.displayLarge.copy(fontFamily = interFamily),
-        displayMedium = defaultTypography.displayMedium.copy(fontFamily = interFamily),
-        displaySmall = defaultTypography.displaySmall.copy(fontFamily = interFamily),
-        headlineLarge = defaultTypography.headlineLarge.copy(fontFamily = interFamily),
-        headlineMedium = defaultTypography.headlineMedium.copy(fontFamily = interFamily),
-        headlineSmall = defaultTypography.headlineSmall.copy(fontFamily = interFamily),
-        titleLarge = defaultTypography.titleLarge.copy(fontFamily = interFamily),
-        titleMedium = defaultTypography.titleMedium.copy(fontFamily = interFamily),
-        titleSmall = defaultTypography.titleSmall.copy(fontFamily = interFamily),
-        bodyLarge = defaultTypography.bodyLarge.copy(fontFamily = interFamily),
-        bodyMedium = defaultTypography.bodyMedium.copy(fontFamily = interFamily),
-        bodySmall = defaultTypography.bodySmall.copy(fontFamily = interFamily),
-        labelLarge = defaultTypography.labelLarge.copy(fontFamily = interFamily),
-        labelMedium = defaultTypography.labelMedium.copy(fontFamily = interFamily),
-        labelSmall = defaultTypography.labelSmall.copy(fontFamily = interFamily),
-    )
+    val conektaTypography =
+        Typography(
+            displayLarge = defaultTypography.displayLarge.copy(fontFamily = interFamily),
+            displayMedium = defaultTypography.displayMedium.copy(fontFamily = interFamily),
+            displaySmall = defaultTypography.displaySmall.copy(fontFamily = interFamily),
+            headlineLarge = defaultTypography.headlineLarge.copy(fontFamily = interFamily),
+            headlineMedium = defaultTypography.headlineMedium.copy(fontFamily = interFamily),
+            headlineSmall = defaultTypography.headlineSmall.copy(fontFamily = interFamily),
+            titleLarge = defaultTypography.titleLarge.copy(fontFamily = interFamily),
+            titleMedium = defaultTypography.titleMedium.copy(fontFamily = interFamily),
+            titleSmall = defaultTypography.titleSmall.copy(fontFamily = interFamily),
+            bodyLarge = defaultTypography.bodyLarge.copy(fontFamily = interFamily),
+            bodyMedium = defaultTypography.bodyMedium.copy(fontFamily = interFamily),
+            bodySmall = defaultTypography.bodySmall.copy(fontFamily = interFamily),
+            labelLarge = defaultTypography.labelLarge.copy(fontFamily = interFamily),
+            labelMedium = defaultTypography.labelMedium.copy(fontFamily = interFamily),
+            labelSmall = defaultTypography.labelSmall.copy(fontFamily = interFamily),
+        )
 
     CompositionLocalProvider(LocalConektaFontFamily provides interFamily) {
         MaterialTheme(

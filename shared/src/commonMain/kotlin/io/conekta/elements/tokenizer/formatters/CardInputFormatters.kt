@@ -35,9 +35,7 @@ object CardInputFormatters {
     /**
      * Format CVV string (3-4 digits only).
      */
-    fun formatCvv(text: String): String {
-        return text.filter { it.isDigit() }.take(4)
-    }
+    fun formatCvv(text: String): String = text.filter { it.isDigit() }.take(4)
 
     /**
      * Detect card brand from card number digits.
@@ -54,8 +52,7 @@ object CardInputFormatters {
         }
     }
 
-    internal fun formatMonthFirstDigit(digits: String): String =
-        if (digits[0].digitToInt() > 1) "0$digits" else digits
+    internal fun formatMonthFirstDigit(digits: String): String = if (digits[0].digitToInt() > 1) "0$digits" else digits
 
     internal fun formatMonthAndYear(digits: String): String {
         val monthStr = digits.substring(0, 2)

@@ -48,22 +48,24 @@ fun ConektaTextField(
 ) {
     val fontFamily = LocalConektaFontFamily.current
     val interactionSource = remember { MutableInteractionSource() }
-    val textStyle = TextStyle(
-        fontFamily = fontFamily,
-        fontSize = 16.sp,
-        color = ConektaColors.DarkIndigo,
-        lineHeight = 24.sp,
-    )
-    val colors = OutlinedTextFieldDefaults.colors(
-        focusedBorderColor = if (isError) ConektaColors.Error else ConektaColors.Neutral5,
-        unfocusedBorderColor = if (isError) ConektaColors.Error else ConektaColors.Neutral5,
-        cursorColor = ConektaColors.DarkIndigo,
-        focusedContainerColor = ConektaColors.Surface,
-        unfocusedContainerColor = ConektaColors.Surface,
-        disabledBorderColor = ConektaColors.Neutral5,
-        disabledContainerColor = ConektaColors.Surface,
-        errorBorderColor = ConektaColors.Error,
-    )
+    val textStyle =
+        TextStyle(
+            fontFamily = fontFamily,
+            fontSize = 16.sp,
+            color = ConektaColors.DarkIndigo,
+            lineHeight = 24.sp,
+        )
+    val colors =
+        OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = if (isError) ConektaColors.Error else ConektaColors.Neutral5,
+            unfocusedBorderColor = if (isError) ConektaColors.Error else ConektaColors.Neutral5,
+            cursorColor = ConektaColors.DarkIndigo,
+            focusedContainerColor = ConektaColors.Surface,
+            unfocusedContainerColor = ConektaColors.Surface,
+            disabledBorderColor = ConektaColors.Neutral5,
+            disabledContainerColor = ConektaColors.Surface,
+            errorBorderColor = ConektaColors.Error,
+        )
 
     Column(modifier = modifier) {
         Text(
@@ -83,9 +85,10 @@ fun ConektaTextField(
         BasicTextField(
             value = value,
             onValueChange = onValueChange,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(43.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(43.dp),
             singleLine = true,
             textStyle = textStyle,
             cursorBrush = SolidColor(ConektaColors.DarkIndigo),
