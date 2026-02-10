@@ -4,7 +4,7 @@
 
     <string name="card_information_title">Información de la tarjeta</string>
 
-    <string name="conekta_description">Conekta es el portal que usa %s para procesar sus pagos en línea de manera segura y confiable.</string>
+    <string name="conekta_description">Conekta es el portal que usa %1$s para procesar sus pagos en línea de manera segura y confiable.</string>
 
     <string name="content_description_amex_card">Tarjeta American Express</string>
     <string name="content_description_card_brand">Tarjeta</string>

@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -30,6 +28,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathFillType
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -45,6 +47,7 @@ import io.conekta.compose.components.ConektaLogoImage
 import io.conekta.compose.components.ConektaTextField
 import io.conekta.compose.theme.ConektaColors
 import io.conekta.compose.theme.ConektaTheme
+import io.conekta.compose.theme.LocalConektaFontFamily
 import io.conekta.elements.compose.generated.resources.Res
 import io.conekta.elements.compose.generated.resources.button_continue
 import io.conekta.elements.compose.generated.resources.button_processing
@@ -68,6 +71,45 @@ import io.conekta.elements.tokenizer.models.TokenResult
 import io.conekta.elements.tokenizer.models.TokenizerConfig
 import io.conekta.elements.tokenizer.models.TokenizerError
 import org.jetbrains.compose.resources.stringResource
+
+private val InfoOutlinedIcon: ImageVector by lazy {
+    ImageVector.Builder(
+        name = "InfoOutlined",
+        defaultWidth = 24.dp,
+        defaultHeight = 24.dp,
+        viewportWidth = 24f,
+        viewportHeight = 24f,
+    ).apply {
+        path(fill = SolidColor(Color.Black), pathFillType = PathFillType.EvenOdd) {
+            // "i" body
+            moveTo(11f, 17f)
+            horizontalLineToRelative(2f)
+            verticalLineToRelative(-6f)
+            horizontalLineToRelative(-2f)
+            close()
+            // Outer circle
+            moveTo(12f, 2f)
+            curveTo(6.48f, 2f, 2f, 6.48f, 2f, 12f)
+            reflectiveCurveToRelative(4.48f, 10f, 10f, 10f)
+            reflectiveCurveToRelative(10f, -4.48f, 10f, -10f)
+            reflectiveCurveTo(17.52f, 2f, 12f, 2f)
+            close()
+            // Inner circle (cutout)
+            moveTo(12f, 20f)
+            curveToRelative(-4.41f, 0f, -8f, -3.59f, -8f, -8f)
+            reflectiveCurveToRelative(3.59f, -8f, 8f, -8f)
+            reflectiveCurveToRelative(8f, 3.59f, 8f, 8f)
+            reflectiveCurveToRelative(-3.59f, 8f, -8f, 8f)
+            close()
+            // "i" dot
+            moveTo(11f, 9f)
+            horizontalLineToRelative(2f)
+            verticalLineTo(7f)
+            horizontalLineToRelative(-2f)
+            close()
+        }
+    }.build()
+}
 
 private data class ValidationMessages(
     val required: String,
@@ -198,6 +240,7 @@ private fun TokenizerContent(
     onSuccess: (TokenResult) -> Unit,
     onError: (TokenizerError) -> Unit,
 ) {
+    val fontFamily = LocalConektaFontFamily.current
     var cardholderName by remember { mutableStateOf(TextFieldValue("")) }
     var cardNumber by remember { mutableStateOf(TextFieldValue("")) }
     var expiryDate by remember { mutableStateOf(TextFieldValue("")) }
@@ -254,6 +297,7 @@ private fun TokenizerContent(
             text = stringResource(Res.string.card_information_title),
             style =
                 TextStyle(
+                    fontFamily = fontFamily,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = ConektaColors.DarkIndigo,
@@ -402,6 +446,7 @@ private fun TokenizerHeader(
     merchantName: String,
     onInfoClick: () -> Unit,
 ) {
+    val fontFamily = LocalConektaFontFamily.current
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -412,11 +457,11 @@ private fun TokenizerHeader(
                 text = stringResource(Res.string.pay_securely_with),
                 style =
                     TextStyle(
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Medium,
+                        fontFamily = fontFamily,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold,
                         color = ConektaColors.Neutral7,
-                        lineHeight = 16.sp,
-                        letterSpacing = 0.5.sp,
+                        letterSpacing = 0.7.sp,
                     ),
             )
 
@@ -424,13 +469,15 @@ private fun TokenizerHeader(
 
             // Conekta Logo
             ConektaLogoImage(
-                modifier = Modifier.height(20.dp),
+                modifier = Modifier
+                    .width(120.dp)
+                    .height(20.dp),
             )
         }
 
         IconButton(onClick = onInfoClick) {
             Icon(
-                imageVector = Icons.Default.Info,
+                imageVector = InfoOutlinedIcon,
                 contentDescription = stringResource(Res.string.content_description_security_info),
                 tint = ConektaColors.Neutral7,
             )
@@ -444,6 +491,7 @@ private fun PaymentProtectionSheet(
     merchantName: String,
     onDismiss: () -> Unit,
 ) {
+    val fontFamily = LocalConektaFontFamily.current
     val sheetState =
         rememberModalBottomSheetState(
             skipPartiallyExpanded = false,
@@ -499,6 +547,7 @@ private fun PaymentProtectionSheet(
                     text = stringResource(Res.string.payment_protected),
                     style =
                         TextStyle(
+                            fontFamily = fontFamily,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             color = ConektaColors.DarkIndigo,
@@ -514,6 +563,7 @@ private fun PaymentProtectionSheet(
                 text = stringResource(Res.string.conekta_description, merchantName),
                 style =
                     TextStyle(
+                        fontFamily = fontFamily,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Normal,
                         color = ConektaColors.Neutral8,
