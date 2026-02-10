@@ -147,11 +147,11 @@ fun CardBrandIconsRow(
                 modifier = iconModifier,
             )
             CardBrandIcon(
-                brand = CardBrand.MASTERCARD,
+                brand = CardBrand.AMEX,
                 modifier = iconModifier,
             )
             CardBrandIcon(
-                brand = CardBrand.AMEX,
+                brand = CardBrand.MASTERCARD,
                 modifier = iconModifier,
             )
         }
