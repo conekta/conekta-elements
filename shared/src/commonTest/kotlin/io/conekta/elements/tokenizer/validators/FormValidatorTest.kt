@@ -231,6 +231,102 @@ class FormValidatorTest {
         assertTrue(result.cvv.isError)
     }
 
+    // validateForm - edge cases
+
+    @Test
+    fun `validateForm returns no error for cardholderName when not collected even with value`() {
+        val result =
+            validateForm(
+                cardholderName = "John",
+                cardNumber = "4242 4242 4242 4242",
+                expiryDate = "12/26",
+                cvv = "123",
+                detectedBrand = CardBrand.VISA,
+                collectCardholderName = false,
+                messages = messages,
+            )
+        assertFalse(result.cardholderName.isError)
+    }
+
+    @Test
+    fun `validateForm detects partial expiry date`() {
+        val result =
+            validateForm(
+                cardholderName = "John",
+                cardNumber = "4242 4242 4242 4242",
+                expiryDate = "12/",
+                cvv = "123",
+                detectedBrand = CardBrand.VISA,
+                collectCardholderName = true,
+                messages = messages,
+            )
+        assertTrue(result.expiryDate.isError)
+        assertEquals("Invalid expiry", result.expiryDate.message)
+    }
+
+    @Test
+    fun `validateForm detects single digit expiry`() {
+        val result =
+            validateForm(
+                cardholderName = "John",
+                cardNumber = "4242 4242 4242 4242",
+                expiryDate = "1",
+                cvv = "123",
+                detectedBrand = CardBrand.VISA,
+                collectCardholderName = true,
+                messages = messages,
+            )
+        assertTrue(result.expiryDate.isError)
+        assertEquals("Invalid expiry", result.expiryDate.message)
+    }
+
+    @Test
+    fun `validateForm valid AMEX cvv with 4 digits`() {
+        val result =
+            validateForm(
+                cardholderName = "John",
+                cardNumber = "3782 8224 6310 005",
+                expiryDate = "12/26",
+                cvv = "1234",
+                detectedBrand = CardBrand.AMEX,
+                collectCardholderName = true,
+                messages = messages,
+            )
+        assertFalse(result.cvv.isError)
+    }
+
+    @Test
+    fun `validateForm whitespace-only cardholderName is error`() {
+        val result =
+            validateForm(
+                cardholderName = "   ",
+                cardNumber = "4242 4242 4242 4242",
+                expiryDate = "12/26",
+                cvv = "123",
+                detectedBrand = CardBrand.VISA,
+                collectCardholderName = true,
+                messages = messages,
+            )
+        assertTrue(result.cardholderName.isError)
+        assertEquals("Required", result.cardholderName.message)
+    }
+
+    @Test
+    fun `validateForm whitespace-only cardNumber is error`() {
+        val result =
+            validateForm(
+                cardholderName = "John",
+                cardNumber = "   ",
+                expiryDate = "12/26",
+                cvv = "123",
+                detectedBrand = CardBrand.VISA,
+                collectCardholderName = true,
+                messages = messages,
+            )
+        assertTrue(result.cardNumber.isError)
+        assertEquals("Required", result.cardNumber.message)
+    }
+
     // ValidationMessages
 
     @Test
