@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.conekta.compose.components.CardBrandIconsRow
 import io.conekta.compose.components.CheckCircleIcon
+import io.conekta.compose.components.CloseIcon
 import io.conekta.compose.components.ConektaButton
 import io.conekta.compose.components.ConektaLogoImage
 import io.conekta.compose.components.ConektaTextField
@@ -49,7 +50,6 @@ import io.conekta.elements.compose.generated.resources.button_continue
 import io.conekta.elements.compose.generated.resources.button_processing
 import io.conekta.elements.compose.generated.resources.card_information_title
 import io.conekta.elements.compose.generated.resources.conekta_description
-import io.conekta.elements.compose.generated.resources.content_description_close
 import io.conekta.elements.compose.generated.resources.content_description_security_info
 import io.conekta.elements.compose.generated.resources.error_field_required
 import io.conekta.elements.compose.generated.resources.label_card_number
@@ -61,6 +61,9 @@ import io.conekta.elements.compose.generated.resources.payment_protected
 import io.conekta.elements.compose.generated.resources.placeholder_cardholder_name
 import io.conekta.elements.compose.generated.resources.placeholder_cvv
 import io.conekta.elements.compose.generated.resources.placeholder_expiry
+import io.conekta.elements.compose.generated.resources.validation_card_min_length
+import io.conekta.elements.compose.generated.resources.validation_cvv_min_length
+import io.conekta.elements.compose.generated.resources.validation_expiry_year_invalid
 import io.conekta.elements.tokenizer.models.TokenResult
 import io.conekta.elements.tokenizer.models.TokenizerConfig
 import io.conekta.elements.tokenizer.models.TokenizerError
@@ -139,6 +142,9 @@ private fun TokenizerContent(
     val buttonContinue = stringResource(Res.string.button_continue)
     val buttonProcessing = stringResource(Res.string.button_processing)
     val errorRequired = stringResource(Res.string.error_field_required)
+    val errorCardMinLength = stringResource(Res.string.validation_card_min_length)
+    val errorExpiryYearInvalid = stringResource(Res.string.validation_expiry_year_invalid)
+    val errorCvvMinLength = stringResource(Res.string.validation_cvv_min_length)
 
     val detectedBrand =
         remember(cardNumber.text) {
@@ -286,19 +292,22 @@ private fun TokenizerContent(
 
                 if (cardNumber.text.isBlank() || !CardFormatters.isValidCardNumber(cardDigits)) {
                     cardNumberError = true
-                    cardNumberErrorMsg = errorRequired
+                    // Show minimum length message if card has data but is invalid
+                    cardNumberErrorMsg = if (cardNumber.text.isNotBlank()) errorCardMinLength else errorRequired
                     hasError = true
                 }
 
                 if (expiryDate.text.isBlank() || !CardFormatters.isValidExpiryDate(expiryDate.text)) {
                     expiryDateError = true
-                    expiryDateErrorMsg = errorRequired
+                    // Show year invalid message if expiry has data but is invalid
+                    expiryDateErrorMsg = if (expiryDate.text.isNotBlank()) errorExpiryYearInvalid else errorRequired
                     hasError = true
                 }
 
                 if (cvv.text.isBlank() || !CardFormatters.isValidCvv(cvv.text, detectedBrand)) {
                     cvvError = true
-                    cvvErrorMsg = errorRequired
+                    // Show min length message if CVV has data but is invalid
+                    cvvErrorMsg = if (cvv.text.isNotBlank()) errorCvvMinLength else errorRequired
                     hasError = true
                 }
 
@@ -408,14 +417,8 @@ private fun PaymentProtectionSheet(
                 horizontalArrangement = Arrangement.End,
             ) {
                 IconButton(onClick = onDismiss) {
-                    Text(
-                        text = stringResource(Res.string.content_description_close),
-                        style =
-                            TextStyle(
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Normal,
-                                color = ConektaColors.DarkIndigo,
-                            ),
+                    CloseIcon(
+                        modifier = Modifier.size(24.dp),
                     )
                 }
             }

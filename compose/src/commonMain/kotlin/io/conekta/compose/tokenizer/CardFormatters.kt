@@ -31,7 +31,8 @@ object CardFormatters {
     /**
      * Format expiry date as MM/YY
      * Returns TextFieldValue to preserve cursor position
-     * Limits input to 4 digits (MMYY)
+     * Limits input to 4 digits (MMYY) and validates month <= 12
+     * Prevents entering years < 26
      */
     fun formatExpiryDate(value: TextFieldValue): TextFieldValue {
         val digits = value.text.filter { it.isDigit() }.take(4)
@@ -39,8 +40,47 @@ object CardFormatters {
         val formatted =
             when {
                 digits.isEmpty() -> ""
-                digits.length <= 2 -> digits
-                else -> "${digits.substring(0, 2)}/${digits.substring(2, minOf(4, digits.length))}"
+                digits.length == 1 -> {
+                    // If first digit > 1, auto-add 0 prefix (e.g., "2" -> "02")
+                    if (digits[0].digitToInt() > 1) {
+                        "0$digits"
+                    } else {
+                        digits
+                    }
+                }
+                digits.length >= 2 -> {
+                    val monthStr = digits.substring(0, 2)
+                    val month = monthStr.toIntOrNull() ?: 0
+
+                    // If month > 12, keep only first digit
+                    if (month > 12) {
+                        digits.substring(0, 1)
+                    } else {
+                        // Process year part if present
+                        if (digits.length > 2) {
+                            val firstYearDigit = digits[2].digitToInt()
+
+                            // Year must be >= 26, so first digit must be >= 2
+                            if (firstYearDigit < 2) {
+                                // Don't allow years starting with 0 or 1
+                                "$monthStr"
+                            } else if (digits.length == 4) {
+                                val secondYearDigit = digits[3].digitToInt()
+                                // If first digit is 2, second digit must be >= 6
+                                if (firstYearDigit == 2 && secondYearDigit < 6) {
+                                    "$monthStr/${digits[2]}"
+                                } else {
+                                    "$monthStr/${digits.substring(2, 4)}"
+                                }
+                            } else {
+                                "$monthStr/${digits[2]}"
+                            }
+                        } else {
+                            monthStr
+                        }
+                    }
+                }
+                else -> digits
             }
 
         val cursorPosition = minOf(formatted.length, value.selection.start + (formatted.length - value.text.length))
@@ -52,15 +92,15 @@ object CardFormatters {
     }
 
     /**
-     * Format CVV (3 digits for most cards, 4 for AMEX)
+     * Format CVV (3-4 digits)
      * Returns TextFieldValue to preserve cursor position
-     * Limits input to 3 or 4 digits depending on card brand
+     * Limits input to 4 digits maximum
      */
     fun formatCvv(
         value: TextFieldValue,
         brand: CardBrand,
     ): TextFieldValue {
-        val maxLength = if (brand == CardBrand.AMEX) 4 else 3
+        val maxLength = 4 // Allow up to 4 digits for all cards
         val digits = value.text.filter { it.isDigit() }.take(maxLength)
 
         return TextFieldValue(

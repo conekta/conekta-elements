@@ -1,7 +1,5 @@
 package io.conekta.elements.tokenizer.validators
 
-import io.conekta.elements.tokenizer.models.CardBrand
-
 /**
  * Validation error messages
  *
@@ -73,15 +71,12 @@ fun isValidExpiryDate(
 }
 
 /**
- * Validate CVV
+ * Validate CVV (3-4 digits accepted)
  */
 fun isValidCvv(
     cvv: String,
     cardBrand: String = "",
 ): Boolean {
     val digits = cvv.filter { it.isDigit() }
-    return when (cardBrand.uppercase()) {
-        CardBrand.AMEX.name -> digits.length == 4
-        else -> digits.length == 3
-    }
+    return digits.length in 3..4
 }
