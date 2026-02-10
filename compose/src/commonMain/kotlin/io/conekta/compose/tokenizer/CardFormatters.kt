@@ -28,11 +28,13 @@ object CardFormatters {
         )
     }
 
+    private const val MIN_YEAR = 26
+
     /**
      * Format expiry date as MM/YY
      * Returns TextFieldValue to preserve cursor position
      * Limits input to 4 digits (MMYY) and validates month <= 12
-     * Prevents entering years < 26
+     * Prevents entering years < [MIN_YEAR]
      */
     fun formatExpiryDate(value: TextFieldValue): TextFieldValue {
         val digits = value.text.filter { it.isDigit() }.take(4)
@@ -40,46 +42,8 @@ object CardFormatters {
         val formatted =
             when {
                 digits.isEmpty() -> ""
-                digits.length == 1 -> {
-                    // If first digit > 1, auto-add 0 prefix (e.g., "2" -> "02")
-                    if (digits[0].digitToInt() > 1) {
-                        "0$digits"
-                    } else {
-                        digits
-                    }
-                }
-                digits.length >= 2 -> {
-                    val monthStr = digits.substring(0, 2)
-                    val month = monthStr.toIntOrNull() ?: 0
-
-                    // If month > 12, keep only first digit
-                    if (month > 12) {
-                        digits.substring(0, 1)
-                    } else {
-                        // Process year part if present
-                        if (digits.length > 2) {
-                            val firstYearDigit = digits[2].digitToInt()
-
-                            // Year must be >= 26, so first digit must be >= 2
-                            if (firstYearDigit < 2) {
-                                // Don't allow years starting with 0 or 1
-                                "$monthStr"
-                            } else if (digits.length == 4) {
-                                val secondYearDigit = digits[3].digitToInt()
-                                // If first digit is 2, second digit must be >= 6
-                                if (firstYearDigit == 2 && secondYearDigit < 6) {
-                                    "$monthStr/${digits[2]}"
-                                } else {
-                                    "$monthStr/${digits.substring(2, 4)}"
-                                }
-                            } else {
-                                "$monthStr/${digits[2]}"
-                            }
-                        } else {
-                            monthStr
-                        }
-                    }
-                }
+                digits.length == 1 -> formatMonthFirstDigit(digits)
+                digits.length >= 2 -> formatMonthAndYear(digits)
                 else -> digits
             }
 
@@ -89,6 +53,29 @@ object CardFormatters {
             text = formatted,
             selection = TextRange(cursorPosition),
         )
+    }
+
+    private fun formatMonthFirstDigit(digits: String): String = if (digits[0].digitToInt() > 1) "0$digits" else digits
+
+    private fun formatMonthAndYear(digits: String): String {
+        val monthStr = digits.substring(0, 2)
+        val month = monthStr.toIntOrNull() ?: 0
+
+        if (month > 12) return digits.substring(0, 1)
+        if (digits.length <= 2) return monthStr
+
+        val yearPart = formatYearPart(digits.substring(2))
+        return if (yearPart.isEmpty()) monthStr else "$monthStr/$yearPart"
+    }
+
+    private fun formatYearPart(yearDigits: String): String {
+        val firstDigit = yearDigits[0].digitToInt()
+        if (firstDigit < 2) return ""
+
+        if (yearDigits.length < 2) return yearDigits
+
+        val year = yearDigits.substring(0, 2).toInt()
+        return if (year < MIN_YEAR) yearDigits.substring(0, 1) else yearDigits.substring(0, 2)
     }
 
     /**

@@ -69,6 +69,85 @@ import io.conekta.elements.tokenizer.models.TokenizerConfig
 import io.conekta.elements.tokenizer.models.TokenizerError
 import org.jetbrains.compose.resources.stringResource
 
+private data class ValidationMessages(
+    val required: String,
+    val cardMinLength: String,
+    val expiryYearInvalid: String,
+    val cvvMinLength: String,
+)
+
+private data class FieldError(
+    val isError: Boolean = false,
+    val message: String? = null,
+)
+
+private data class ValidationResult(
+    val cardholderName: FieldError = FieldError(),
+    val cardNumber: FieldError = FieldError(),
+    val expiryDate: FieldError = FieldError(),
+    val cvv: FieldError = FieldError(),
+) {
+    val hasError: Boolean
+        get() = cardholderName.isError || cardNumber.isError || expiryDate.isError || cvv.isError
+}
+
+private fun validateForm(
+    cardholderName: String,
+    cardNumber: String,
+    expiryDate: String,
+    cvv: String,
+    detectedBrand: io.conekta.elements.tokenizer.models.CardBrand,
+    collectCardholderName: Boolean,
+    messages: ValidationMessages,
+): ValidationResult {
+    val cardDigits = cardNumber.filter { it.isDigit() }
+
+    return ValidationResult(
+        cardholderName = validateRequired(cardholderName, collectCardholderName, messages.required),
+        cardNumber = validateCardNumber(cardDigits, cardNumber, messages),
+        expiryDate = validateExpiry(expiryDate, messages),
+        cvv = validateCvv(cvv, detectedBrand, messages),
+    )
+}
+
+private fun validateRequired(
+    value: String,
+    shouldValidate: Boolean,
+    requiredMsg: String,
+): FieldError = if (shouldValidate && value.isBlank()) FieldError(true, requiredMsg) else FieldError()
+
+private fun validateCardNumber(
+    digits: String,
+    rawText: String,
+    messages: ValidationMessages,
+): FieldError =
+    when {
+        rawText.isBlank() -> FieldError(true, messages.required)
+        !CardFormatters.isValidCardNumber(digits) -> FieldError(true, messages.cardMinLength)
+        else -> FieldError()
+    }
+
+private fun validateExpiry(
+    expiryDate: String,
+    messages: ValidationMessages,
+): FieldError =
+    when {
+        expiryDate.isBlank() -> FieldError(true, messages.required)
+        !CardFormatters.isValidExpiryDate(expiryDate) -> FieldError(true, messages.expiryYearInvalid)
+        else -> FieldError()
+    }
+
+private fun validateCvv(
+    cvv: String,
+    brand: io.conekta.elements.tokenizer.models.CardBrand,
+    messages: ValidationMessages,
+): FieldError =
+    when {
+        cvv.isBlank() -> FieldError(true, messages.required)
+        !CardFormatters.isValidCvv(cvv, brand) -> FieldError(true, messages.cvvMinLength)
+        else -> FieldError()
+    }
+
 /**
  * Conekta Tokenizer - Main public API
  *
@@ -141,10 +220,13 @@ private fun TokenizerContent(
     // Strings
     val buttonContinue = stringResource(Res.string.button_continue)
     val buttonProcessing = stringResource(Res.string.button_processing)
-    val errorRequired = stringResource(Res.string.error_field_required)
-    val errorCardMinLength = stringResource(Res.string.validation_card_min_length)
-    val errorExpiryYearInvalid = stringResource(Res.string.validation_expiry_year_invalid)
-    val errorCvvMinLength = stringResource(Res.string.validation_cvv_min_length)
+    val validationMessages =
+        ValidationMessages(
+            required = stringResource(Res.string.error_field_required),
+            cardMinLength = stringResource(Res.string.validation_card_min_length),
+            expiryYearInvalid = stringResource(Res.string.validation_expiry_year_invalid),
+            cvvMinLength = stringResource(Res.string.validation_cvv_min_length),
+        )
 
     val detectedBrand =
         remember(cardNumber.text) {
@@ -269,53 +351,29 @@ private fun TokenizerContent(
         ConektaButton(
             text = if (isProcessing) buttonProcessing else buttonContinue,
             onClick = {
-                // Clear all errors first
-                cardholderNameError = false
-                cardholderNameErrorMsg = null
-                cardNumberError = false
-                cardNumberErrorMsg = null
-                expiryDateError = false
-                expiryDateErrorMsg = null
-                cvvError = false
-                cvvErrorMsg = null
+                val result =
+                    validateForm(
+                        cardholderName = cardholderName.text,
+                        cardNumber = cardNumber.text,
+                        expiryDate = expiryDate.text,
+                        cvv = cvv.text,
+                        detectedBrand = detectedBrand,
+                        collectCardholderName = config.collectCardholderName,
+                        messages = validationMessages,
+                    )
 
-                // Validate all fields
-                val cardDigits = cardNumber.text.filter { it.isDigit() }
-                var hasError = false
+                cardholderNameError = result.cardholderName.isError
+                cardholderNameErrorMsg = result.cardholderName.message
+                cardNumberError = result.cardNumber.isError
+                cardNumberErrorMsg = result.cardNumber.message
+                expiryDateError = result.expiryDate.isError
+                expiryDateErrorMsg = result.expiryDate.message
+                cvvError = result.cvv.isError
+                cvvErrorMsg = result.cvv.message
 
-                // Validate each field and mark errors
-                if (config.collectCardholderName && cardholderName.text.isBlank()) {
-                    cardholderNameError = true
-                    cardholderNameErrorMsg = errorRequired
-                    hasError = true
-                }
-
-                if (cardNumber.text.isBlank() || !CardFormatters.isValidCardNumber(cardDigits)) {
-                    cardNumberError = true
-                    // Show minimum length message if card has data but is invalid
-                    cardNumberErrorMsg = if (cardNumber.text.isNotBlank()) errorCardMinLength else errorRequired
-                    hasError = true
-                }
-
-                if (expiryDate.text.isBlank() || !CardFormatters.isValidExpiryDate(expiryDate.text)) {
-                    expiryDateError = true
-                    // Show year invalid message if expiry has data but is invalid
-                    expiryDateErrorMsg = if (expiryDate.text.isNotBlank()) errorExpiryYearInvalid else errorRequired
-                    hasError = true
-                }
-
-                if (cvv.text.isBlank() || !CardFormatters.isValidCvv(cvv.text, detectedBrand)) {
-                    cvvError = true
-                    // Show min length message if CVV has data but is invalid
-                    cvvErrorMsg = if (cvv.text.isNotBlank()) errorCvvMinLength else errorRequired
-                    hasError = true
-                }
-
-                // If there are no errors, proceed with tokenization
-                if (!hasError) {
+                if (!result.hasError) {
                     isProcessing = true
-                    // TODO: Implement actual tokenization API call
-                    // For now, return a mock token
+                    val cardDigits = cardNumber.text.filter { it.isDigit() }
                     onSuccess(
                         TokenResult(
                             token = "tok_test_mock_${cardDigits.takeLast(4)}",
@@ -325,7 +383,6 @@ private fun TokenizerContent(
                     )
                     isProcessing = false
                 }
-                // If there are errors, they are already displayed below each input
             },
             enabled = !isProcessing,
         )
