@@ -58,6 +58,11 @@ object CardBrandAssets {
          * Check circle icon for success states
          */
         const val CHECK_CIRCLE = "$AWS_S3_URL/icons/check-circle.svg"
+
+        /**
+         * CVV icon for security code field (32x32)
+         */
+        const val CVV = "$AWS_S3_URL/img/icons/cvv-icon-32x32.svg"
     }
 
     /**

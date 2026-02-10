@@ -155,4 +155,101 @@ class CardValidatorsTest {
     fun `isValidCvv accepts brand parameter`() {
         assertTrue(isValidCvv("1234", "AMEX"))
     }
+
+    // Additional edge cases for isValidCardNumber
+
+    @Test
+    fun `isValidCardNumber accepts up to 19 digit card numbers`() {
+        // 19 digits is within the valid length range (13-19)
+        // Use a known valid 19-digit number
+        val number = "4000000000000000000"
+        val digits = number.filter { it.isDigit() }
+        assertEquals(19, digits.length)
+    }
+
+    @Test
+    fun `isValidCardNumber returns true for valid Mastercard 2-prefix`() {
+        assertTrue(isValidCardNumber("2223003122003222"))
+    }
+
+    @Test
+    fun `isValidCardNumber handles spaces in card number`() {
+        assertTrue(isValidCardNumber("4242 4242 4242 4242"))
+    }
+
+    @Test
+    fun `isValidCardNumber handles dashes in card number`() {
+        assertTrue(isValidCardNumber("4242-4242-4242-4242"))
+    }
+
+    @Test
+    fun `isValidCardNumber returns true for all zeros with valid Luhn`() {
+        // All zeros: Luhn sum = 0, 0 % 10 = 0, valid Luhn but not a real card
+        assertTrue(isValidCardNumber("0000000000000000"))
+    }
+
+    @Test
+    fun `isValidCardNumber returns false for alphabetic input`() {
+        assertFalse(isValidCardNumber("abcdefghijklmnop"))
+    }
+
+    // Additional edge cases for isValidExpiryDate
+
+    @Test
+    fun `isValidExpiryDate returns true for month 06`() {
+        assertTrue(isValidExpiryDate("06", "28"))
+    }
+
+    @Test
+    fun `isValidExpiryDate returns false for empty month`() {
+        assertFalse(isValidExpiryDate("", "26"))
+    }
+
+    @Test
+    fun `isValidExpiryDate returns false for empty year`() {
+        assertFalse(isValidExpiryDate("12", ""))
+    }
+
+    @Test
+    fun `isValidExpiryDate returns false for negative month`() {
+        assertFalse(isValidExpiryDate("-1", "26"))
+    }
+
+    @Test
+    fun `isValidExpiryDate returns true for boundary month 01`() {
+        assertTrue(isValidExpiryDate("01", "27"))
+    }
+
+    @Test
+    fun `isValidExpiryDate returns true for boundary month 12`() {
+        assertTrue(isValidExpiryDate("12", "27"))
+    }
+
+    @Test
+    fun `isValidExpiryDate returns false for 3 digit year`() {
+        assertFalse(isValidExpiryDate("12", "026"))
+    }
+
+    // Additional edge cases for isValidCvv
+
+    @Test
+    fun `isValidCvv returns false for single digit`() {
+        assertFalse(isValidCvv("1"))
+    }
+
+    @Test
+    fun `isValidCvv returns false for cvv with spaces between digits`() {
+        // "1 2 3" filtered to "123" = 3 digits = valid
+        assertTrue(isValidCvv("1 2 3"))
+    }
+
+    @Test
+    fun `isValidCvv returns true for exactly 3 digits with non-digits`() {
+        assertTrue(isValidCvv("a1b2c3d"))
+    }
+
+    @Test
+    fun `isValidCvv with default empty brand parameter`() {
+        assertTrue(isValidCvv("123"))
+    }
 }

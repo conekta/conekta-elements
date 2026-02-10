@@ -45,6 +45,7 @@ import io.conekta.compose.components.CloseIcon
 import io.conekta.compose.components.ConektaButton
 import io.conekta.compose.components.ConektaLogoImage
 import io.conekta.compose.components.ConektaTextField
+import io.conekta.compose.components.CvvIcon
 import io.conekta.compose.theme.ConektaColors
 import io.conekta.compose.theme.ConektaTheme
 import io.conekta.compose.theme.LocalConektaFontFamily
@@ -386,6 +387,11 @@ private fun TokenizerContent(
                 enabled = !isProcessing,
                 isError = cvvError,
                 errorMessage = cvvErrorMsg,
+                trailingContent = {
+                    CvvIcon(
+                        modifier = Modifier.size(32.dp),
+                    )
+                },
             )
         }
 

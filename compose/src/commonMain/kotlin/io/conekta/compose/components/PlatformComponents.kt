@@ -27,6 +27,7 @@ import io.conekta.elements.compose.generated.resources.content_description_card_
 import io.conekta.elements.compose.generated.resources.content_description_check
 import io.conekta.elements.compose.generated.resources.content_description_close
 import io.conekta.elements.compose.generated.resources.content_description_conekta_logo
+import io.conekta.elements.compose.generated.resources.content_description_cvv
 import io.conekta.elements.compose.generated.resources.content_description_mastercard_card
 import io.conekta.elements.compose.generated.resources.content_description_visa_card
 import io.conekta.elements.tokenizer.models.CardBrand
@@ -185,5 +186,18 @@ fun CheckCircleIcon(modifier: Modifier = Modifier) {
         tint =
             androidx.compose.ui.graphics
                 .Color(0xFF10B981),
+    )
+}
+
+/**
+ * Renders CVV icon from CDN (32x32)
+ */
+@Composable
+fun CvvIcon(modifier: Modifier = Modifier) {
+    AsyncImage(
+        model = CardBrandAssets.Icons.CVV,
+        contentDescription = stringResource(Res.string.content_description_cvv),
+        modifier = modifier,
+        contentScale = ContentScale.Fit,
     )
 }

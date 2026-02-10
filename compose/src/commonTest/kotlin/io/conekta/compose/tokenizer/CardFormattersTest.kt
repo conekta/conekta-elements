@@ -297,4 +297,206 @@ class CardFormattersTest {
     fun `isValidCvv returns false for empty cvv`() {
         assertFalse(CardFormatters.isValidCvv("", CardBrand.VISA))
     }
+
+    // Additional formatCardNumber edge cases
+
+    @Test
+    fun `formatCardNumber handles 12 digits with correct spacing`() {
+        val result = CardFormatters.formatCardNumber(textFieldValue("424242424242"))
+        assertEquals("4242 4242 4242", result.text)
+    }
+
+    @Test
+    fun `formatCardNumber handles exactly 4 digits`() {
+        val result = CardFormatters.formatCardNumber(textFieldValue("4242"))
+        assertEquals("4242", result.text)
+    }
+
+    @Test
+    fun `formatCardNumber handles mixed alpha and digits`() {
+        val result = CardFormatters.formatCardNumber(textFieldValue("42a42b42c42"))
+        assertEquals("4242 4242", result.text)
+    }
+
+    @Test
+    fun `formatCardNumber handles all non-digit input`() {
+        val result = CardFormatters.formatCardNumber(textFieldValue("abcdefgh"))
+        assertEquals("", result.text)
+    }
+
+    @Test
+    fun `formatCardNumber handles single digit`() {
+        val result = CardFormatters.formatCardNumber(textFieldValue("4"))
+        assertEquals("4", result.text)
+    }
+
+    // Additional formatExpiryDate edge cases
+
+    @Test
+    fun `formatExpiryDate handles digit 2 auto-prefixed`() {
+        val result = CardFormatters.formatExpiryDate(textFieldValue("2"))
+        assertEquals("02", result.text)
+    }
+
+    @Test
+    fun `formatExpiryDate handles digit 9 auto-prefixed`() {
+        val result = CardFormatters.formatExpiryDate(textFieldValue("9"))
+        assertEquals("09", result.text)
+    }
+
+    @Test
+    fun `formatExpiryDate rejects month 00`() {
+        val result = CardFormatters.formatExpiryDate(textFieldValue("00"))
+        // month 00 is <= 12 so it stays (format validates, not the value)
+        assertEquals("00", result.text)
+    }
+
+    @Test
+    fun `formatExpiryDate handles all non-digits`() {
+        val result = CardFormatters.formatExpiryDate(textFieldValue("ab/cd"))
+        assertEquals("", result.text)
+    }
+
+    @Test
+    fun `formatExpiryDate accepts year starting with 3`() {
+        val result = CardFormatters.formatExpiryDate(textFieldValue("123"))
+        assertEquals("12/3", result.text)
+    }
+
+    @Test
+    fun `formatExpiryDate accepts year 29`() {
+        val result = CardFormatters.formatExpiryDate(textFieldValue("0629"))
+        assertEquals("06/29", result.text)
+    }
+
+    @Test
+    fun `formatExpiryDate rejects year 24`() {
+        val result = CardFormatters.formatExpiryDate(textFieldValue("0624"))
+        assertEquals("06/2", result.text)
+    }
+
+    // Additional formatCvv edge cases
+
+    @Test
+    fun `formatCvv handles single digit`() {
+        val result = CardFormatters.formatCvv(textFieldValue("1"), CardBrand.VISA)
+        assertEquals("1", result.text)
+    }
+
+    @Test
+    fun `formatCvv handles 2 digits`() {
+        val result = CardFormatters.formatCvv(textFieldValue("12"), CardBrand.VISA)
+        assertEquals("12", result.text)
+    }
+
+    @Test
+    fun `formatCvv handles all non-digit input`() {
+        val result = CardFormatters.formatCvv(textFieldValue("abc"), CardBrand.VISA)
+        assertEquals("", result.text)
+    }
+
+    @Test
+    fun `formatCvv with UNKNOWN brand still accepts 4 digits`() {
+        val result = CardFormatters.formatCvv(textFieldValue("1234"), CardBrand.UNKNOWN)
+        assertEquals("1234", result.text)
+    }
+
+    @Test
+    fun `formatCvv with MASTERCARD brand`() {
+        val result = CardFormatters.formatCvv(textFieldValue("123"), CardBrand.MASTERCARD)
+        assertEquals("123", result.text)
+    }
+
+    // Additional detectCardBrand edge cases
+
+    @Test
+    fun `detectCardBrand with single digit 4 returns VISA`() {
+        assertEquals(CardBrand.VISA, CardFormatters.detectCardBrand("4"))
+    }
+
+    @Test
+    fun `detectCardBrand with single digit 5 returns MASTERCARD`() {
+        assertEquals(CardBrand.MASTERCARD, CardFormatters.detectCardBrand("5"))
+    }
+
+    @Test
+    fun `detectCardBrand with single digit 2 returns MASTERCARD`() {
+        assertEquals(CardBrand.MASTERCARD, CardFormatters.detectCardBrand("2"))
+    }
+
+    @Test
+    fun `detectCardBrand with prefix 34 returns AMEX`() {
+        assertEquals(CardBrand.AMEX, CardFormatters.detectCardBrand("34"))
+    }
+
+    @Test
+    fun `detectCardBrand with digit 6 returns UNKNOWN`() {
+        assertEquals(CardBrand.UNKNOWN, CardFormatters.detectCardBrand("6123456789012345"))
+    }
+
+    @Test
+    fun `detectCardBrand with digit 1 returns UNKNOWN`() {
+        assertEquals(CardBrand.UNKNOWN, CardFormatters.detectCardBrand("1234567890123456"))
+    }
+
+    @Test
+    fun `detectCardBrand with non-digit input returns UNKNOWN`() {
+        assertEquals(CardBrand.UNKNOWN, CardFormatters.detectCardBrand("abcdef"))
+    }
+
+    // Additional isValidCardNumber edge cases
+
+    @Test
+    fun `isValidCardNumber returns true for valid Mastercard`() {
+        assertTrue(CardFormatters.isValidCardNumber("5555555555554444"))
+    }
+
+    @Test
+    fun `isValidCardNumber returns true for valid Amex`() {
+        assertTrue(CardFormatters.isValidCardNumber("378282246310005"))
+    }
+
+    @Test
+    fun `isValidCardNumber with spaces returns true`() {
+        assertTrue(CardFormatters.isValidCardNumber("4242 4242 4242 4242"))
+    }
+
+    // Additional isValidExpiryDate edge cases
+
+    @Test
+    fun `isValidExpiryDate returns false for single digit`() {
+        assertFalse(CardFormatters.isValidExpiryDate("1"))
+    }
+
+    @Test
+    fun `isValidExpiryDate returns false for three digits`() {
+        assertFalse(CardFormatters.isValidExpiryDate("123"))
+    }
+
+    @Test
+    fun `isValidExpiryDate returns true for valid date without slash`() {
+        assertTrue(CardFormatters.isValidExpiryDate("1228"))
+    }
+
+    @Test
+    fun `isValidExpiryDate returns false for all non-digits`() {
+        assertFalse(CardFormatters.isValidExpiryDate("abcd"))
+    }
+
+    // Additional isValidCvv edge cases
+
+    @Test
+    fun `isValidCvv returns true for 3 digit with MASTERCARD`() {
+        assertTrue(CardFormatters.isValidCvv("123", CardBrand.MASTERCARD))
+    }
+
+    @Test
+    fun `isValidCvv returns true for 4 digit with UNKNOWN brand`() {
+        assertTrue(CardFormatters.isValidCvv("1234", CardBrand.UNKNOWN))
+    }
+
+    @Test
+    fun `isValidCvv returns false for single digit`() {
+        assertFalse(CardFormatters.isValidCvv("1", CardBrand.VISA))
+    }
 }

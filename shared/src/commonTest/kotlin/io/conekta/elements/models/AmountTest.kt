@@ -67,4 +67,48 @@ class AmountTest {
         val amount = Amount(10000L)
         assertEquals("100.00", amount.toFixed(2))
     }
+
+    // Edge cases
+
+    @Test
+    fun `apiFormat handles single cent`() {
+        val amount = Amount(1L)
+        assertEquals(0.01, amount.apiFormat())
+    }
+
+    @Test
+    fun `apiFormat handles large amount`() {
+        val amount = Amount(9999999L)
+        assertEquals(99999.99, amount.apiFormat())
+    }
+
+    @Test
+    fun `toFixed with 3 decimals adds trailing zero`() {
+        val amount = Amount(12500L)
+        assertEquals("125.000", amount.toFixed(3))
+    }
+
+    @Test
+    fun `toString returns raw value as string`() {
+        val amount = Amount(26070L)
+        assertEquals("26070", amount.toString())
+    }
+
+    @Test
+    fun `toString for zero returns zero string`() {
+        val amount = Amount(0L)
+        assertEquals("0", amount.toString())
+    }
+
+    @Test
+    fun `apiFormat for 99 cents`() {
+        val amount = Amount(99L)
+        assertEquals(0.99, amount.apiFormat())
+    }
+
+    @Test
+    fun `toFixed with 2 decimals for single cent`() {
+        val amount = Amount(1L)
+        assertEquals("0.01", amount.toFixed(2))
+    }
 }

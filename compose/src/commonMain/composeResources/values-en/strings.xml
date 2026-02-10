@@ -11,6 +11,7 @@
     <string name="content_description_check">Verified</string>
     <string name="content_description_close">Close</string>
     <string name="content_description_conekta_logo">Conekta Logo</string>
+    <string name="content_description_cvv">Security code</string>
     <string name="content_description_mastercard_card">Mastercard card</string>
     <string name="content_description_security_info">Security information</string>
     <string name="content_description_visa_card">Visa card</string>
