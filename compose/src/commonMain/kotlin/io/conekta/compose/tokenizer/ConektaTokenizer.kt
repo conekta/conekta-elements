@@ -28,10 +28,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathFillType
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -46,6 +42,7 @@ import io.conekta.compose.components.ConektaButton
 import io.conekta.compose.components.ConektaLogoImage
 import io.conekta.compose.components.ConektaTextField
 import io.conekta.compose.components.CvvIcon
+import io.conekta.compose.components.InfoOutlinedIcon
 import io.conekta.compose.theme.ConektaColors
 import io.conekta.compose.theme.ConektaTheme
 import io.conekta.compose.theme.LocalConektaFontFamily
@@ -71,125 +68,9 @@ import io.conekta.elements.compose.generated.resources.validation_expiry_year_in
 import io.conekta.elements.tokenizer.models.TokenResult
 import io.conekta.elements.tokenizer.models.TokenizerConfig
 import io.conekta.elements.tokenizer.models.TokenizerError
+import io.conekta.elements.tokenizer.validators.ValidationMessages
+import io.conekta.elements.tokenizer.validators.validateForm
 import org.jetbrains.compose.resources.stringResource
-
-private val InfoOutlinedIcon: ImageVector by lazy {
-    ImageVector.Builder(
-        name = "InfoOutlined",
-        defaultWidth = 24.dp,
-        defaultHeight = 24.dp,
-        viewportWidth = 24f,
-        viewportHeight = 24f,
-    ).apply {
-        path(fill = SolidColor(Color.Black), pathFillType = PathFillType.EvenOdd) {
-            // "i" body
-            moveTo(11f, 17f)
-            horizontalLineToRelative(2f)
-            verticalLineToRelative(-6f)
-            horizontalLineToRelative(-2f)
-            close()
-            // Outer circle
-            moveTo(12f, 2f)
-            curveTo(6.48f, 2f, 2f, 6.48f, 2f, 12f)
-            reflectiveCurveToRelative(4.48f, 10f, 10f, 10f)
-            reflectiveCurveToRelative(10f, -4.48f, 10f, -10f)
-            reflectiveCurveTo(17.52f, 2f, 12f, 2f)
-            close()
-            // Inner circle (cutout)
-            moveTo(12f, 20f)
-            curveToRelative(-4.41f, 0f, -8f, -3.59f, -8f, -8f)
-            reflectiveCurveToRelative(3.59f, -8f, 8f, -8f)
-            reflectiveCurveToRelative(8f, 3.59f, 8f, 8f)
-            reflectiveCurveToRelative(-3.59f, 8f, -8f, 8f)
-            close()
-            // "i" dot
-            moveTo(11f, 9f)
-            horizontalLineToRelative(2f)
-            verticalLineTo(7f)
-            horizontalLineToRelative(-2f)
-            close()
-        }
-    }.build()
-}
-
-private data class ValidationMessages(
-    val required: String,
-    val cardMinLength: String,
-    val expiryYearInvalid: String,
-    val cvvMinLength: String,
-)
-
-private data class FieldError(
-    val isError: Boolean = false,
-    val message: String? = null,
-)
-
-private data class ValidationResult(
-    val cardholderName: FieldError = FieldError(),
-    val cardNumber: FieldError = FieldError(),
-    val expiryDate: FieldError = FieldError(),
-    val cvv: FieldError = FieldError(),
-) {
-    val hasError: Boolean
-        get() = cardholderName.isError || cardNumber.isError || expiryDate.isError || cvv.isError
-}
-
-private fun validateForm(
-    cardholderName: String,
-    cardNumber: String,
-    expiryDate: String,
-    cvv: String,
-    detectedBrand: io.conekta.elements.tokenizer.models.CardBrand,
-    collectCardholderName: Boolean,
-    messages: ValidationMessages,
-): ValidationResult {
-    val cardDigits = cardNumber.filter { it.isDigit() }
-
-    return ValidationResult(
-        cardholderName = validateRequired(cardholderName, collectCardholderName, messages.required),
-        cardNumber = validateCardNumber(cardDigits, cardNumber, messages),
-        expiryDate = validateExpiry(expiryDate, messages),
-        cvv = validateCvv(cvv, detectedBrand, messages),
-    )
-}
-
-private fun validateRequired(
-    value: String,
-    shouldValidate: Boolean,
-    requiredMsg: String,
-): FieldError = if (shouldValidate && value.isBlank()) FieldError(true, requiredMsg) else FieldError()
-
-private fun validateCardNumber(
-    digits: String,
-    rawText: String,
-    messages: ValidationMessages,
-): FieldError =
-    when {
-        rawText.isBlank() -> FieldError(true, messages.required)
-        !CardFormatters.isValidCardNumber(digits) -> FieldError(true, messages.cardMinLength)
-        else -> FieldError()
-    }
-
-private fun validateExpiry(
-    expiryDate: String,
-    messages: ValidationMessages,
-): FieldError =
-    when {
-        expiryDate.isBlank() -> FieldError(true, messages.required)
-        !CardFormatters.isValidExpiryDate(expiryDate) -> FieldError(true, messages.expiryYearInvalid)
-        else -> FieldError()
-    }
-
-private fun validateCvv(
-    cvv: String,
-    brand: io.conekta.elements.tokenizer.models.CardBrand,
-    messages: ValidationMessages,
-): FieldError =
-    when {
-        cvv.isBlank() -> FieldError(true, messages.required)
-        !CardFormatters.isValidCvv(cvv, brand) -> FieldError(true, messages.cvvMinLength)
-        else -> FieldError()
-    }
 
 /**
  * Conekta Tokenizer - Main public API
@@ -314,7 +195,7 @@ private fun TokenizerContent(
                 value = cardholderName,
                 onValueChange = {
                     cardholderName = it
-                    cardholderNameError = false // Clear error on input
+                    cardholderNameError = false
                     cardholderNameErrorMsg = null
                 },
                 label = stringResource(Res.string.label_cardholder_name),
@@ -332,7 +213,7 @@ private fun TokenizerContent(
             value = cardNumber,
             onValueChange = { newValue ->
                 cardNumber = CardFormatters.formatCardNumber(newValue)
-                cardNumberError = false // Clear error on input
+                cardNumberError = false
                 cardNumberErrorMsg = null
             },
             label = stringResource(Res.string.label_card_number),
@@ -343,7 +224,6 @@ private fun TokenizerContent(
             isError = cardNumberError,
             errorMessage = cardNumberErrorMsg,
             trailingContent = {
-                // Show card brand icons
                 CardBrandIconsRow(
                     detectedBrand = detectedBrand,
                 )
@@ -359,7 +239,7 @@ private fun TokenizerContent(
                 value = expiryDate,
                 onValueChange = { newValue ->
                     expiryDate = CardFormatters.formatExpiryDate(newValue)
-                    expiryDateError = false // Clear error on input
+                    expiryDateError = false
                     expiryDateErrorMsg = null
                 },
                 label = stringResource(Res.string.label_expiry),
@@ -376,7 +256,7 @@ private fun TokenizerContent(
                 value = cvv,
                 onValueChange = { newValue ->
                     cvv = CardFormatters.formatCvv(newValue, detectedBrand)
-                    cvvError = false // Clear error on input
+                    cvvError = false
                     cvvErrorMsg = null
                 },
                 label = stringResource(Res.string.label_cvv),
