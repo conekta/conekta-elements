@@ -1,16 +1,22 @@
 <resources>
+    <string name="button_continue">Continue</string>
+    <string name="button_processing">Processing…</string>
+
     <string name="card_information_title">Card information</string>
 
-    <string name="conekta_description">Conekta is the portal that %s uses to process their online payments securely and reliably.</string>
+    <string name="conekta_description">Conekta is the portal that %1$s uses to process their online payments securely and reliably.</string>
 
     <string name="content_description_amex_card">American Express card</string>
     <string name="content_description_card_brand">card</string>
     <string name="content_description_check">Verified</string>
     <string name="content_description_close">Close</string>
     <string name="content_description_conekta_logo">Conekta Logo</string>
+    <string name="content_description_cvv">Security code</string>
     <string name="content_description_mastercard_card">Mastercard card</string>
     <string name="content_description_security_info">Security information</string>
     <string name="content_description_visa_card">Visa card</string>
+
+    <string name="error_field_required">This field is required</string>
 
     <string name="label_card_number">Card number</string>
     <string name="label_cardholder_name">Cardholder name</string>
@@ -25,7 +31,10 @@
     <string name="placeholder_cvv">CVV</string>
     <string name="placeholder_expiry">MM/YY</string>
 
+    <string name="validation_card_min_length">The minimum number of characters is 15</string>
+    <string name="validation_cvv_min_length">The minimum number of characters is 3</string>
     <string name="validation_expired_card">Card expired</string>
+    <string name="validation_expiry_year_invalid">The year must be greater than or equal to 26</string>
     <string name="validation_invalid_card">Invalid card number</string>
     <string name="validation_invalid_cvv">Invalid CVV</string>
     <string name="validation_only_digits">Only digits allowed</string>

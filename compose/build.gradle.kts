@@ -35,6 +35,8 @@ kotlin {
         minSdk = 24
 
         withHostTestBuilder {
+        }.configure {
+            isIncludeAndroidResources = true
         }
 
         withDeviceTestBuilder {
@@ -117,6 +119,8 @@ kotlin {
                 implementation(libs.robolectric)
                 implementation(libs.core)
                 implementation(libs.junit)
+                @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+                implementation(compose.uiTest)
             }
         }
 

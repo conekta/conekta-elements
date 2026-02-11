@@ -46,6 +46,26 @@ object CardBrandAssets {
     }
 
     /**
+     * UI Icons (from Figma design system)
+     */
+    object Icons {
+        /**
+         * Close/X icon for dismissing dialogs
+         */
+        const val CLOSE = "$AWS_S3_URL/icons/close.svg"
+
+        /**
+         * Check circle icon for success states
+         */
+        const val CHECK_CIRCLE = "$AWS_S3_URL/icons/check-circle.svg"
+
+        /**
+         * CVV icon for security code field (32x32)
+         */
+        const val CVV = "$AWS_S3_URL/img/icons/cvv-icon-32x32.svg"
+    }
+
+    /**
      * Get CDN URL for a specific card brand
      * Returns null for UNKNOWN brands
      */

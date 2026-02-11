@@ -1,13 +1,22 @@
 package io.conekta.compose.components
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -16,7 +25,9 @@ import io.conekta.elements.compose.generated.resources.Res
 import io.conekta.elements.compose.generated.resources.content_description_amex_card
 import io.conekta.elements.compose.generated.resources.content_description_card_brand
 import io.conekta.elements.compose.generated.resources.content_description_check
+import io.conekta.elements.compose.generated.resources.content_description_close
 import io.conekta.elements.compose.generated.resources.content_description_conekta_logo
+import io.conekta.elements.compose.generated.resources.content_description_cvv
 import io.conekta.elements.compose.generated.resources.content_description_mastercard_card
 import io.conekta.elements.compose.generated.resources.content_description_visa_card
 import io.conekta.elements.tokenizer.models.CardBrand
@@ -81,7 +92,7 @@ fun CardBrandIcon(
     brand: CardBrand,
     modifier: Modifier = Modifier,
 ) {
-    val cdnUrl = CardBrandAssets.getCardBrandUrl(brand) ?: return // Don't render unknown brands
+    val cdnUrl = CardBrandAssets.getCardBrandUrl(brand) ?: return
 
     val contentDescription =
         when (brand) {
@@ -91,17 +102,27 @@ fun CardBrandIcon(
             CardBrand.UNKNOWN -> stringResource(Res.string.content_description_card_brand)
         }
 
-    AsyncImage(
-        model = cdnUrl,
-        contentDescription = contentDescription,
-        modifier = modifier,
-        contentScale = ContentScale.Fit,
-    )
+    val shape = RoundedCornerShape(4.dp)
+
+    Box(
+        modifier =
+            modifier
+                .clip(shape)
+                .border(1.dp, Color(0xFFE0E0E0), shape),
+        contentAlignment = androidx.compose.ui.Alignment.Center,
+    ) {
+        AsyncImage(
+            model = cdnUrl,
+            contentDescription = contentDescription,
+            modifier = Modifier.size(24.dp),
+            contentScale = ContentScale.Fit,
+        )
+    }
 }
 
 /**
  * Renders card brand icons in a row
- * Shows only the detected brand, or all brands if none detected
+ * Shows only the detected brand when recognized
  */
 @Composable
 fun CardBrandIconsRow(
@@ -109,25 +130,52 @@ fun CardBrandIconsRow(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        modifier = modifier.padding(end = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         val brandToShow = detectedBrand?.takeIf { !it.isUNKNOWN() }
+
+        val iconModifier = Modifier.width(40.dp).height(28.dp)
+
         if (brandToShow != null) {
             CardBrandIcon(
                 brand = brandToShow,
-                modifier = Modifier.size(24.dp),
+                modifier = iconModifier,
             )
         } else {
-            CardBrandIcon(brand = CardBrand.VISA, modifier = Modifier.size(24.dp))
-            CardBrandIcon(brand = CardBrand.MASTERCARD, modifier = Modifier.size(24.dp))
-            CardBrandIcon(brand = CardBrand.AMEX, modifier = Modifier.size(24.dp))
+            CardBrandIcon(
+                brand = CardBrand.VISA,
+                modifier = iconModifier,
+            )
+            CardBrandIcon(
+                brand = CardBrand.AMEX,
+                modifier = iconModifier,
+            )
+            CardBrandIcon(
+                brand = CardBrand.MASTERCARD,
+                modifier = iconModifier,
+            )
         }
     }
 }
 
 /**
- * Renders a check circle icon using Material Icons
+ * Renders a close (X) icon using Material Icons
+ */
+@Composable
+fun CloseIcon(modifier: Modifier = Modifier) {
+    Icon(
+        imageVector = androidx.compose.material.icons.Icons.Default.Close,
+        contentDescription = stringResource(Res.string.content_description_close),
+        modifier = modifier,
+        tint =
+            androidx.compose.ui.graphics
+                .Color(0xFF2A2A72),
+    )
+}
+
+/**
+ * Renders a check circle icon using Material Icons with Conekta green color
  */
 @Composable
 fun CheckCircleIcon(modifier: Modifier = Modifier) {
@@ -135,5 +183,21 @@ fun CheckCircleIcon(modifier: Modifier = Modifier) {
         imageVector = Icons.Default.CheckCircle,
         contentDescription = stringResource(Res.string.content_description_check),
         modifier = modifier,
+        tint =
+            androidx.compose.ui.graphics
+                .Color(0xFF10B981),
+    )
+}
+
+/**
+ * Renders CVV icon from CDN (32x32)
+ */
+@Composable
+fun CvvIcon(modifier: Modifier = Modifier) {
+    AsyncImage(
+        model = CardBrandAssets.Icons.CVV,
+        contentDescription = stringResource(Res.string.content_description_cvv),
+        modifier = modifier,
+        contentScale = ContentScale.Fit,
     )
 }

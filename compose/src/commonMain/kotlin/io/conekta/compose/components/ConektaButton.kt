@@ -14,6 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.conekta.compose.theme.ConektaColors
+import io.conekta.compose.theme.LocalConektaFontFamily
 
 /**
  * Conekta styled button component
@@ -46,6 +47,7 @@ fun ConektaButton(
             text = text,
             style =
                 TextStyle(
+                    fontFamily = LocalConektaFontFamily.current,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     lineHeight = 24.sp,

@@ -65,6 +65,9 @@ kotlin {
             // Serialization
             implementation(libs.kotlinx.serialization.json)
 
+            // Date/Time
+            implementation(libs.kotlinx.datetime)
+
             // Logging
             implementation(libs.kermit)
         }

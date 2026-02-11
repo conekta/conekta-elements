@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -39,16 +37,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.conekta.compose.components.CardBrandIconsRow
 import io.conekta.compose.components.CheckCircleIcon
+import io.conekta.compose.components.CloseIcon
 import io.conekta.compose.components.ConektaButton
 import io.conekta.compose.components.ConektaLogoImage
 import io.conekta.compose.components.ConektaTextField
+import io.conekta.compose.components.CvvIcon
+import io.conekta.compose.components.InfoOutlinedIcon
 import io.conekta.compose.theme.ConektaColors
 import io.conekta.compose.theme.ConektaTheme
+import io.conekta.compose.theme.LocalConektaFontFamily
 import io.conekta.elements.compose.generated.resources.Res
+import io.conekta.elements.compose.generated.resources.button_continue
+import io.conekta.elements.compose.generated.resources.button_processing
 import io.conekta.elements.compose.generated.resources.card_information_title
 import io.conekta.elements.compose.generated.resources.conekta_description
-import io.conekta.elements.compose.generated.resources.content_description_close
 import io.conekta.elements.compose.generated.resources.content_description_security_info
+import io.conekta.elements.compose.generated.resources.error_field_required
 import io.conekta.elements.compose.generated.resources.label_card_number
 import io.conekta.elements.compose.generated.resources.label_cardholder_name
 import io.conekta.elements.compose.generated.resources.label_cvv
@@ -58,9 +62,14 @@ import io.conekta.elements.compose.generated.resources.payment_protected
 import io.conekta.elements.compose.generated.resources.placeholder_cardholder_name
 import io.conekta.elements.compose.generated.resources.placeholder_cvv
 import io.conekta.elements.compose.generated.resources.placeholder_expiry
+import io.conekta.elements.compose.generated.resources.validation_card_min_length
+import io.conekta.elements.compose.generated.resources.validation_cvv_min_length
+import io.conekta.elements.compose.generated.resources.validation_expiry_year_invalid
 import io.conekta.elements.tokenizer.models.TokenResult
 import io.conekta.elements.tokenizer.models.TokenizerConfig
 import io.conekta.elements.tokenizer.models.TokenizerError
+import io.conekta.elements.tokenizer.validators.ValidationMessages
+import io.conekta.elements.tokenizer.validators.validateForm
 import org.jetbrains.compose.resources.stringResource
 
 /**
@@ -113,6 +122,7 @@ private fun TokenizerContent(
     onSuccess: (TokenResult) -> Unit,
     onError: (TokenizerError) -> Unit,
 ) {
+    val fontFamily = LocalConektaFontFamily.current
     var cardholderName by remember { mutableStateOf(TextFieldValue("")) }
     var cardNumber by remember { mutableStateOf(TextFieldValue("")) }
     var expiryDate by remember { mutableStateOf(TextFieldValue("")) }
@@ -131,6 +141,17 @@ private fun TokenizerContent(
     var cardNumberErrorMsg by remember { mutableStateOf<String?>(null) }
     var expiryDateErrorMsg by remember { mutableStateOf<String?>(null) }
     var cvvErrorMsg by remember { mutableStateOf<String?>(null) }
+
+    // Strings
+    val buttonContinue = stringResource(Res.string.button_continue)
+    val buttonProcessing = stringResource(Res.string.button_processing)
+    val validationMessages =
+        ValidationMessages(
+            required = stringResource(Res.string.error_field_required),
+            cardMinLength = stringResource(Res.string.validation_card_min_length),
+            expiryYearInvalid = stringResource(Res.string.validation_expiry_year_invalid),
+            cvvMinLength = stringResource(Res.string.validation_cvv_min_length),
+        )
 
     val detectedBrand =
         remember(cardNumber.text) {
@@ -158,6 +179,7 @@ private fun TokenizerContent(
             text = stringResource(Res.string.card_information_title),
             style =
                 TextStyle(
+                    fontFamily = fontFamily,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = ConektaColors.DarkIndigo,
@@ -173,7 +195,7 @@ private fun TokenizerContent(
                 value = cardholderName,
                 onValueChange = {
                     cardholderName = it
-                    cardholderNameError = false // Clear error on input
+                    cardholderNameError = false
                     cardholderNameErrorMsg = null
                 },
                 label = stringResource(Res.string.label_cardholder_name),
@@ -191,7 +213,7 @@ private fun TokenizerContent(
             value = cardNumber,
             onValueChange = { newValue ->
                 cardNumber = CardFormatters.formatCardNumber(newValue)
-                cardNumberError = false // Clear error on input
+                cardNumberError = false
                 cardNumberErrorMsg = null
             },
             label = stringResource(Res.string.label_card_number),
@@ -202,7 +224,6 @@ private fun TokenizerContent(
             isError = cardNumberError,
             errorMessage = cardNumberErrorMsg,
             trailingContent = {
-                // Show card brand icons
                 CardBrandIconsRow(
                     detectedBrand = detectedBrand,
                 )
@@ -218,7 +239,7 @@ private fun TokenizerContent(
                 value = expiryDate,
                 onValueChange = { newValue ->
                     expiryDate = CardFormatters.formatExpiryDate(newValue)
-                    expiryDateError = false // Clear error on input
+                    expiryDateError = false
                     expiryDateErrorMsg = null
                 },
                 label = stringResource(Res.string.label_expiry),
@@ -235,7 +256,7 @@ private fun TokenizerContent(
                 value = cvv,
                 onValueChange = { newValue ->
                     cvv = CardFormatters.formatCvv(newValue, detectedBrand)
-                    cvvError = false // Clear error on input
+                    cvvError = false
                     cvvErrorMsg = null
                 },
                 label = stringResource(Res.string.label_cvv),
@@ -246,6 +267,11 @@ private fun TokenizerContent(
                 enabled = !isProcessing,
                 isError = cvvError,
                 errorMessage = cvvErrorMsg,
+                trailingContent = {
+                    CvvIcon(
+                        modifier = Modifier.size(32.dp),
+                    )
+                },
             )
         }
 
@@ -253,52 +279,31 @@ private fun TokenizerContent(
 
         // Submit Button
         ConektaButton(
-            text = if (isProcessing) "Procesando..." else "Continuar",
+            text = if (isProcessing) buttonProcessing else buttonContinue,
             onClick = {
-                // Clear all errors first
-                cardholderNameError = false
-                cardholderNameErrorMsg = null
-                cardNumberError = false
-                cardNumberErrorMsg = null
-                expiryDateError = false
-                expiryDateErrorMsg = null
-                cvvError = false
-                cvvErrorMsg = null
+                val result =
+                    validateForm(
+                        cardholderName = cardholderName.text,
+                        cardNumber = cardNumber.text,
+                        expiryDate = expiryDate.text,
+                        cvv = cvv.text,
+                        detectedBrand = detectedBrand,
+                        collectCardholderName = config.collectCardholderName,
+                        messages = validationMessages,
+                    )
 
-                // Validate all fields
-                val cardDigits = cardNumber.text.filter { it.isDigit() }
-                var hasError = false
+                cardholderNameError = result.cardholderName.isError
+                cardholderNameErrorMsg = result.cardholderName.message
+                cardNumberError = result.cardNumber.isError
+                cardNumberErrorMsg = result.cardNumber.message
+                expiryDateError = result.expiryDate.isError
+                expiryDateErrorMsg = result.expiryDate.message
+                cvvError = result.cvv.isError
+                cvvErrorMsg = result.cvv.message
 
-                // Validate each field and mark errors
-                if (config.collectCardholderName && cardholderName.text.isBlank()) {
-                    cardholderNameError = true
-                    cardholderNameErrorMsg = "Este dato es necesario"
-                    hasError = true
-                }
-
-                if (cardNumber.text.isBlank() || !CardFormatters.isValidCardNumber(cardDigits)) {
-                    cardNumberError = true
-                    cardNumberErrorMsg = "Este dato es necesario"
-                    hasError = true
-                }
-
-                if (expiryDate.text.isBlank() || !CardFormatters.isValidExpiryDate(expiryDate.text)) {
-                    expiryDateError = true
-                    expiryDateErrorMsg = "Este dato es necesario"
-                    hasError = true
-                }
-
-                if (cvv.text.isBlank() || !CardFormatters.isValidCvv(cvv.text, detectedBrand)) {
-                    cvvError = true
-                    cvvErrorMsg = "Este dato es necesario"
-                    hasError = true
-                }
-
-                // If there are no errors, proceed with tokenization
-                if (!hasError) {
+                if (!result.hasError) {
                     isProcessing = true
-                    // TODO: Implement actual tokenization API call
-                    // For now, return a mock token
+                    val cardDigits = cardNumber.text.filter { it.isDigit() }
                     onSuccess(
                         TokenResult(
                             token = "tok_test_mock_${cardDigits.takeLast(4)}",
@@ -308,7 +313,6 @@ private fun TokenizerContent(
                     )
                     isProcessing = false
                 }
-                // If there are errors, they are already displayed below each input
             },
             enabled = !isProcessing,
         )
@@ -328,6 +332,7 @@ private fun TokenizerHeader(
     merchantName: String,
     onInfoClick: () -> Unit,
 ) {
+    val fontFamily = LocalConektaFontFamily.current
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -338,11 +343,11 @@ private fun TokenizerHeader(
                 text = stringResource(Res.string.pay_securely_with),
                 style =
                     TextStyle(
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Medium,
+                        fontFamily = fontFamily,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold,
                         color = ConektaColors.Neutral7,
-                        lineHeight = 16.sp,
-                        letterSpacing = 0.5.sp,
+                        letterSpacing = 0.7.sp,
                     ),
             )
 
@@ -350,13 +355,16 @@ private fun TokenizerHeader(
 
             // Conekta Logo
             ConektaLogoImage(
-                modifier = Modifier.height(20.dp),
+                modifier =
+                    Modifier
+                        .width(120.dp)
+                        .height(20.dp),
             )
         }
 
         IconButton(onClick = onInfoClick) {
             Icon(
-                imageVector = Icons.Default.Info,
+                imageVector = InfoOutlinedIcon,
                 contentDescription = stringResource(Res.string.content_description_security_info),
                 tint = ConektaColors.Neutral7,
             )
@@ -370,6 +378,7 @@ private fun PaymentProtectionSheet(
     merchantName: String,
     onDismiss: () -> Unit,
 ) {
+    val fontFamily = LocalConektaFontFamily.current
     val sheetState =
         rememberModalBottomSheetState(
             skipPartiallyExpanded = false,
@@ -400,14 +409,8 @@ private fun PaymentProtectionSheet(
                 horizontalArrangement = Arrangement.End,
             ) {
                 IconButton(onClick = onDismiss) {
-                    Text(
-                        text = stringResource(Res.string.content_description_close),
-                        style =
-                            TextStyle(
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Normal,
-                                color = ConektaColors.DarkIndigo,
-                            ),
+                    CloseIcon(
+                        modifier = Modifier.size(24.dp),
                     )
                 }
             }
@@ -431,6 +434,7 @@ private fun PaymentProtectionSheet(
                     text = stringResource(Res.string.payment_protected),
                     style =
                         TextStyle(
+                            fontFamily = fontFamily,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             color = ConektaColors.DarkIndigo,
@@ -446,6 +450,7 @@ private fun PaymentProtectionSheet(
                 text = stringResource(Res.string.conekta_description, merchantName),
                 style =
                     TextStyle(
+                        fontFamily = fontFamily,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Normal,
                         color = ConektaColors.Neutral8,

@@ -1,16 +1,22 @@
 <resources>
+    <string name="button_continue">Continuar</string>
+    <string name="button_processing">Procesando…</string>
+
     <string name="card_information_title">Información de la tarjeta</string>
 
-    <string name="conekta_description">Conekta es el portal que usa %s para procesar sus pagos en línea de manera segura y confiable.</string>
+    <string name="conekta_description">Conekta es el portal que usa %1$s para procesar sus pagos en línea de manera segura y confiable.</string>
 
     <string name="content_description_amex_card">Tarjeta American Express</string>
     <string name="content_description_card_brand">Tarjeta</string>
     <string name="content_description_check">Verificado</string>
     <string name="content_description_close">Cerrar</string>
     <string name="content_description_conekta_logo">Logo de Conekta</string>
+    <string name="content_description_cvv">Código de seguridad</string>
     <string name="content_description_mastercard_card">Tarjeta Mastercard</string>
     <string name="content_description_security_info">Información de seguridad</string>
     <string name="content_description_visa_card">Tarjeta Visa</string>
+
+    <string name="error_field_required">Este campo es obligatorio</string>
 
     <string name="label_card_number">Número de tarjeta</string>
     <string name="label_cardholder_name">Nombre en la tarjeta</string>
@@ -25,7 +31,10 @@
     <string name="placeholder_cvv">CVV</string>
     <string name="placeholder_expiry">MM/YY</string>
 
+    <string name="validation_card_min_length">El número mínimo de caracteres es 15</string>
+    <string name="validation_cvv_min_length">El número mínimo de caracteres es de 3</string>
     <string name="validation_expired_card">Tarjeta vencida</string>
+    <string name="validation_expiry_year_invalid">El año debe ser mayor o igual a 26</string>
     <string name="validation_invalid_card">Número de tarjeta inválido</string>
     <string name="validation_invalid_cvv">CVV inválido</string>
     <string name="validation_only_digits">Solo se permiten dígitos</string>
