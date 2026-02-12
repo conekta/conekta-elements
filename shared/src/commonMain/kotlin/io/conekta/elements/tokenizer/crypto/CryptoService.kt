@@ -14,7 +14,7 @@ data class EncryptedCardData(
 /**
  * Interface for card data encryption, enabling testing with fakes.
  */
-interface CardEncryptor {
+fun interface CardEncryptor {
     fun encryptCardData(
         cardJson: String,
         rsaPublicKeyBase64: String,

@@ -330,12 +330,7 @@ private fun TokenizerContent(
                                     tokenResult.copy(cardBrand = detectedBrand.name),
                                 )
                             }.onFailure { error ->
-                                val tokenizerError =
-                                    (error as? TokenizerApiException)?.tokenizerError
-                                        ?: TokenizerError.NetworkError(
-                                            error.message ?: "Unknown error",
-                                        )
-                                onError(tokenizerError)
+                                onError((error as TokenizerApiException).tokenizerError)
                             }
                         isProcessing = false
                     }

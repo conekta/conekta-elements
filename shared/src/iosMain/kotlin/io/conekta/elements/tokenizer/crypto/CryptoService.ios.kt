@@ -15,7 +15,7 @@ import kotlinx.cinterop.value
 import platform.CoreCrypto.CCCrypt
 import platform.CoreCrypto.CC_MD5
 import platform.CoreCrypto.CC_MD5_DIGEST_LENGTH
-import platform.CoreCrypto.kCCAlgorithmAES128
+import platform.CoreCrypto.kCCAlgorithmAES
 import platform.CoreCrypto.kCCEncrypt
 import platform.CoreCrypto.kCCOptionPKCS7Padding
 import platform.CoreCrypto.kCCSuccess
@@ -127,7 +127,7 @@ actual class CryptoService actual constructor() : CardEncryptor {
                             buffer.usePinned { bufferPinned ->
                                 CCCrypt(
                                     kCCEncrypt,
-                                    kCCAlgorithmAES128,
+                                    kCCAlgorithmAES,
                                     kCCOptionPKCS7Padding,
                                     keyPinned.addressOf(0),
                                     key.size.convert(),

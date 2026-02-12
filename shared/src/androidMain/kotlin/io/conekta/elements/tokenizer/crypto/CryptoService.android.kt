@@ -58,6 +58,8 @@ actual class CryptoService actual constructor() : CardEncryptor {
 
         val (key, iv) = evpBytesToKey(passphrase.toByteArray(Charsets.UTF_8), salt)
 
+        // AES-256-CBC is required for CryptoJS passphrase-mode compatibility with the Conekta BFF.
+        @Suppress("InsecureCipherMode")
         val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
         cipher.init(Cipher.ENCRYPT_MODE, SecretKeySpec(key, "AES"), IvParameterSpec(iv))
         val ciphertext = cipher.doFinal(plaintext.toByteArray(Charsets.UTF_8))
@@ -109,6 +111,9 @@ actual class CryptoService actual constructor() : CardEncryptor {
         val keyBytes = base64Decoder.decode(publicKeyBase64)
         val keySpec = X509EncodedKeySpec(keyBytes)
         val publicKey = KeyFactory.getInstance("RSA").generatePublic(keySpec)
+
+        // PKCS#1 v1.5 padding is required for compatibility with the Conekta BFF.
+        @Suppress("InsecurePadding")
         val cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
         cipher.init(Cipher.ENCRYPT_MODE, publicKey)
         val encrypted = cipher.doFinal(plaintext.toByteArray(Charsets.UTF_8))

@@ -27,7 +27,7 @@ object ConektaHttpClient {
                                 .d("ConektaHttp") { message }
                         }
                     }
-                level = LogLevel.ALL
+                level = LogLevel.INFO
             }
         }
 }

@@ -23,6 +23,7 @@ external object CryptoJS {
 
 // --- btoa polyfill for Node.js environments ---
 
+@Suppress("UNUSED_PARAMETER") // `input` is used inside the js() block via Kotlin/JS name binding
 private fun safeBtoa(input: String): String =
     js(
         """
