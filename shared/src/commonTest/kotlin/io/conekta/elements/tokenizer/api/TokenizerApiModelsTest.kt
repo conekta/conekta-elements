@@ -4,6 +4,7 @@ import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class TokenizerApiModelsTest {
     private val json = Json { ignoreUnknownKeys = true }
@@ -19,8 +20,8 @@ class TokenizerApiModelsTest {
                 number = "4242424242424242",
             )
         val serialized = json.encodeToString(CardDataDto.serializer(), dto)
-        assert(serialized.contains("\"exp_month\":\"12\"")) { "Expected snake_case exp_month, got: $serialized" }
-        assert(serialized.contains("\"exp_year\":\"26\"")) { "Expected snake_case exp_year, got: $serialized" }
+        assertTrue(serialized.contains("\"exp_month\":\"12\""), "Expected snake_case exp_month, got: $serialized")
+        assertTrue(serialized.contains("\"exp_year\":\"26\""), "Expected snake_case exp_year, got: $serialized")
     }
 
     @Test
@@ -41,7 +42,7 @@ class TokenizerApiModelsTest {
                 card = CardDataDto("123", "12", "26", "Test", "4111111111111111"),
             )
         val serialized = json.encodeToString(CardPayloadDto.serializer(), payload)
-        assert(serialized.contains("\"card\":{")) { "Expected nested card object, got: $serialized" }
+        assertTrue(serialized.contains("\"card\":{"), "Expected nested card object, got: $serialized")
     }
 
     @Test

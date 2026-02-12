@@ -21,16 +21,6 @@ external object CryptoJS {
     }
 }
 
-// --- External declarations for jsencrypt ---
-
-@JsModule("jsencrypt")
-@JsNonModule
-external class JSEncrypt {
-    fun setPublicKey(publicKey: String)
-
-    fun encrypt(message: String): dynamic
-}
-
 // --- btoa polyfill for Node.js environments ---
 
 private fun safeBtoa(input: String): String =
@@ -41,6 +31,13 @@ private fun safeBtoa(input: String): String =
         : Buffer.from(input, 'binary').toString('base64')
     """,
     )
+
+/**
+ * Lazily loads jsencrypt via dynamic require() to avoid "window is not defined"
+ * errors in Node.js test environments. The jsencrypt UMD bundle accesses window
+ * at module init time, so we defer loading until actually needed at runtime.
+ */
+private fun createJSEncryptInstance(): dynamic = js("new (require('jsencrypt').JSEncrypt)()")
 
 actual class CryptoService actual constructor() : CardEncryptor {
     actual override fun encryptCardData(
@@ -55,10 +52,10 @@ actual class CryptoService actual constructor() : CardEncryptor {
         val aesEncrypted: String = CryptoJS.AES.encrypt(cardJson, aesKeyHex).toString()
 
         // 3. RSA encrypt the AES key hex
-        val encryptor = JSEncrypt()
+        val encryptor = createJSEncryptInstance()
         encryptor.setPublicKey("-----BEGIN PUBLIC KEY-----\n$rsaPublicKeyBase64\n-----END PUBLIC KEY-----")
         val rsaEncrypted: String =
-            encryptor.encrypt(aesKeyHex) as? String
+            (encryptor.encrypt(aesKeyHex) as? String)
                 ?: error("RSA encryption failed")
 
         // 4. Double base64 — matching Base64Tokenization.encode() from int-payment-component
