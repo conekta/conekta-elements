@@ -62,6 +62,46 @@ class TokenizerConfigTest {
         assertEquals("key_test_123", copy.publicKey)
         assertEquals("Store B", copy.merchantName)
     }
+
+    @Test
+    fun `TokenizerConfig has default baseUrl pointing to production`() {
+        val config = TokenizerConfig(publicKey = "key_test_123")
+        assertEquals("https://pay.conekta.com/", config.baseUrl)
+    }
+
+    @Test
+    fun `TokenizerConfig has default rsaPublicKey for production`() {
+        val config = TokenizerConfig(publicKey = "key_test_123")
+        assertTrue(config.rsaPublicKey.isNotEmpty())
+        assertTrue(config.rsaPublicKey.startsWith("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjet2"))
+    }
+
+    @Test
+    fun `TokenizerConfig accepts custom baseUrl`() {
+        val config =
+            TokenizerConfig(
+                publicKey = "key_test_123",
+                baseUrl = "https://pay.stg.conekta.io/",
+            )
+        assertEquals("https://pay.stg.conekta.io/", config.baseUrl)
+    }
+
+    @Test
+    fun `TokenizerConfig accepts custom rsaPublicKey`() {
+        val config =
+            TokenizerConfig(
+                publicKey = "key_test_123",
+                rsaPublicKey = "custom_rsa_key",
+            )
+        assertEquals("custom_rsa_key", config.rsaPublicKey)
+    }
+
+    @Test
+    fun `TokenizerConfig equality considers baseUrl and rsaPublicKey`() {
+        val config1 = TokenizerConfig(publicKey = "key_test_123", baseUrl = "https://a.com/")
+        val config2 = TokenizerConfig(publicKey = "key_test_123", baseUrl = "https://b.com/")
+        assertNotEquals(config1, config2)
+    }
 }
 
 class TokenResultTest {

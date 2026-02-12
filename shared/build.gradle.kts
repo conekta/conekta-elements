@@ -82,10 +82,14 @@ kotlin {
 
         jsMain.dependencies {
             implementation(libs.ktor.client.js)
+            implementation(npm("crypto-js", "4.2.0"))
+            implementation(npm("jsencrypt", "3.3.2"))
         }
 
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.ktor.client.mock)
+            implementation(libs.kotlinx.coroutines.test)
         }
     }
 }
