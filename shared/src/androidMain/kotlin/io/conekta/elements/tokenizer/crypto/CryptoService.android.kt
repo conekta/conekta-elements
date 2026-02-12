@@ -76,7 +76,7 @@ actual class CryptoService actual constructor() : CardEncryptor {
         salt: ByteArray,
     ): Pair<ByteArray, ByteArray> {
         // MD5 is required by OpenSSL EVP_BytesToKey for CryptoJS passphrase-mode compatibility with the Conekta BFF.
-        val md5 = MessageDigest.getInstance("MD5")
+        val md5 = MessageDigest.getInstance("MD5") // NOSONAR (java:S4790)
         val totalNeeded = 48 // 32 (key) + 16 (IV)
         val result = ByteArray(totalNeeded)
         var offset = 0
