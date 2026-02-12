@@ -264,4 +264,147 @@ class TokenizerApiModelsTest {
         val deserialized = json.decodeFromString(TokenRequestDto.serializer(), serialized)
         assertEquals(original, deserialized)
     }
+
+    // --- Additional tests for remaining serialization condition branches ---
+
+    @Test
+    fun tokenResponseDtoWithAllDefaults() {
+        // Only id provided, all defaults kick in
+        val dto = TokenResponseDto(id = "tok_defaults")
+        assertFalse(dto.livemode)
+        assertFalse(dto.used)
+        assertEquals("", dto.objectType)
+        // Serialize with defaults
+        val serialized = json.encodeToString(TokenResponseDto.serializer(), dto)
+        assertTrue(serialized.contains("\"id\":\"tok_defaults\""))
+    }
+
+    @Test
+    fun tokenResponseDtoWithExplicitFalseValues() {
+        val dto =
+            json.decodeFromString(
+                TokenResponseDto.serializer(),
+                """{"id":"tok_false","livemode":false,"used":false,"object":""}""",
+            )
+        assertFalse(dto.livemode)
+        assertFalse(dto.used)
+        assertEquals("", dto.objectType)
+    }
+
+    @Test
+    fun tokenResponseDtoSerializesAllFields() {
+        val dto = TokenResponseDto(id = "tok_full", livemode = true, used = true, objectType = "token")
+        val serialized = json.encodeToString(TokenResponseDto.serializer(), dto)
+        assertTrue(serialized.contains("\"livemode\":true"))
+        assertTrue(serialized.contains("\"used\":true"))
+        assertTrue(serialized.contains("\"object\":\"token\""))
+    }
+
+    @Test
+    fun tokenResponseDtoWithLivemodeAndObject() {
+        val dto =
+            json.decodeFromString(
+                TokenResponseDto.serializer(),
+                """{"id":"tok_lo","livemode":true,"object":"token"}""",
+            )
+        assertTrue(dto.livemode)
+        assertFalse(dto.used)
+        assertEquals("token", dto.objectType)
+    }
+
+    @Test
+    fun tokenErrorResponseDtoWithAllFieldsExplicit() {
+        val dto =
+            json.decodeFromString(
+                TokenErrorResponseDto.serializer(),
+                """{"object":"error","type":"t","message":"m","message_to_purchaser":"p"}""",
+            )
+        assertEquals("error", dto.objectType)
+        assertEquals("t", dto.type)
+        assertEquals("m", dto.message)
+        assertEquals("p", dto.messageToPurchaser)
+    }
+
+    @Test
+    fun tokenErrorResponseDtoWithObjectAndType() {
+        val dto =
+            json.decodeFromString(
+                TokenErrorResponseDto.serializer(),
+                """{"object":"error","type":"api_error"}""",
+            )
+        assertEquals("error", dto.objectType)
+        assertEquals("api_error", dto.type)
+        assertEquals("", dto.message)
+        assertEquals("", dto.messageToPurchaser)
+    }
+
+    @Test
+    fun tokenErrorResponseDtoWithObjectAndMessage() {
+        val dto =
+            json.decodeFromString(
+                TokenErrorResponseDto.serializer(),
+                """{"object":"error","message":"fail"}""",
+            )
+        assertEquals("error", dto.objectType)
+        assertEquals("", dto.type)
+        assertEquals("fail", dto.message)
+        assertEquals("", dto.messageToPurchaser)
+    }
+
+    @Test
+    fun tokenErrorResponseDtoWithObjectAndPurchaserMessage() {
+        val dto =
+            json.decodeFromString(
+                TokenErrorResponseDto.serializer(),
+                """{"object":"error","message_to_purchaser":"declined"}""",
+            )
+        assertEquals("error", dto.objectType)
+        assertEquals("", dto.type)
+        assertEquals("", dto.message)
+        assertEquals("declined", dto.messageToPurchaser)
+    }
+
+    @Test
+    fun tokenErrorResponseDtoWithTypeMessageAndPurchaser() {
+        val dto =
+            json.decodeFromString(
+                TokenErrorResponseDto.serializer(),
+                """{"type":"x","message":"y","message_to_purchaser":"z"}""",
+            )
+        assertEquals("error", dto.objectType)
+        assertEquals("x", dto.type)
+        assertEquals("y", dto.message)
+        assertEquals("z", dto.messageToPurchaser)
+    }
+
+    @Test
+    fun tokenErrorResponseDtoSerializesAllFields() {
+        val dto = TokenErrorResponseDto("err", "type1", "msg1", "pmsg1")
+        val serialized = json.encodeToString(TokenErrorResponseDto.serializer(), dto)
+        assertTrue(serialized.contains("\"object\":\"err\""))
+        assertTrue(serialized.contains("\"type\":\"type1\""))
+        assertTrue(serialized.contains("\"message\":\"msg1\""))
+        assertTrue(serialized.contains("\"message_to_purchaser\":\"pmsg1\""))
+    }
+
+    @Test
+    fun tokenErrorResponseDtoWithObjectTypeAndPurchaser() {
+        val dto =
+            json.decodeFromString(
+                TokenErrorResponseDto.serializer(),
+                """{"object":"e","type":"t","message_to_purchaser":"p"}""",
+            )
+        assertEquals("e", dto.objectType)
+        assertEquals("t", dto.type)
+        assertEquals("", dto.message)
+        assertEquals("p", dto.messageToPurchaser)
+    }
+
+    @Test
+    fun tokenResponseDtoDefaultObjectType() {
+        val dto = TokenResponseDto(id = "tok_def_obj")
+        val serialized = json.encodeToString(TokenResponseDto.serializer(), dto)
+        val deserialized = json.decodeFromString(TokenResponseDto.serializer(), serialized)
+        assertEquals("", deserialized.objectType)
+    }
 }

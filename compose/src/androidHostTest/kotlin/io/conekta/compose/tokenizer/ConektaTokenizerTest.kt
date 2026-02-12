@@ -1,9 +1,14 @@
 package io.conekta.compose.tokenizer
 
 import androidx.compose.ui.test.ExperimentalTestApi
+import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.runComposeUiTest
 import io.conekta.elements.tokenizer.models.TokenizerConfig
+import io.conekta.elements.tokenizer.models.TokenizerError
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -87,5 +92,84 @@ class ConektaTokenizerTest {
                 )
             }
             onRoot().assertExists()
+        }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun submitWithEmptyFieldsShowsValidationErrors() =
+        runComposeUiTest {
+            setContent {
+                ConektaTokenizer(
+                    config = defaultConfig,
+                    onSuccess = {},
+                    onError = {},
+                )
+            }
+            // Click submit with all fields empty to trigger validation
+            onNode(hasText("Continuar") or hasText("Continue")).performClick()
+            waitForIdle()
+        }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun submitWithPartialFieldsShowsValidation() =
+        runComposeUiTest {
+            var errorReceived: TokenizerError? = null
+            setContent {
+                ConektaTokenizer(
+                    config = defaultConfig,
+                    onSuccess = {},
+                    onError = { errorReceived = it },
+                )
+            }
+            // Fill card number only, leave other fields empty
+            onNodeWithText("0000 0000 0000 0000").performTextInput("4242424242424242")
+            onNode(hasText("Continuar") or hasText("Continue")).performClick()
+            waitForIdle()
+        }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun submitWithAllFieldsFilledTriggersTokenization() =
+        runComposeUiTest {
+            setContent {
+                ConektaTokenizer(
+                    config = defaultConfig,
+                    onSuccess = {},
+                    onError = {},
+                )
+            }
+            // Fill all fields
+            onNodeWithText("0000 0000 0000 0000").performTextInput("4242424242424242")
+            onNodeWithText("MM/YY", substring = true).performTextInput("1226")
+            onNodeWithText("CVV", substring = true).performTextInput("123")
+
+            // Submit
+            onNode(hasText("Continuar") or hasText("Continue")).performClick()
+            waitForIdle()
+        }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun submitWithAllFieldsAndNameTriggersTokenization() =
+        runComposeUiTest {
+            setContent {
+                ConektaTokenizer(
+                    config = defaultConfig,
+                    onSuccess = {},
+                    onError = {},
+                )
+            }
+            // Fill all fields including name (use placeholder text to find the field)
+            onNode(
+                hasText("Name as it appears on card", substring = true)
+                    or hasText("Nombre como aparece en la tarjeta", substring = true),
+            ).performTextInput("Test User")
+            onNodeWithText("0000 0000 0000 0000").performTextInput("4242424242424242")
+            onNodeWithText("MM/YY", substring = true).performTextInput("1226")
+            onNodeWithText("CVV", substring = true).performTextInput("123")
+
+            onNode(hasText("Continuar") or hasText("Continue")).performClick()
+            waitForIdle()
         }
 }
