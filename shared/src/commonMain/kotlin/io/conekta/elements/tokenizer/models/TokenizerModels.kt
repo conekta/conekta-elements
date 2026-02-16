@@ -11,7 +11,7 @@ data class TokenizerConfig(
     val rsaPublicKey: String = PRODUCTION_RSA_KEY,
 )
 
-private const val PRODUCTION_BASE_URL = "https://pay.conekta.com/"
+private const val PRODUCTION_BASE_URL = "https://api.conekta.io/"
 
 @Suppress("MaxLineLength")
 private const val PRODUCTION_RSA_KEY =

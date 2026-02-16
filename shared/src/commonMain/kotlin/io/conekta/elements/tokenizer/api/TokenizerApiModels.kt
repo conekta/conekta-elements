@@ -24,7 +24,7 @@ data class CardPayloadDto(
 )
 
 /**
- * Encrypted request body sent to POST /api/tokens.
+ * Encrypted request body sent to POST /tokens.
  */
 @Serializable
 data class TokenRequestDto(

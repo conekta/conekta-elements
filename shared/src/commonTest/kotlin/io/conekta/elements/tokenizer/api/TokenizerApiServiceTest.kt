@@ -356,13 +356,14 @@ class TokenizerApiServiceTest {
                 cardholderName = "Test",
             )
 
-            assertEquals("https://test.conekta.com/api/tokens", capturedUrl)
+            assertEquals("https://test.conekta.com/tokens", capturedUrl)
         }
 
     @Test
-    fun tokenizeSendsAuthorizationHeader() =
+    fun tokenizeSendsAuthorizationAndAcceptHeaders() =
         runTest {
             var capturedAuthHeader = ""
+            var capturedAcceptHeader = ""
 
             val mockClient =
                 HttpClient(MockEngine) {
@@ -372,6 +373,7 @@ class TokenizerApiServiceTest {
                     engine {
                         addHandler { request ->
                             capturedAuthHeader = request.headers["Authorization"] ?: ""
+                            capturedAcceptHeader = request.headers["Accept"] ?: ""
                             respond(
                                 content =
                                     """{"id":"tok_auth","livemode":false,"used":false,"object":"token"}""",
@@ -401,8 +403,16 @@ class TokenizerApiServiceTest {
                 cardholderName = "Test",
             )
 
-            assertTrue(capturedAuthHeader.startsWith("Basic "), "Auth header should start with 'Basic '")
-            assertTrue(capturedAuthHeader.length > 7, "Auth header should contain encoded value")
+            assertEquals(
+                "Bearer key_test_abc123",
+                capturedAuthHeader,
+                "Auth header should be Bearer with public key",
+            )
+            assertEquals(
+                "application/vnd.conekta-v2.2.0+json",
+                capturedAcceptHeader,
+                "Accept header should use Conekta API version",
+            )
         }
 
     @Test

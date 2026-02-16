@@ -66,7 +66,7 @@ class TokenizerConfigTest {
     @Test
     fun `TokenizerConfig has default baseUrl pointing to production`() {
         val config = TokenizerConfig(publicKey = "key_test_123")
-        assertEquals("https://pay.conekta.com/", config.baseUrl)
+        assertEquals("https://api.conekta.io/", config.baseUrl)
     }
 
     @Test

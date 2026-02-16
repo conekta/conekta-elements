@@ -18,12 +18,12 @@ import io.ktor.http.contentType
 import kotlinx.serialization.json.Json
 
 /**
- * Service that orchestrates card data encryption and tokenization via the Conekta BFF.
+ * Service that orchestrates card data encryption and tokenization via the Conekta API.
  *
- * Replicates the flow from int-payment-component:
+ * Flow:
  * 1. Build card payload → JSON serialize
  * 2. Encrypt with AES + RSA (CryptoJS-compatible)
- * 3. POST to {baseUrl}api/tokens with Basic auth
+ * 3. POST to {baseUrl}/tokens with Bearer auth
  * 4. Parse response
  */
 class TokenizerApiService(
@@ -64,16 +64,14 @@ class TokenizerApiService(
                     key = encrypted.encryptedKey,
                 )
 
-            // 3. Build auth header: Basic base64(publicKey + ":")
-            val authToken = base64EncodeAuth("${config.publicKey}:")
-
-            // 4. POST to API
-            val url = "${config.baseUrl}api/tokens"
+            // 3. POST to API
+            val url = "${config.baseUrl}tokens"
             val response =
                 httpClient.post(url) {
                     contentType(ContentType.Application.Json)
                     headers {
-                        append("Authorization", "Basic $authToken")
+                        append("Authorization", "Bearer ${config.publicKey}")
+                        append("Accept", "application/vnd.conekta-v2.2.0+json")
                     }
                     setBody(requestBody)
                 }
@@ -138,9 +136,3 @@ class TokenizerApiException(
             is TokenizerError.ValidationError -> tokenizerError.message
         },
     )
-
-/**
- * Platform-independent base64 encode for the auth header.
- * Uses the same approach as Base64Tokenization.encode(publicKey + ":").
- */
-internal expect fun base64EncodeAuth(input: String): String
