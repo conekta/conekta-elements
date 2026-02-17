@@ -13,9 +13,9 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
-import io.ktor.http.HttpStatusCode
+import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
-import kotlinx.serialization.json.Json
+import io.ktor.http.isSuccess
 
 /**
  * Service that orchestrates card data encryption and tokenization via the Conekta API.
@@ -31,7 +31,7 @@ class TokenizerApiService(
     private val httpClient: HttpClient = ConektaHttpClient.create(),
     private val cryptoService: CardEncryptor = CryptoService(),
 ) {
-    private val json = Json { ignoreUnknownKeys = true }
+    private val json = ConektaHttpClient.json
 
     suspend fun tokenize(
         cardNumber: String,
@@ -70,21 +70,20 @@ class TokenizerApiService(
                 httpClient.post(url) {
                     contentType(ContentType.Application.Json)
                     headers {
-                        append("Authorization", "Bearer ${config.publicKey}")
-                        append("Accept", "application/vnd.conekta-v2.2.0+json")
+                        append(HttpHeaders.Authorization, "Bearer ${config.publicKey}")
+                        append(HttpHeaders.Accept, "application/vnd.conekta-v2.2.0+json")
                         append("Conekta-Client-User-Agent", """{"agent":"Conekta Elements SDK"}""")
                     }
                     setBody(requestBody)
                 }
 
-            // 5. Parse response
-            if (response.status == HttpStatusCode.OK || response.status == HttpStatusCode.Created) {
+            // 4. Parse response
+            if (response.status.isSuccess()) {
                 val tokenResponse: TokenResponseDto = response.body()
                 val lastFour = cardNumber.filter { it.isDigit() }.takeLast(4)
                 Result.success(
                     TokenResult(
                         token = tokenResponse.id,
-                        cardBrand = "",
                         lastFour = lastFour,
                     ),
                 )

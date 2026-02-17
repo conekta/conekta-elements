@@ -326,9 +326,7 @@ private fun TokenizerContent(
                             )
                         apiResult
                             .onSuccess { tokenResult ->
-                                onSuccess(
-                                    tokenResult.copy(cardBrand = detectedBrand.name),
-                                )
+                                onSuccess(tokenResult)
                             }.onFailure { error ->
                                 onError((error as TokenizerApiException).tokenizerError)
                             }

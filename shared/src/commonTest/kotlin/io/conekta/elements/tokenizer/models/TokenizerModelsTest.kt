@@ -106,36 +106,34 @@ class TokenizerConfigTest {
 
 class TokenResultTest {
     @Test
-    fun `TokenResult stores token cardBrand and lastFour`() {
+    fun `TokenResult stores token and lastFour`() {
         val result =
             TokenResult(
                 token = "tok_abc123",
-                cardBrand = "VISA",
                 lastFour = "4242",
             )
         assertEquals("tok_abc123", result.token)
-        assertEquals("VISA", result.cardBrand)
         assertEquals("4242", result.lastFour)
     }
 
     @Test
     fun `TokenResult equality works for same values`() {
-        val result1 = TokenResult(token = "tok_abc", cardBrand = "VISA", lastFour = "4242")
-        val result2 = TokenResult(token = "tok_abc", cardBrand = "VISA", lastFour = "4242")
+        val result1 = TokenResult(token = "tok_abc", lastFour = "4242")
+        val result2 = TokenResult(token = "tok_abc", lastFour = "4242")
         assertEquals(result1, result2)
     }
 
     @Test
     fun `TokenResult inequality for different token`() {
-        val result1 = TokenResult(token = "tok_abc", cardBrand = "VISA", lastFour = "4242")
-        val result2 = TokenResult(token = "tok_xyz", cardBrand = "VISA", lastFour = "4242")
+        val result1 = TokenResult(token = "tok_abc", lastFour = "4242")
+        val result2 = TokenResult(token = "tok_xyz", lastFour = "4242")
         assertNotEquals(result1, result2)
     }
 
     @Test
     fun `TokenResult inequality for different lastFour`() {
-        val result1 = TokenResult(token = "tok_abc", cardBrand = "VISA", lastFour = "4242")
-        val result2 = TokenResult(token = "tok_abc", cardBrand = "VISA", lastFour = "1234")
+        val result1 = TokenResult(token = "tok_abc", lastFour = "4242")
+        val result2 = TokenResult(token = "tok_abc", lastFour = "1234")
         assertNotEquals(result1, result2)
     }
 }

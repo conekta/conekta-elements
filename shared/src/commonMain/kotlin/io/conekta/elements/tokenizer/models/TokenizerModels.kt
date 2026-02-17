@@ -28,7 +28,6 @@ private const val PRODUCTION_RSA_KEY =
  */
 data class TokenResult(
     val token: String,
-    val cardBrand: String,
     val lastFour: String,
 )
 

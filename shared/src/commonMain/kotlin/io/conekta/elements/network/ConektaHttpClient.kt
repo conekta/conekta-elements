@@ -9,15 +9,16 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
 object ConektaHttpClient {
+    val json =
+        Json {
+            ignoreUnknownKeys = true
+            encodeDefaults = true
+        }
+
     fun create(): HttpClient =
         HttpClient {
             install(ContentNegotiation) {
-                json(
-                    Json {
-                        ignoreUnknownKeys = true
-                        encodeDefaults = true
-                    },
-                )
+                json(json)
             }
             install(Logging) {
                 logger =
