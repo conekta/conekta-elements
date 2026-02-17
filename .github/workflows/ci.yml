@@ -172,7 +172,7 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           SONAR_PROJECT_VERSION: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref_name }}
 
-      - uses: actions4gh/setup-gh@v1
+      - uses: actions4gh/setup-gh@v1.0.2
 
       - name: Comment SonarQube link on PR
         if: github.event_name == 'pull_request'
