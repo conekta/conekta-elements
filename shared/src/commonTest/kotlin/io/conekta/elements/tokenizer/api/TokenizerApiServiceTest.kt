@@ -360,10 +360,11 @@ class TokenizerApiServiceTest {
         }
 
     @Test
-    fun tokenizeSendsAuthorizationAndAcceptHeaders() =
+    fun tokenizeSendsRequiredHeaders() =
         runTest {
             var capturedAuthHeader = ""
             var capturedAcceptHeader = ""
+            var capturedUserAgentHeader = ""
 
             val mockClient =
                 HttpClient(MockEngine) {
@@ -374,6 +375,7 @@ class TokenizerApiServiceTest {
                         addHandler { request ->
                             capturedAuthHeader = request.headers["Authorization"] ?: ""
                             capturedAcceptHeader = request.headers["Accept"] ?: ""
+                            capturedUserAgentHeader = request.headers["Conekta-Client-User-Agent"] ?: ""
                             respond(
                                 content =
                                     """{"id":"tok_auth","livemode":false,"used":false,"object":"token"}""",
@@ -412,6 +414,11 @@ class TokenizerApiServiceTest {
                 "application/vnd.conekta-v2.2.0+json",
                 capturedAcceptHeader,
                 "Accept header should use Conekta API version",
+            )
+            assertEquals(
+                """{"agent":"Conekta Elements SDK"}""",
+                capturedUserAgentHeader,
+                "Conekta-Client-User-Agent header should identify the SDK",
             )
         }
 

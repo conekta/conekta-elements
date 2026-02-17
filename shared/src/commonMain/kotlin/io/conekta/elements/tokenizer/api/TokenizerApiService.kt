@@ -72,6 +72,7 @@ class TokenizerApiService(
                     headers {
                         append("Authorization", "Bearer ${config.publicKey}")
                         append("Accept", "application/vnd.conekta-v2.2.0+json")
+                        append("Conekta-Client-User-Agent", """{"agent":"Conekta Elements SDK"}""")
                     }
                     setBody(requestBody)
                 }
