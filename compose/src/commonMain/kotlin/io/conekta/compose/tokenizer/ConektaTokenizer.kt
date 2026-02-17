@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -65,11 +66,14 @@ import io.conekta.elements.compose.generated.resources.placeholder_expiry
 import io.conekta.elements.compose.generated.resources.validation_card_min_length
 import io.conekta.elements.compose.generated.resources.validation_cvv_min_length
 import io.conekta.elements.compose.generated.resources.validation_expiry_year_invalid
+import io.conekta.elements.tokenizer.api.TokenizerApiException
+import io.conekta.elements.tokenizer.api.TokenizerApiService
 import io.conekta.elements.tokenizer.models.TokenResult
 import io.conekta.elements.tokenizer.models.TokenizerConfig
 import io.conekta.elements.tokenizer.models.TokenizerError
 import io.conekta.elements.tokenizer.validators.ValidationMessages
 import io.conekta.elements.tokenizer.validators.validateForm
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 
 /**
@@ -123,6 +127,8 @@ private fun TokenizerContent(
     onError: (TokenizerError) -> Unit,
 ) {
     val fontFamily = LocalConektaFontFamily.current
+    val coroutineScope = rememberCoroutineScope()
+    val tokenizerApiService = remember(config) { TokenizerApiService(config) }
     var cardholderName by remember { mutableStateOf(TextFieldValue("")) }
     var cardNumber by remember { mutableStateOf(TextFieldValue("")) }
     var expiryDate by remember { mutableStateOf(TextFieldValue("")) }
@@ -304,14 +310,28 @@ private fun TokenizerContent(
                 if (!result.hasError) {
                     isProcessing = true
                     val cardDigits = cardNumber.text.filter { it.isDigit() }
-                    onSuccess(
-                        TokenResult(
-                            token = "tok_test_mock_${cardDigits.takeLast(4)}",
-                            cardBrand = detectedBrand.name,
-                            lastFour = cardDigits.takeLast(4),
-                        ),
-                    )
-                    isProcessing = false
+                    val expiryDigits = expiryDate.text.filter { it.isDigit() }
+                    val expMonth = expiryDigits.take(2)
+                    val expYear = expiryDigits.drop(2).take(2)
+                    val cvvDigits = cvv.text.filter { it.isDigit() }
+
+                    coroutineScope.launch {
+                        val apiResult =
+                            tokenizerApiService.tokenize(
+                                cardNumber = cardDigits,
+                                expMonth = expMonth,
+                                expYear = expYear,
+                                cvc = cvvDigits,
+                                cardholderName = cardholderName.text,
+                            )
+                        apiResult
+                            .onSuccess { tokenResult ->
+                                onSuccess(tokenResult)
+                            }.onFailure { error ->
+                                onError((error as TokenizerApiException).tokenizerError)
+                            }
+                        isProcessing = false
+                    }
                 }
             },
             enabled = !isProcessing,

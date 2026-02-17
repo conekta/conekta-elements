@@ -62,40 +62,78 @@ class TokenizerConfigTest {
         assertEquals("key_test_123", copy.publicKey)
         assertEquals("Store B", copy.merchantName)
     }
+
+    @Test
+    fun `TokenizerConfig has default baseUrl pointing to production`() {
+        val config = TokenizerConfig(publicKey = "key_test_123")
+        assertEquals("https://api.conekta.io/", config.baseUrl)
+    }
+
+    @Test
+    fun `TokenizerConfig has default rsaPublicKey for production`() {
+        val config = TokenizerConfig(publicKey = "key_test_123")
+        assertTrue(config.rsaPublicKey.isNotEmpty())
+        assertTrue(config.rsaPublicKey.startsWith("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjet2"))
+    }
+
+    @Test
+    fun `TokenizerConfig accepts custom baseUrl`() {
+        val config =
+            TokenizerConfig(
+                publicKey = "key_test_123",
+                baseUrl = "https://pay.stg.conekta.io/",
+            )
+        assertEquals("https://pay.stg.conekta.io/", config.baseUrl)
+    }
+
+    @Test
+    fun `TokenizerConfig accepts custom rsaPublicKey`() {
+        val config =
+            TokenizerConfig(
+                publicKey = "key_test_123",
+                rsaPublicKey = "custom_rsa_key",
+            )
+        assertEquals("custom_rsa_key", config.rsaPublicKey)
+    }
+
+    @Test
+    fun `TokenizerConfig equality considers baseUrl and rsaPublicKey`() {
+        val config1 = TokenizerConfig(publicKey = "key_test_123", baseUrl = "https://a.com/")
+        val config2 = TokenizerConfig(publicKey = "key_test_123", baseUrl = "https://b.com/")
+        assertNotEquals(config1, config2)
+    }
 }
 
 class TokenResultTest {
     @Test
-    fun `TokenResult stores token cardBrand and lastFour`() {
+    fun `TokenResult stores token and lastFour`() {
         val result =
             TokenResult(
                 token = "tok_abc123",
-                cardBrand = "VISA",
                 lastFour = "4242",
             )
         assertEquals("tok_abc123", result.token)
-        assertEquals("VISA", result.cardBrand)
         assertEquals("4242", result.lastFour)
     }
 
     @Test
     fun `TokenResult equality works for same values`() {
-        val result1 = TokenResult(token = "tok_abc", cardBrand = "VISA", lastFour = "4242")
-        val result2 = TokenResult(token = "tok_abc", cardBrand = "VISA", lastFour = "4242")
+        val result1 = TokenResult(token = "tok_abc", lastFour = "4242")
+        val result2 = TokenResult(token = "tok_abc", lastFour = "4242")
         assertEquals(result1, result2)
     }
 
     @Test
     fun `TokenResult inequality for different token`() {
-        val result1 = TokenResult(token = "tok_abc", cardBrand = "VISA", lastFour = "4242")
-        val result2 = TokenResult(token = "tok_xyz", cardBrand = "VISA", lastFour = "4242")
+        val result1 = TokenResult(token = "tok_abc", lastFour = "4242")
+        val result2 = TokenResult(token = "tok_xyz", lastFour = "4242")
         assertNotEquals(result1, result2)
     }
 
     @Test
     fun `TokenResult inequality for different lastFour`() {
-        val result1 = TokenResult(token = "tok_abc", cardBrand = "VISA", lastFour = "4242")
-        val result2 = TokenResult(token = "tok_abc", cardBrand = "VISA", lastFour = "1234")
+        val result1 = TokenResult(token = "tok_abc", lastFour = "4242")
+        val result2 = TokenResult(token = "tok_abc", lastFour = "1234")
         assertNotEquals(result1, result2)
     }
 }
