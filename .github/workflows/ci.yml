@@ -46,6 +46,8 @@ jobs:
             shared/build/reports/kover/**/*.xml
             compose/build/reports/kover/**/*.xml
           if-no-files-found: error
+          retention-days: 1
+          overwrite: true
 
       - name: linter check
         run: make lint-check
@@ -101,6 +103,8 @@ jobs:
           name: js-coverage
           path: webApp/coverage/lcov.info
           if-no-files-found: error
+          retention-days: 1
+          overwrite: true
 
       - name: Lint
         working-directory: webApp
@@ -163,6 +167,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           SONAR_PROJECT_VERSION: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref_name }}
+
+      - uses: actions4gh/setup-gh@v1
 
       - name: Comment SonarQube link on PR
         if: github.event_name == 'pull_request'
