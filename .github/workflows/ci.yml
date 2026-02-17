@@ -171,8 +171,14 @@ jobs:
         run: |
           PROJECT_KEY=$(grep '^sonar.projectKey=' sonar-project.properties | cut -d'=' -f2)
           SONAR_URL="${{ secrets.SONAR_HOST_URL }}/dashboard?id=${PROJECT_KEY}&pullRequest=${{ github.event.pull_request.number }}"
-          gh pr comment ${{ github.event.pull_request.number }} \
-            --body "**SonarQube Analysis:** [View Dashboard]($SONAR_URL)" \
-            --edit-last 2>/dev/null || \
+
+          # Delete previous SonarQube comment if it exists
+          COMMENT_ID=$(gh api "repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments" \
+            --jq '.[] | select(.body | contains("SonarQube Analysis")) | .id' | tail -1)
+          if [ -n "$COMMENT_ID" ]; then
+            gh api "repos/${{ github.repository }}/issues/comments/$COMMENT_ID" -X DELETE
+          fi
+
+          # Create new comment (always at the bottom)
           gh pr comment ${{ github.event.pull_request.number }} \
             --body "**SonarQube Analysis:** [View Dashboard]($SONAR_URL)"
