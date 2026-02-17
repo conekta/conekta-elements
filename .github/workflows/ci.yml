@@ -123,6 +123,9 @@ jobs:
     runs-on: aws-runner-set
     needs: [build_kmp, build_js]
     if: always() && (needs.build_kmp.result == 'success' && needs.build_js.result == 'success')
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
       - uses: actions/checkout@v6
         with:
@@ -149,7 +152,7 @@ jobs:
           find shared/build/reports -type f | grep -i kover | sort || true
           find compose/build/reports -type f | grep -i kover | sort || true
 
-      - name: SonarCloud Scan
+      - name: sonarqube Scan
         uses: SonarSource/sonarqube-scan-action@v7.0.0
         with:
           args: >
@@ -160,3 +163,16 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           SONAR_PROJECT_VERSION: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref_name }}
+
+      - name: Comment SonarQube link on PR
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PROJECT_KEY=$(grep '^sonar.projectKey=' sonar-project.properties | cut -d'=' -f2)
+          SONAR_URL="${{ secrets.SONAR_HOST_URL }}/dashboard?id=${PROJECT_KEY}&pullRequest=${{ github.event.pull_request.number }}"
+          gh pr comment ${{ github.event.pull_request.number }} \
+            --body "**SonarQube Analysis:** [View Dashboard]($SONAR_URL)" \
+            --edit-last 2>/dev/null || \
+          gh pr comment ${{ github.event.pull_request.number }} \
+            --body "**SonarQube Analysis:** [View Dashboard]($SONAR_URL)"
