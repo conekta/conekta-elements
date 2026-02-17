@@ -146,11 +146,6 @@ jobs:
         with:
           name: kmp-coverage
           path: .
-      
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: '.nvmrc'
-          cache: npm
       - name: Debug downloaded coverage files
         run: |
           ls -la
@@ -172,23 +167,27 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           SONAR_PROJECT_VERSION: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref_name }}
 
-      - uses: actions4gh/setup-gh@v1.0.2
-
       - name: Comment SonarQube link on PR
         if: github.event_name == 'pull_request'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           PROJECT_KEY=$(grep '^sonar.projectKey=' sonar-project.properties | cut -d'=' -f2)
           SONAR_URL="${{ secrets.SONAR_HOST_URL }}/dashboard?id=${PROJECT_KEY}&pullRequest=${{ github.event.pull_request.number }}"
+          REPO="${{ github.repository }}"
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          API="https://api.github.com"
+          AUTH="Authorization: Bearer $GITHUB_TOKEN"
 
           # Delete previous SonarQube comment if it exists
-          COMMENT_ID=$(gh api "repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments" \
-            --jq '.[] | select(.body | contains("SonarQube Analysis")) | .id' | tail -1)
+          COMMENT_ID=$(curl -s -H "$AUTH" "$API/repos/$REPO/issues/$PR_NUMBER/comments" \
+            | grep -o '"id":[0-9]*,"node_id":"[^"]*","url":"[^"]*","html_url":"[^"]*","body":"\*\*SonarQube Analysis' \
+            | grep -o '"id":[0-9]*' | tail -1 | cut -d: -f2)
           if [ -n "$COMMENT_ID" ]; then
-            gh api "repos/${{ github.repository }}/issues/comments/$COMMENT_ID" -X DELETE
+            curl -s -X DELETE -H "$AUTH" "$API/repos/$REPO/issues/comments/$COMMENT_ID"
           fi
 
           # Create new comment (always at the bottom)
-          gh pr comment ${{ github.event.pull_request.number }} \
-            --body "**SonarQube Analysis:** [View Dashboard]($SONAR_URL)"
+          curl -s -X POST -H "$AUTH" -H "Content-Type: application/json" \
+            -d "{\"body\": \"**SonarQube Analysis:** [View Dashboard]($SONAR_URL)\"}" \
+            "$API/repos/$REPO/issues/$PR_NUMBER/comments"
