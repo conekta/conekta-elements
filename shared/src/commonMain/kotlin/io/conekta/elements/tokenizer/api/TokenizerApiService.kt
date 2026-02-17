@@ -1,6 +1,7 @@
 package io.conekta.elements.tokenizer.api
 
 import io.conekta.elements.network.ConektaHttpClient
+import io.conekta.elements.network.sdkUserAgent
 import io.conekta.elements.tokenizer.crypto.CardEncryptor
 import io.conekta.elements.tokenizer.crypto.CryptoService
 import io.conekta.elements.tokenizer.models.TokenResult
@@ -72,7 +73,7 @@ class TokenizerApiService(
                     headers {
                         append(HttpHeaders.Authorization, "Bearer ${config.publicKey}")
                         append(HttpHeaders.Accept, "application/vnd.conekta-v2.2.0+json")
-                        append("Conekta-Client-User-Agent", """{"agent":"Conekta Elements SDK"}""")
+                        append("Conekta-Client-User-Agent", sdkUserAgent)
                     }
                     setBody(requestBody)
                 }

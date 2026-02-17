@@ -415,10 +415,9 @@ class TokenizerApiServiceTest {
                 capturedAcceptHeader,
                 "Accept header should use Conekta API version",
             )
-            assertEquals(
-                """{"agent":"Conekta Elements SDK"}""",
-                capturedUserAgentHeader,
-                "Conekta-Client-User-Agent header should identify the SDK",
+            assertTrue(
+                capturedUserAgentHeader.contains("\"agent\"") && capturedUserAgentHeader.contains("Conekta"),
+                "Conekta-Client-User-Agent header should contain agent JSON with Conekta identifier",
             )
         }
 
