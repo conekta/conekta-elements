@@ -179,3 +179,24 @@ jobs:
             compose/build/XCFrameworks/release/composeKit.xcframework.zip \
             compose/build/XCFrameworks/release/checksum.txt \
             --clobber
+
+      - name: Update latest release
+        if: steps.validate.outputs.skip == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Delete existing latest release and tag if they exist
+          gh release delete latest --yes --cleanup-tag 2>/dev/null || true
+
+          # Create new latest release pointing to current commit
+          gh release create latest \
+            compose/build/XCFrameworks/release/composeKit.xcframework.zip \
+            compose/build/XCFrameworks/release/checksum.txt \
+            --title "Latest (${{ steps.validate.outputs.tag_version }})" \
+            --notes "Latest stable XCFramework release (v${{ steps.validate.outputs.tag_version }}).
+
+          Checksum: \`${{ steps.package.outputs.checksum }}\`
+
+          > This release is automatically updated on every new version.
+          > For a specific version, use the corresponding versioned release." \
+            --prerelease=false
