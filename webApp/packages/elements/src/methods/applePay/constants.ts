@@ -1,0 +1,1 @@
+export const APPLE_PAY_TAG = 'conekta-apple-pay-button';

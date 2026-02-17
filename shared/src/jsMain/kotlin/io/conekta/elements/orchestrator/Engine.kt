@@ -29,18 +29,18 @@ class OrchestrationEngineJs(
     return chain
   }
 
-  fun onMethodMounted(method: PaymentMethod): Promise<Unit> =
+  fun onMethodMounted(method: PaymentMethodType): Promise<Unit> =
     dispatch(Action.MethodMounted(method))
 
-  fun onMethodReady(method: PaymentMethod): Promise<Unit> =
+  fun onMethodReady(method: PaymentMethodType): Promise<Unit> =
     dispatch(Action.MethodReady(method))
 
-  fun setActive(method: PaymentMethod): Promise<Unit> =
+  fun setActive(method: PaymentMethodType): Promise<Unit> =
     dispatch(Action.SetActive(method))
 
-  fun onSubmitStarted(method: PaymentMethod): Promise<Unit> =
+  fun onSubmitStarted(method: PaymentMethodType): Promise<Unit> =
     dispatch(Action.MethodSubmitStarted(method))
 
-  fun onResult(method: PaymentMethod, status: ResultStatus): Promise<Unit> =
+  fun onResult(method: PaymentMethodType, status: ResultStatus): Promise<Unit> =
     dispatch(Action.MethodResult(method, status))
 }

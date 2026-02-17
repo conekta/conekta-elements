@@ -5,7 +5,7 @@ package io.conekta.elements.orchestrator
 import io.conekta.elements.orchestrator.Effect
 import io.conekta.elements.orchestrator.Action
 import io.conekta.elements.orchestrator.OrchestratorCore
-import io.conekta.elements.orchestrator.PaymentMethod
+import io.conekta.elements.orchestrator.PaymentMethodType
 import io.conekta.elements.orchestrator.ViewState
 import io.conekta.elements.orchestrator.Policy
 import io.conekta.elements.orchestrator.MethodUiState

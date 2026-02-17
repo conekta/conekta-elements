@@ -5,7 +5,7 @@ package io.conekta.elements.orchestrator
 import kotlin.js.JsExport
 
 @JsExport
-enum class PaymentMethod {
+enum class PaymentMethodType {
   applePay,
   googlePay,
   payByBank,
@@ -45,19 +45,19 @@ data class MethodUiState(
 data class OrchestratorState(
   val policy: Policy,
   val viewState: ViewState = ViewState.editing,
-  val activeMethod: PaymentMethod? = null,
+  val activeMethod: PaymentMethodType? = null,
   // Para JS interop es mejor mapa por enum que Record<string>
-  val methods: Map<PaymentMethod, MethodUiState>,
+  val methods: Map<PaymentMethodType, MethodUiState>,
 )
 
 @JsExport
 sealed class Action {
-  data class MethodMounted(val method: PaymentMethod) : Action()
-  data class MethodReady(val method: PaymentMethod) : Action()
-  data class SetActive(val method: PaymentMethod) : Action()
-  data class MethodSubmitStarted(val method: PaymentMethod) : Action()
+  data class MethodMounted(val method: PaymentMethodType) : Action()
+  data class MethodReady(val method: PaymentMethodType) : Action()
+  data class SetActive(val method: PaymentMethodType) : Action()
+  data class MethodSubmitStarted(val method: PaymentMethodType) : Action()
   data class SetViewState(val viewState: ViewState) : Action()
-  data class MethodResult(val method: PaymentMethod, val status: ResultStatus) : Action()
+  data class MethodResult(val method: PaymentMethodType, val status: ResultStatus) : Action()
 }
 
 @JsExport

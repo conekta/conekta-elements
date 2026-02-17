@@ -19,6 +19,7 @@
     "dev": "vite",
     "start": "vite",
     "build": "tsc && vite build",
+    "build:elements": "pnpm --filter @conekta/elements build",
     "preview": "vite preview",
     "type-check": "tsc --noEmit",
     "lint": "eslint . --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0",
