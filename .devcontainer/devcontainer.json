@@ -2,13 +2,26 @@
   "name": "conekta-elements Dev Container",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
   "workspaceFolder": "/workspaces/conekta-elements",
-  "postCreateCommand": "setup-devcontainer.sh",
-  "settings": {
-    "terminal.integrated.shell.linux": "/bin/bash"
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "17",
+      "installGradle": "true"
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "18"
+    }
   },
-  "extensions": [
-    "vscjava.vscode-java-pack",
-    "ms-vscode.vscode-typescript-next",
-    "esbenp.prettier-vscode"
-  ]
+  "postCreateCommand": "setup-devcontainer.sh",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+      },
+      "extensions": [
+        "vscjava.vscode-java-pack",
+        "ms-vscode.vscode-typescript-next",
+        "esbenp.prettier-vscode"
+      ]
+    }
+  }
 }
