@@ -146,7 +146,11 @@ jobs:
         with:
           name: kmp-coverage
           path: .
-
+      
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
       - name: Debug downloaded coverage files
         run: |
           ls -la
