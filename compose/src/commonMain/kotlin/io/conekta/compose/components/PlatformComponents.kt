@@ -20,7 +20,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import io.conekta.elements.assets.CardBrandAssets
 import io.conekta.compose.generated.resources.Res
 import io.conekta.compose.generated.resources.content_description_amex_card
 import io.conekta.compose.generated.resources.content_description_card_brand
@@ -30,6 +29,7 @@ import io.conekta.compose.generated.resources.content_description_conekta_logo
 import io.conekta.compose.generated.resources.content_description_cvv
 import io.conekta.compose.generated.resources.content_description_mastercard_card
 import io.conekta.compose.generated.resources.content_description_visa_card
+import io.conekta.elements.assets.CardBrandAssets
 import io.conekta.elements.tokenizer.models.CardBrand
 import org.jetbrains.compose.resources.stringResource
 

@@ -44,9 +44,6 @@ import io.conekta.compose.components.ConektaLogoImage
 import io.conekta.compose.components.ConektaTextField
 import io.conekta.compose.components.CvvIcon
 import io.conekta.compose.components.InfoOutlinedIcon
-import io.conekta.compose.theme.ConektaColors
-import io.conekta.compose.theme.ConektaTheme
-import io.conekta.compose.theme.LocalConektaFontFamily
 import io.conekta.compose.generated.resources.Res
 import io.conekta.compose.generated.resources.button_continue
 import io.conekta.compose.generated.resources.button_processing
@@ -66,6 +63,9 @@ import io.conekta.compose.generated.resources.placeholder_expiry
 import io.conekta.compose.generated.resources.validation_card_min_length
 import io.conekta.compose.generated.resources.validation_cvv_min_length
 import io.conekta.compose.generated.resources.validation_expiry_year_invalid
+import io.conekta.compose.theme.ConektaColors
+import io.conekta.compose.theme.ConektaTheme
+import io.conekta.compose.theme.LocalConektaFontFamily
 import io.conekta.elements.tokenizer.api.TokenizerApiException
 import io.conekta.elements.tokenizer.api.TokenizerApiService
 import io.conekta.elements.tokenizer.models.TokenResult
