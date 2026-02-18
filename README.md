@@ -18,7 +18,7 @@ Kotlin Multiplatform payment UI library for Android, iOS, and Web. Provides card
 
 ```kotlin
 dependencies {
-    implementation("io.conekta:conekta-elements-compose:0.0.1-beta.2")
+    implementation("io.conekta:conekta-elements-compose:0.0.1-beta.4")
 }
 ```
 
@@ -28,7 +28,7 @@ Includes `conekta-elements-shared` transitively. No need to add both.
 
 ```kotlin
 dependencies {
-    implementation("io.conekta:conekta-elements-shared:0.0.1-beta.2")
+    implementation("io.conekta:conekta-elements-shared:0.0.1-beta.4")
 }
 ```
 
