@@ -1,20 +1,22 @@
 import type { InitArgs } from '../public/types';
-import type { PaymentMethod } from '../shared/types';
+import type { PaymentMethod, ResultEvent } from '../shared/types';
 import { createOrchestrator } from '../orchestrator/createOrchestrator';
 import { resolveContainer } from './resolveContainer';
 import { getMoleculeMethods } from './molecules';
 import { fetchCheckout } from './fetchCheckout';
 
-import { createOrchestratorCore } from '../orchestrator/core';
 import type { MethodLifecycleEvent } from '../orchestrator/types';
-import { createOrchestrationEngine, type EffectRunner } from '../orchestrator/engine';
+
+import { Effect, OrchestrationEngineJs, OrchestratorCore, Policy, ResultStatus } from 'shared';
+import { toKmpMethod, toKmpResultStatus, toPaymentMethod, toViewState } from '../shared/paymentMethodMapper';
 
 
 export const createElementsRuntime = () => {
     const orchestrator = createOrchestrator();
     let slotByMethod: Record<PaymentMethod, HTMLElement> = {} as Record<PaymentMethod, HTMLElement>;
 
-    const core = createOrchestratorCore('express');
+    const core = new OrchestratorCore(Policy.express);
+
 
     const setBlocked = (method: PaymentMethod, blocked: boolean) => {
         const slot = slotByMethod[method];
@@ -40,22 +42,25 @@ export const createElementsRuntime = () => {
         }
     };
 
-    const effectRunner: EffectRunner = {
-        run: async (eff) => {
-            switch (eff.type) {
-                case 'RPC_SET_ACTIVE':
-                    return orchestrator.setActiveFor(eff.method, eff.active);
-                case 'RPC_SET_VIEW_STATE':
-                    return orchestrator.setViewStateFor(eff.method, eff.viewState);
-                case 'RPC_SUBMIT':
-                    return orchestrator.submitFor(eff.method);
-                case 'HOST_SET_BLOCKED':
-                    return setBlocked(eff.method, eff.blocked);
+    const effectRunner = {
+        run: async (eff: Effect) => {
+            if (eff instanceof Effect.RpcSetActive) {
+                return orchestrator.setActiveFor(toPaymentMethod(eff.method), eff.active);
+            }
+            if (eff instanceof Effect.RpcSetViewState) {
+                return orchestrator.setViewStateFor(toPaymentMethod(eff.method), toViewState(eff.viewState));
+            }
+            if (eff instanceof Effect.RpcSubmit) {
+                return orchestrator.submitFor(toPaymentMethod(eff.method));
+            }
+            if (eff instanceof Effect.HostSetBlocked) {
+                setBlocked(toPaymentMethod(eff.method), eff.blocked);
+                return;
             }
         },
     };
 
-    const engine = createOrchestrationEngine(core, effectRunner);
+    const engine = new OrchestrationEngineJs(core, effectRunner);
 
     const init = async (args: InitArgs) => {
         const container = resolveContainer(args.container);
@@ -73,7 +78,8 @@ export const createElementsRuntime = () => {
         slotByMethod = mountMoleculeLayout(container, moleculeMethods);
 
         // 4) mount each method
-        moleculeMethods.forEach(async (method) => {
+        for (const method of moleculeMethods) {
+            const kmpMethod = toKmpMethod(method);
             orchestrator.mount(method, slotByMethod[method], {
                 checkoutRequestId: args.checkoutRequestId,
                 needsShippingContact: checkout.needsShippingContact,
@@ -81,25 +87,31 @@ export const createElementsRuntime = () => {
                 locale: args.locale,
                 theme: args.theme,
 
-                onReady: async () => await engine.onMethodReady(method),
+                onReady: async () => await engine.onMethodReady(kmpMethod),
                 onStateChange: (_data: any) => { },
                 onActionRequired: (_evt: any) => { },
-                onLifecycleEvent: async (evt: MethodLifecycleEvent) => await engine.onLifecycleEvent(method, evt),
-                onResult: async (result: any) => {
-                    if (result?.status === 'succeeded') {
+                onLifecycleEvent: async (evt: MethodLifecycleEvent) => {
+                    if (evt.type === 'SUBMIT_STARTED') {
+                        await engine.onSubmitStarted(kmpMethod);
+                    }
+                },
+                onResult: async (result: ResultEvent) => {
+                    const status = toKmpResultStatus(result.status);
+
+                    if (status === ResultStatus.succeeded) {
                         args.onSuccess?.({ checkoutRequestId: args.checkoutRequestId, paymentMethod: method, payload: result.payload });
                     } else {
                         args.onError?.({ checkoutRequestId: args.checkoutRequestId, paymentMethod: method, error: result?.error ?? result });
                     }
-                    await engine.onResult(method, result);
+                    await engine.onResult(kmpMethod, status);
                 },
                 onLog: () => { },
-            } as any);
-            await engine.onMethodMounted(method);
-        });
+            });
+            await engine.onMethodMounted(kmpMethod);
+        }
 
         if (moleculeMethods.length > 0) {
-            await engine.setActive(moleculeMethods[0]);
+            await engine.setActive(toKmpMethod(moleculeMethods[0]));
         }
 
         return {

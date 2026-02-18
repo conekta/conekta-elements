@@ -1,7 +1,7 @@
-import type { ElementMountOptions, MountedElement, OrchestratorConfig, PaymentMethod, ViewState } from '../shared/types';
+import type { ActionRequiredEvent, ElementMountOptions, MountedElement, OrchestratorConfig, PaymentMethod, ReadyEvent, ResultEvent, StateChangeEvent, ViewState } from '../shared/types';
 import { createEventBus } from './events';
 import { getMethodFactory, toRPC } from './registry';
-import type { Orchestrator } from './types';
+import type { MethodLifecycleEvent, Orchestrator } from './types';
 
 const resolveContainer = (target: string | HTMLElement): HTMLElement => {
     if (typeof target !== 'string') return target;
@@ -35,23 +35,23 @@ export const createOrchestrator = (config: OrchestratorConfig = {}): Orchestrato
             correlationId: config.correlationId,
 
             // Wire callbacks -> event bus
-            onReady: (data: any) => {
+            onReady: (data: ReadyEvent) => {
                 opts.onReady?.(data);
                 bus.emit('element:ready', { method, data });
             },
-            onStateChange: (data: any) => {
+            onStateChange: (data: StateChangeEvent) => {
                 opts.onStateChange?.(data);
                 bus.emit('element:state', { method, data });
             },
-            onActionRequired: (data: any) => {
+            onActionRequired: (data: ActionRequiredEvent) => {
                 opts.onActionRequired?.(data);
                 bus.emit('element:action_required', { method, data });
             },
-            onLifecycleEvent: (data: any) => {
+            onLifecycleEvent: (data: MethodLifecycleEvent) => {
                 opts.onLifecycleEvent?.(data);
                 bus.emit('element:lifecycle_event', { method, data });
             },
-            onResult: (data: any) => {
+            onResult: (data: ResultEvent) => {
                 opts.onResult?.(data);
                 bus.emit('element:result', { method, data });
             },

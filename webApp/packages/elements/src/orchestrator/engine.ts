@@ -2,6 +2,7 @@ import type { Effect } from './state';
 import type { MethodLifecycleEvent } from './types';
 import type { PaymentMethod } from '../shared/types';
 import type { OrchestratorCore } from './core';
+import type { ResultEvent } from '../shared/types';
 
 export type EffectRunner = {
     run: (effect: Effect) => Promise<void>;
@@ -31,7 +32,7 @@ export const createOrchestrationEngine = (
             }
         },
 
-        onResult: (method: PaymentMethod, result: any) =>
+        onResult: (method: PaymentMethod, result: ResultEvent) =>
             dispatchAndRun({ type: 'METHOD_RESULT', method, result }),
 
         setActive: (method: PaymentMethod) =>

@@ -1,7 +1,8 @@
+import type { PaymentMethodType, ViewState as KmpViewState } from "shared";
 import type { MethodLifecycleEvent } from "../orchestrator/types";
 
 export type ReadyEvent = {
-    paymentMethod: string;
+    paymentMethod: PaymentMethod;
     apiVersion: number;
     iframeVersion: string;
     capabilities: {
@@ -12,8 +13,8 @@ export type ReadyEvent = {
 };
 
 export type StateChangeEvent = {
-    paymentMethod: string;
-    viewState: 'editing' | 'shipping' | 'submitting' | 'success' | 'error' | 'disabled';
+    paymentMethod: PaymentMethod;
+    viewState: ViewState;
     active: boolean;
     valid?: boolean;
     complete?: boolean;
@@ -22,20 +23,18 @@ export type StateChangeEvent = {
 };
 
 export type ActionRequiredEvent = {
-    paymentMethod: string;
+    paymentMethod: PaymentMethod;
     type: '3ds' | 'redirect' | 'popup' | 'deeplink';
     mode?: 'iframe' | 'popup' | 'redirect';
     payload: Record<string, any>;
 };
 
-export type ResultEvent =
-    | { paymentMethod: string; status: 'succeeded'; payload: Record<string, any> }
-    | { paymentMethod: string; status: 'failed'; error: { code: string; message?: string } };
+export type ResultEvent = { paymentMethod: PaymentMethod; status: 'succeeded' | 'requires_action' | 'failed'; payload?: Record<string, any>, error?: { code: string; message?: string } }
 
 
-export type PaymentMethod = 'applePay' | 'googlePay' | 'card' | 'cash' | 'bankTransfer' | 'bnpl' | 'payByBank';
+export type PaymentMethod = ReturnType<typeof PaymentMethodType.values>[number]['name'];
 
-export type ViewState = 'editing' | 'shipping' | 'submitting' | 'success' | 'error' | 'disabled';
+export type ViewState = ReturnType<typeof KmpViewState.values>[number]['name'];
 
 export type OrchestratorConfig = {
     baseUrl?: string;
@@ -52,12 +51,14 @@ export type ElementMountOptions = {
     checkoutRequestType?: 'HostedPayment' | 'Integration' | 'PaymentLink';
     viewState?: ViewState;
     active?: boolean;
+    locale?: string;
+    theme?: Record<string, any>;
     // callbacks - child -> parent
-    onReady?: (e: any) => void;
-    onStateChange?: (e: any) => void;
-    onActionRequired?: (e: any) => void;
+    onReady?: (e: ReadyEvent) => void;
+    onStateChange?: (e: StateChangeEvent) => void;
+    onActionRequired?: (e: ActionRequiredEvent) => void;
     onLifecycleEvent?: (e: MethodLifecycleEvent) => void;
-    onResult?: (e: any) => void;
+    onResult?: (e: ResultEvent) => void;
     onLog?: (e: any) => void;
 };
 
