@@ -1,11 +1,23 @@
+import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.android.lint)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    `maven-publish`
+    alias(libs.plugins.kover)
+    alias(libs.plugins.mavenPublish)
 }
+
+val languageTool by configurations.creating
+
+dependencies {
+    languageTool(libs.languagetool.core)
+    languageTool(libs.languagetool.es)
+    languageTool(libs.languagetool.en)
+}
+
 group = project.property("conekta.group") as String
 version = project.property("conekta.version") as String
 compose.resources {
@@ -23,6 +35,8 @@ kotlin {
         minSdk = 24
 
         withHostTestBuilder {
+        }.configure {
+            isIncludeAndroidResources = true
         }
 
         withDeviceTestBuilder {
@@ -41,22 +55,18 @@ kotlin {
     // project can be found here:
     // https://developer.android.com/kotlin/multiplatform/migrate
     val xcfName = "composeKit"
+    val xcf = XCFramework(xcfName)
 
-    iosX64 {
-        binaries.framework {
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64(),
+    ).forEach {
+        it.binaries.framework {
             baseName = xcfName
-        }
-    }
-
-    iosArm64 {
-        binaries.framework {
-            baseName = xcfName
-        }
-    }
-
-    iosSimulatorArm64 {
-        binaries.framework {
-            baseName = xcfName
+            binaryOption("bundleId", "io.conekta.$xcfName")
+            xcf.add(this)
+            isStatic = true
         }
     }
 
@@ -69,15 +79,21 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
-                implementation(compose.runtime)
-                implementation(compose.foundation)
-                implementation(compose.material3)
-                implementation(compose.ui)
-                implementation(compose.components.resources)
-                implementation(compose.preview)
+                implementation(libs.compose.runtime)
+                implementation(libs.compose.foundation)
+                implementation(libs.compose.material3)
+                implementation(libs.compose.material.icons.extended)
+                implementation(libs.compose.components.resources)
+                implementation(libs.compose.ui.tooling.preview)
                 implementation(libs.androidx.lifecycle.viewmodelCompose)
                 implementation(libs.androidx.lifecycle.runtimeCompose)
                 api(project(":shared"))
+
+                // Coil for async image loading from CDN (exported as api for consumers)
+                api(libs.coil.compose)
+                api(libs.coil.network.ktor)
+                api(libs.coil.svg)
+                api(libs.ktor.client.core)
             }
         }
 
@@ -92,8 +108,18 @@ kotlin {
                 // Add Android-specific dependencies here. Note that this source set depends on
                 // commonMain by default and will correctly pull the Android artifacts of any KMP
                 // dependencies declared in commonMain.
-                implementation(compose.preview)
+                implementation(libs.compose.ui.tooling.preview)
                 implementation(libs.androidx.activity.compose)
+                api(libs.ktor.client.okhttp)
+            }
+        }
+
+        getByName("androidHostTest") {
+            dependencies {
+                implementation(libs.robolectric)
+                implementation(libs.core)
+                implementation(libs.junit)
+                implementation(libs.compose.ui.test.junit4)
             }
         }
 
@@ -109,13 +135,51 @@ kotlin {
             dependencies {
                 // Add iOS-specific dependencies here. This a source set created by Kotlin Gradle
                 // Plugin (KGP) that each specific iOS target (e.g., iosX64) depends on as
-                // part of KMP’s default source set hierarchy. Note that this source set depends
+                // part of KMP's default source set hierarchy. Note that this source set depends
                 // on common by default and will correctly pull the iOS artifacts of any
                 // KMP dependencies declared in commonMain.
+                api(libs.ktor.client.darwin)
             }
         }
     }
 }
+mavenPublishing {
+    publishToMavenCentral()
+    if (project.findProperty("signingInMemoryKey")?.toString()?.isNotBlank() == true) {
+        signAllPublications()
+    }
+
+    coordinates(
+        groupId = project.property("conekta.group") as String,
+        artifactId = "conekta-elements-compose",
+        version = project.property("conekta.version") as String,
+    )
+
+    pom {
+        name.set("Conekta Elements - Compose")
+        description.set("Kotlin Multiplatform payment UI library – Compose Multiplatform UI module")
+        url.set("https://github.com/conekta/conekta-elements")
+        licenses {
+            license {
+                name.set("MIT License")
+                url.set("https://opensource.org/licenses/MIT")
+            }
+        }
+        developers {
+            developer {
+                id.set("conekta")
+                name.set("Conekta")
+                email.set("engineering@conekta.com")
+            }
+        }
+        scm {
+            url.set("https://github.com/conekta/conekta-elements")
+            connection.set("scm:git:git://github.com/conekta/conekta-elements.git")
+            developerConnection.set("scm:git:ssh://git@github.com/conekta/conekta-elements.git")
+        }
+    }
+}
+
 publishing {
     repositories {
         maven {
@@ -127,7 +191,74 @@ publishing {
             }
         }
     }
+}
 
-    publications {
+tasks.register<ValidateStringsOrderTask>("validateStringsOrder") {
+    group = "verification"
+    description = "Validates that all string resources are in alphabetical order"
+
+    val resourcesDir = project.projectDir.resolve("src/commonMain/composeResources")
+
+    projectDirPath = project.projectDir
+    stringsFiles =
+        project.fileTree(resourcesDir) {
+            include("**/strings.xml")
+        }
+}
+
+tasks.register<ValidateStringsSpellingTask>("validateStringsSpelling") {
+    group = "verification"
+    description = "Validates spelling and grammar in all string resources"
+
+    val resourcesDir = project.projectDir.resolve("src/commonMain/composeResources")
+
+    projectDirPath = project.projectDir
+    stringsFiles =
+        project.fileTree(resourcesDir) {
+            include("**/strings.xml")
+        }
+
+    languageToolClasspath = configurations.getByName("languageTool")
+}
+
+// Run validation automatically with check task
+tasks.named("check") {
+    dependsOn("validateStringsOrder")
+    dependsOn("validateStringsSpelling")
+}
+
+// Kover configuration for code coverage
+// Reports will be generated at build/reports/kover/
+// XML reports are generated automatically with check task for SonarQube integration
+kover {
+    reports {
+        filters {
+            excludes {
+                classes(
+                    "*.*Test*",
+                    "*.test.*",
+                    "*.*Mock*",
+                    "*.composeResources.*",
+                    "*ComposableSingletons*",
+                )
+            }
+        }
+
+        total {
+            xml {
+                onCheck = false // XML generated explicitly via koverXmlReport task
+                title = "Compose UI Coverage"
+            }
+
+            html {
+                onCheck = false // HTML reports on-demand only
+            }
+        }
+
+        verify {
+            rule {
+                minBound(0) // No minimum coverage requirement for now
+            }
+        }
     }
 }

@@ -1,0 +1,52 @@
+name: Deploy_maven_central
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  deploy-maven-central:
+    runs-on: aws-runner-set
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Validate tag matches Gradle version
+        id: validate
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          VERSION="${TAG#v}"
+          MODULE_VERSION=$(grep '^conekta.version=' gradle.properties | cut -d'=' -f2)
+          echo "tag_version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "module_version=$MODULE_VERSION" >> "$GITHUB_OUTPUT"
+          if [ "$VERSION" != "$MODULE_VERSION" ]; then
+            echo "::warning::Tag $VERSION does not match conekta.version $MODULE_VERSION, skipping deploy-maven-central"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/setup-java@v5
+        if: steps.validate.outputs.skip == 'false'
+        with:
+          distribution: temurin
+          java-version-file: '.sdkmanrc'
+          cache: gradle
+
+      - name: Setup Gradle
+        if: steps.validate.outputs.skip == 'false'
+        uses: gradle/actions/setup-gradle@v5
+
+      - uses: android-actions/setup-android@v3
+        if: steps.validate.outputs.skip == 'false'
+
+      - name: Publish to Maven Central
+        if: steps.validate.outputs.skip == 'false'
+        run: ./gradlew :shared:publishAllPublicationsToMavenCentralRepository :compose:publishAllPublicationsToMavenCentralRepository --no-configuration-cache
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.SIGNING_KEY_ID }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_PASSWORD }}

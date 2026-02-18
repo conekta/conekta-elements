@@ -20,7 +20,7 @@ jobs:
           cache: gradle
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
         with:
           cache-read-only: ${{ github.ref != 'refs/heads/main' }}
 
@@ -35,8 +35,28 @@ jobs:
       - name: shared test
         run: make shared-test
 
+      - name: compose test
+        run: make compose-test
+
+      - name: Upload KMP coverage artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: kmp-coverage
+          path: |
+            shared/build/reports/kover/**/*.xml
+            compose/build/reports/kover/**/*.xml
+          if-no-files-found: error
+          retention-days: 1
+          overwrite: true
+
       - name: linter check
         run: make lint-check
+
+      - name: Validate strings order
+        run: ./gradlew :compose:validateStringsOrder
+
+      - name: Validate strings spelling
+        run: ./gradlew :compose:validateStringsSpelling
 
       - name: Publish dry run
         run: make publish-local
@@ -55,7 +75,7 @@ jobs:
           cache: gradle
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
         with:
           cache-read-only: ${{ github.ref != 'refs/heads/main' }}
 
@@ -73,9 +93,19 @@ jobs:
       - name: Install dependencies
         run: npm ci
       
-      - name: Run tests
+      - name: Run tests with coverage
         working-directory: webApp
-        run: npm run test:ci
+        run: npm run test:coverage
+
+      - name: Upload JS coverage artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: js-coverage
+          path: webApp/coverage/lcov.info
+          if-no-files-found: error
+          retention-days: 1
+          overwrite: true
+
       - name: Lint
         working-directory: webApp
         run: npm run lint
@@ -92,3 +122,72 @@ jobs:
           exitZeroOnChanges: true
           exitOnceUploaded: true
           skip: "@(renovate/**|dependabot/**)"
+
+  sonarcloud:
+    runs-on: aws-runner-set
+    needs: [build_kmp, build_js]
+    if: always() && (needs.build_kmp.result == 'success' && needs.build_js.result == 'success')
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for better analysis
+
+      - name: Download JS coverage artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: js-coverage
+          path: webApp/coverage
+
+      - name: Download KMP coverage artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: kmp-coverage
+          path: .
+      - name: Debug downloaded coverage files
+        run: |
+          ls -la
+          echo "JS coverage:"
+          find webApp/coverage -type f | sort || true
+          echo "KMP coverage:"
+          find shared/build/reports -type f | grep -i kover | sort || true
+          find compose/build/reports -type f | grep -i kover | sort || true
+
+      - name: sonarqube Scan
+        uses: SonarSource/sonarqube-scan-action@v7.0.0
+        with:
+          args: >
+            -Dsonar.qualitygate.wait=true
+            -Dsonar.log.level=DEBUG
+            -Dsonar.projectVersion=${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref_name }}
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_PROJECT_VERSION: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref_name }}
+
+      - name: Comment SonarQube link on PR
+        if: github.event_name == 'pull_request'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PROJECT_KEY=$(grep '^sonar.projectKey=' sonar-project.properties | cut -d'=' -f2)
+          SONAR_URL="${{ secrets.SONAR_HOST_URL }}dashboard?id=${PROJECT_KEY}&pullRequest=${{ github.event.pull_request.number }}"
+          REPO="${{ github.repository }}"
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          API="https://api.github.com"
+          AUTH="Authorization: Bearer $GITHUB_TOKEN"
+
+          # Delete previous SonarQube comment if it exists
+          COMMENT_ID=$(curl -s -H "$AUTH" "$API/repos/$REPO/issues/$PR_NUMBER/comments" \
+            | grep -o '"id":[0-9]*,"node_id":"[^"]*","url":"[^"]*","html_url":"[^"]*","body":"\*\*SonarQube Analysis' \
+            | grep -o '"id":[0-9]*' | tail -1 | cut -d: -f2)
+          if [ -n "$COMMENT_ID" ]; then
+            curl -s -X DELETE -H "$AUTH" "$API/repos/$REPO/issues/comments/$COMMENT_ID"
+          fi
+
+          # Create new comment (always at the bottom)
+          curl -s -X POST -H "$AUTH" -H "Content-Type: application/json" \
+            -d "{\"body\": \"**SonarQube Analysis:** [View Dashboard]($SONAR_URL)\"}" \
+            "$API/repos/$REPO/issues/$PR_NUMBER/comments"
