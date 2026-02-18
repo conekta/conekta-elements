@@ -6,7 +6,7 @@ SDK de UI para tokenización de tarjetas en Android usando Jetpack Compose.
 
 ```kotlin
 dependencies {
-    implementation("io.conekta.elements:compose:1.0.12")
+    implementation("io.conekta:conekta-elements-compose:0.0.1-beta.2")
 }
 ```
 
