@@ -9,11 +9,11 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import io.conekta.elements.compose.generated.resources.Res
-import io.conekta.elements.compose.generated.resources.inter_bold
-import io.conekta.elements.compose.generated.resources.inter_medium
-import io.conekta.elements.compose.generated.resources.inter_regular
-import io.conekta.elements.compose.generated.resources.inter_semibold
+import io.conekta.compose.generated.resources.Res
+import io.conekta.compose.generated.resources.inter_bold
+import io.conekta.compose.generated.resources.inter_medium
+import io.conekta.compose.generated.resources.inter_regular
+import io.conekta.compose.generated.resources.inter_semibold
 import org.jetbrains.compose.resources.Font
 
 val LocalConektaFontFamily = staticCompositionLocalOf<FontFamily> { FontFamily.Default }

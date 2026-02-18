@@ -19,8 +19,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import io.conekta.elements.Greeting
-import io.conekta.elements.compose.generated.resources.Res
-import io.conekta.elements.compose.generated.resources.compose_multiplatform
+import io.conekta.compose.generated.resources.Res
+import io.conekta.compose.generated.resources.compose_multiplatform
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
