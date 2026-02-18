@@ -13,6 +13,19 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - name: Validate README version matches gradle.properties
+        run: |
+          VERSION=$(grep '^conekta.version=' gradle.properties | cut -d'=' -f2)
+          FAILED=false
+          for README in README.md compose/README.md; do
+            if ! grep -q "$VERSION" "$README"; then
+              echo "::error::$README does not contain version $VERSION from gradle.properties"
+              FAILED=true
+            fi
+          done
+          if [ "$FAILED" = "true" ]; then exit 1; fi
+          echo "README version check passed: $VERSION"
+
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
