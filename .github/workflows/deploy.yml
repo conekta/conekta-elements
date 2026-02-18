@@ -5,7 +5,7 @@ on:
     types: [published]
 
 jobs:
-  deploy-compose:
+  deploy-github-packages:
     runs-on: aws-runner-set
     permissions:
       contents: read
@@ -22,7 +22,7 @@ jobs:
           echo "tag_version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "module_version=$MODULE_VERSION" >> "$GITHUB_OUTPUT"
           if [ "$VERSION" != "$MODULE_VERSION" ]; then
-            echo "::warning::Tag $VERSION does not match conekta.version $MODULE_VERSION, skipping deploy-compose"
+            echo "::warning::Tag $VERSION does not match conekta.version $MODULE_VERSION, skipping deploy-github-packages"
             echo "skip=true" >> "$GITHUB_OUTPUT"
           else
             echo "skip=false" >> "$GITHUB_OUTPUT"
@@ -48,16 +48,6 @@ jobs:
         env:
           GP_USER: ${{ github.actor }}
           GP_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Publish to Maven Central
-        if: steps.validate.outputs.skip == 'false'
-        run: ./gradlew :shared:publishAllPublicationsToMavenCentralRepository :compose:publishAllPublicationsToMavenCentralRepository --no-configuration-cache
-        env:
-          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
-          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
-          ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.SIGNING_KEY_ID }}
-          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_KEY }}
-          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_PASSWORD }}
 
   deploy-webapp:
     runs-on: aws-runner-set
