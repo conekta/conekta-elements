@@ -1,42 +1,22 @@
-import { PaymentMethodType as KmpPaymentMethodType, ViewState as KmpViewState, ResultStatus } from 'shared';
+import { PaymentMethodType, ViewState as KmpViewState, ResultStatus } from 'shared';
 import type { PaymentMethod, ViewState } from './types';
 
 export const toKmpMethod = (m: PaymentMethod) => {
     switch (m) {
-        case 'applePay': return KmpPaymentMethodType.applePay;
-        case 'googlePay': return KmpPaymentMethodType.googlePay;
-        case 'payByBank': return KmpPaymentMethodType.payByBank;
-        case 'card': return KmpPaymentMethodType.card;
-        case 'cash': return KmpPaymentMethodType.cash;
-        case 'bankTransfer': return KmpPaymentMethodType.bankTransfer;
-        case 'bnpl': return KmpPaymentMethodType.bnpl;
+        case PaymentMethodType.Apple.name: return PaymentMethodType.Apple;
+        case PaymentMethodType.Google.name: return PaymentMethodType.Google;
+        case PaymentMethodType.PayByBank.name: return PaymentMethodType.PayByBank;
+        case PaymentMethodType.Card.name: return PaymentMethodType.Card;
+        case PaymentMethodType.Cash.name: return PaymentMethodType.Cash;
+        case PaymentMethodType.BankTransfer.name: return PaymentMethodType.BankTransfer;
+        case PaymentMethodType.Bnpl.name: return PaymentMethodType.Bnpl;
     }
 };
 
-export const toPaymentMethod = (m: KmpPaymentMethodType) => {
-    switch (m) {
-        case KmpPaymentMethodType.applePay: return 'applePay';
-        case KmpPaymentMethodType.googlePay: return 'googlePay';
-        case KmpPaymentMethodType.payByBank: return 'payByBank';
-        case KmpPaymentMethodType.card: return 'card';
-        case KmpPaymentMethodType.cash: return 'cash';
-        case KmpPaymentMethodType.bankTransfer: return 'bankTransfer';
-        case KmpPaymentMethodType.bnpl: return 'bnpl';
-        default: throw new Error(`Unknown payment method: ${m}`);
-    }
-};
+export const toPaymentMethod = (m: PaymentMethodType) => m.name
 
-export const toViewState = (v: KmpViewState) => {
-    switch (v) {
-        case KmpViewState.editing: return 'editing';
-        case KmpViewState.shipping: return 'shipping';
-        case KmpViewState.submitting: return 'submitting';
-        case KmpViewState.success: return 'success';
-        case KmpViewState.error: return 'error';
-        case KmpViewState.disabled: return 'disabled';
-        default: throw new Error(`Unknown view state: ${v}`);
-    }
-};
+export const toViewState = (v: KmpViewState) => v.name
+
 
 export const toKmpViewState = (v: ViewState) => {
     switch (v) {

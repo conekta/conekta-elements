@@ -1,6 +1,7 @@
 package io.conekta.elements.network
 
-import io.conekta.elements.network.models.Order
+import io.conekta.elements.dtos.CheckoutDto
+import io.conekta.elements.mappers.toDto
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.promise
@@ -11,30 +12,28 @@ import kotlin.js.Promise
 @OptIn(ExperimentalJsExport::class)
 @JsExport
 class ConektaJsClient(
-    apiKey: String,
-    language: String = ConektaConfig.DEFAULT_LANGUAGE,
-    apiVersion: String = ConektaConfig.DEFAULT_API_VERSION,
+    language: String = CheckoutSsrConfig.DEFAULT_LANGUAGE,
 ) {
     private val scope = CoroutineScope(SupervisorJob())
-    private val service =
-        ConektaApiService(
-            ConektaConfig(
-                apiKey = apiKey,
+
+        private val checkoutService =
+        CheckoutSsrApiService(
+            CheckoutSsrConfig(
                 language = language,
-                apiVersion = apiVersion,
             ),
         )
 
-    fun getOrder(orderId: String): Promise<Order> =
-        scope.promise {
-            when (val result = service.getOrder(orderId)) {
-                is ApiResult.Success -> result.data
-                is ApiResult.Error -> throw Exception(result.message)
-                is ApiResult.Exception -> throw result.throwable
-            }
-        }
+        fun getCheckoutById(id: String): Promise<CheckoutDto> =
+    scope.promise {
+        val checkout =
+            checkoutService
+                .getCheckoutById(id)
+                .getOrElse { throw it }
+
+        checkout.toDto()
+    }
 
     fun close() {
-        service.close()
+        checkoutService.close()
     }
 }

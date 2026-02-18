@@ -1,13 +1,13 @@
 import type { MoleculeId } from '../public/types';
-import type { PaymentMethod } from '../shared/types';
+import { PaymentMethodType } from 'shared';
 
-export const getMoleculeMethods = (id: MoleculeId): PaymentMethod[] => {
+export const getMoleculeMethods = (id: MoleculeId): PaymentMethodType[] => {
     switch (id) {
         case 'expressCheckout':
-            return ['applePay', 'googlePay'
+            return [PaymentMethodType.Apple, PaymentMethodType.Google
                 //,'payByBank', 
             ];
         default:
-            return ['applePay'];
+            return [PaymentMethodType.Apple];
     }
 };

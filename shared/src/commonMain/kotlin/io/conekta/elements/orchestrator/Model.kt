@@ -1,18 +1,35 @@
 @file:OptIn(kotlin.js.ExperimentalJsExport::class)
 
 package io.conekta.elements.orchestrator
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 import kotlin.js.JsExport
 
 @JsExport
+@Serializable
 enum class PaymentMethodType {
-  applePay,
-  googlePay,
-  payByBank,
-  card,
-  cash,
-  bankTransfer,
-  bnpl,
+
+    @SerialName("Apple")
+    Apple,
+
+    @SerialName("Google")
+    Google,
+
+    @SerialName("PayByBank")
+    PayByBank,
+
+    @SerialName("Card")
+    Card,
+
+    @SerialName("Cash")
+    Cash,
+
+    @SerialName("BankTransfer")
+    BankTransfer,
+
+    @SerialName("Bnpl")
+    Bnpl,
 }
 
 @JsExport
