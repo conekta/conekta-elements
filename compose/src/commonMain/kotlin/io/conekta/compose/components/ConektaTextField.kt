@@ -124,7 +124,7 @@ fun ConektaTextField(
                     colors = colors,
                     contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
                     container = {
-                        OutlinedTextFieldDefaults.ContainerBox(
+                        OutlinedTextFieldDefaults.Container(
                             enabled = enabled,
                             isError = isError,
                             interactionSource = interactionSource,

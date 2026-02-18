@@ -7,7 +7,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kover)
-    `maven-publish`
+    alias(libs.plugins.mavenPublish)
 }
 
 val languageTool by configurations.creating
@@ -144,6 +144,43 @@ kotlin {
         }
     }
 }
+mavenPublishing {
+    publishToMavenCentral()
+    if (project.findProperty("signingInMemoryKey") != null) {
+        signAllPublications()
+    }
+
+    coordinates(
+        groupId = project.property("conekta.group") as String,
+        artifactId = "conekta-elements-compose",
+        version = project.property("conekta.version") as String,
+    )
+
+    pom {
+        name.set("Conekta Elements - Compose")
+        description.set("Kotlin Multiplatform payment UI library – Compose Multiplatform UI module")
+        url.set("https://github.com/conekta/conekta-elements")
+        licenses {
+            license {
+                name.set("MIT License")
+                url.set("https://opensource.org/licenses/MIT")
+            }
+        }
+        developers {
+            developer {
+                id.set("conekta")
+                name.set("Conekta")
+                email.set("engineering@conekta.com")
+            }
+        }
+        scm {
+            url.set("https://github.com/conekta/conekta-elements")
+            connection.set("scm:git:git://github.com/conekta/conekta-elements.git")
+            developerConnection.set("scm:git:ssh://git@github.com/conekta/conekta-elements.git")
+        }
+    }
+}
+
 publishing {
     repositories {
         maven {
@@ -154,9 +191,6 @@ publishing {
                 password = project.findProperty("gpr.token") as String? ?: System.getenv("GP_TOKEN")
             }
         }
-    }
-
-    publications {
     }
 }
 
