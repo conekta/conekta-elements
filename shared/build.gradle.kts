@@ -95,7 +95,7 @@ kotlin {
 
 mavenPublishing {
     publishToMavenCentral()
-    if (project.findProperty("signingInMemoryKey") != null) {
+    if (project.findProperty("signingInMemoryKey")?.toString()?.isNotBlank() == true) {
         signAllPublications()
     }
 
