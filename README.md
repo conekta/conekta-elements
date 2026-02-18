@@ -115,11 +115,42 @@ fun PaymentScreen() {
 
 ## iOS
 
-The `compose` module produces an XCFramework distributed as a release asset.
+The `compose` module produces `composeKit.xcframework`, distributed as a zip asset in every [GitHub release](https://github.com/conekta/conekta-elements/releases).
 
-Download `composeKit.xcframework.zip` from the [latest release](https://github.com/conekta/conekta-elements/releases/tag/latest) and add it to your Xcode project.
+### Option 1 — Direct XCFramework (Xcode)
 
-For Swift Package Manager, use the checksum file included in the release assets.
+1. Download `composeKit.xcframework.zip` from the [latest release](https://github.com/conekta/conekta-elements/releases/tag/latest)
+2. Unzip and drag `composeKit.xcframework` into your Xcode project
+3. In your target → **General** → **Frameworks, Libraries, and Embedded Content**, set it to **Embed & Sign**
+
+### Option 2 — Swift Package Manager
+
+Add a binary target in your `Package.swift` pointing to the release asset. Get the checksum from `checksum.txt` included in the release assets:
+
+```swift
+// Package.swift
+let package = Package(
+    ...
+    targets: [
+        .binaryTarget(
+            name: "composeKit",
+            url: "https://github.com/conekta/conekta-elements/releases/download/latest/composeKit.xcframework.zip",
+            checksum: "d5e253875e9efa61c7217b792bffeb939e2a0ca7ce0e9ab5bed36d78e22ee8e3"
+        ),
+        .target(
+            name: "YourTarget",
+            dependencies: ["composeKit"]
+        )
+    ]
+)
+```
+
+Or add it directly in Xcode via **File → Add Package Dependencies** using the release asset URL.
+
+### Requirements
+
+- Xcode 15+
+- iOS 14+
 
 ---
 
