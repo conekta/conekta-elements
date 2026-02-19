@@ -7,14 +7,19 @@ import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.runComposeUiTest
+import io.conekta.compose.initComposeResourcesContext
 import io.conekta.elements.tokenizer.models.TokenizerConfig
 import io.conekta.elements.tokenizer.models.TokenizerError
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class ConektaTokenizerTest {
+    @Before
+    fun setUp() = initComposeResourcesContext()
+
     private val defaultConfig =
         TokenizerConfig(
             publicKey = "key_test_123",

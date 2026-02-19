@@ -12,7 +12,7 @@ export const ExpressCheckout = ({
   spacing = DEFAULT_SPACING,
 }: ExpressCheckoutProps) => {
   const validatedSpacing = Math.max(MIN_SPACING, spacing);
-  const amountInstance = new Amount(BigInt(amount));
+  const amountInstance = new Amount(amount);
 
   const handleApplePayAuthorized = (result: ApplePayTokenResult) => {
     console.warn('Apple Pay authorized', { publicKey, amount, currency, token: result.token });
