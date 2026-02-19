@@ -1,7 +1,5 @@
 package io.conekta.elements.tokenizer.validators
 
-import io.conekta.elements.tokenizer.models.CardBrand
-
 data class ValidationMessages(
     val required: String,
     val cardMinLength: String,
@@ -33,7 +31,6 @@ fun validateForm(
     cardNumber: String,
     expiryDate: String,
     cvv: String,
-    detectedBrand: CardBrand,
     collectCardholderName: Boolean,
     messages: ValidationMessages,
 ): ValidationResult {
@@ -43,7 +40,7 @@ fun validateForm(
         cardholderName = validateRequired(cardholderName, collectCardholderName, messages.required),
         cardNumber = validateCardNumber(cardDigits, cardNumber, messages),
         expiryDate = validateExpiry(expiryDate, messages),
-        cvv = validateCvv(cvv, detectedBrand, messages),
+        cvv = validateCvv(cvv, messages),
     )
 }
 
@@ -84,7 +81,6 @@ private fun validateExpiry(
 
 private fun validateCvv(
     cvv: String,
-    brand: CardBrand,
     messages: ValidationMessages,
 ): FieldError =
     when {
