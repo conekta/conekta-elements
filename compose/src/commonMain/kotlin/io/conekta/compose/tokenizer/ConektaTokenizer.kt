@@ -1,6 +1,7 @@
 package io.conekta.compose.tokenizer
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,6 +30,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -63,6 +66,7 @@ import io.conekta.compose.generated.resources.placeholder_expiry
 import io.conekta.compose.generated.resources.validation_card_min_length
 import io.conekta.compose.generated.resources.validation_cvv_min_length
 import io.conekta.compose.generated.resources.validation_expiry_year_invalid
+import io.conekta.compose.generated.resources.validation_invalid_card
 import io.conekta.compose.theme.ConektaColors
 import io.conekta.compose.theme.ConektaTheme
 import io.conekta.compose.theme.LocalConektaFontFamily
@@ -127,6 +131,7 @@ private fun TokenizerContent(
     onError: (TokenizerError) -> Unit,
 ) {
     val fontFamily = LocalConektaFontFamily.current
+    val focusManager = LocalFocusManager.current
     val coroutineScope = rememberCoroutineScope()
     val tokenizerApiService = remember(config) { TokenizerApiService(config) }
     var cardholderName by remember { mutableStateOf(TextFieldValue("")) }
@@ -155,6 +160,7 @@ private fun TokenizerContent(
         ValidationMessages(
             required = stringResource(Res.string.error_field_required),
             cardMinLength = stringResource(Res.string.validation_card_min_length),
+            invalidCard = stringResource(Res.string.validation_invalid_card),
             expiryYearInvalid = stringResource(Res.string.validation_expiry_year_invalid),
             cvvMinLength = stringResource(Res.string.validation_cvv_min_length),
         )
@@ -169,6 +175,9 @@ private fun TokenizerContent(
             Modifier
                 .fillMaxSize()
                 .background(Color.White)
+                .pointerInput(Unit) {
+                    detectTapGestures(onTap = { focusManager.clearFocus() })
+                }
                 .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
@@ -186,10 +195,10 @@ private fun TokenizerContent(
             style =
                 TextStyle(
                     fontFamily = fontFamily,
-                    fontSize = 20.sp,
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = ConektaColors.DarkIndigo,
-                    lineHeight = 28.sp,
+                    lineHeight = 24.sp,
                 ),
         )
 

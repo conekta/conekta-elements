@@ -81,6 +81,7 @@ fun ConektaLogoImage(modifier: Modifier = Modifier) {
         contentDescription = stringResource(Res.string.content_description_conekta_logo),
         modifier = modifier,
         contentScale = ContentScale.Fit,
+        alignment = androidx.compose.ui.Alignment.CenterStart,
     )
 }
 

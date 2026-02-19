@@ -12,6 +12,7 @@ class FormValidatorTest {
         ValidationMessages(
             required = "Required",
             cardMinLength = "Card too short",
+            invalidCard = "Invalid card",
             expiryYearInvalid = "Invalid expiry",
             cvvMinLength = "CVV too short",
         )
@@ -165,7 +166,7 @@ class FormValidatorTest {
     // validateForm - invalid values
 
     @Test
-    fun `validateForm detects invalid card number`() {
+    fun `validateForm detects card number too short`() {
         val result =
             validateForm(
                 cardholderName = "John",
@@ -178,6 +179,22 @@ class FormValidatorTest {
             )
         assertTrue(result.cardNumber.isError)
         assertEquals("Card too short", result.cardNumber.message)
+    }
+
+    @Test
+    fun `validateForm detects invalid card number failing Luhn check`() {
+        val result =
+            validateForm(
+                cardholderName = "John",
+                cardNumber = "2424 2424 2424 2424",
+                expiryDate = "12/26",
+                cvv = "123",
+                detectedBrand = CardBrand.MASTERCARD,
+                collectCardholderName = true,
+                messages = messages,
+            )
+        assertTrue(result.cardNumber.isError)
+        assertEquals("Invalid card", result.cardNumber.message)
     }
 
     @Test
@@ -333,6 +350,7 @@ class FormValidatorTest {
     fun `ValidationMessages stores all messages`() {
         assertEquals("Required", messages.required)
         assertEquals("Card too short", messages.cardMinLength)
+        assertEquals("Invalid card", messages.invalidCard)
         assertEquals("Invalid expiry", messages.expiryYearInvalid)
         assertEquals("CVV too short", messages.cvvMinLength)
     }

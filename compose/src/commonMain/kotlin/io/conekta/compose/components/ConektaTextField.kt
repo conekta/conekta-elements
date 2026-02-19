@@ -22,6 +22,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
+
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.conekta.compose.theme.ConektaColors
@@ -53,7 +54,6 @@ fun ConektaTextField(
             fontFamily = fontFamily,
             fontSize = 16.sp,
             color = ConektaColors.DarkIndigo,
-            lineHeight = 24.sp,
         )
     val colors =
         OutlinedTextFieldDefaults.colors(
@@ -116,7 +116,6 @@ fun ConektaTextField(
                                     fontFamily = fontFamily,
                                     fontSize = 16.sp,
                                     color = ConektaColors.Neutral7,
-                                    lineHeight = 24.sp,
                                 ),
                         )
                     },
