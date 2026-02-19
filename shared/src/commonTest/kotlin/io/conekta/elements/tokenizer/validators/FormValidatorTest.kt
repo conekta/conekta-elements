@@ -181,7 +181,6 @@ class FormValidatorTest {
                 cardNumber = "2424 2424 2424 2424",
                 expiryDate = "12/26",
                 cvv = "123",
-                detectedBrand = CardBrand.MASTERCARD,
                 collectCardholderName = true,
                 messages = messages,
             )
