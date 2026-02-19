@@ -1,6 +1,6 @@
 {
   "name": "@conekta/elements-web",
-  "version": "0.0.1-beta.6",
+  "version": "0.0.1-beta.7",
   "description": "Conekta Elements - React UI components for payment processing",
   "type": "module",
   "main": "./dist/index.js",
@@ -35,7 +35,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "shared": "0.0.1-beta.6",
+    "shared": "0.0.1-beta.7",
     "zustand": "^4.5.0"
   },
   "peerDependencies": {
