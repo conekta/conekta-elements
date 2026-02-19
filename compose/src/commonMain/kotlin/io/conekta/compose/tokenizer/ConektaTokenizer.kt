@@ -301,7 +301,6 @@ private fun TokenizerContent(
                         cardNumber = cardNumber.text,
                         expiryDate = expiryDate.text,
                         cvv = cvv.text,
-                        detectedBrand = detectedBrand,
                         collectCardholderName = config.collectCardholderName,
                         messages = validationMessages,
                     )

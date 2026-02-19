@@ -127,11 +127,6 @@ class CardValidatorsTest {
     }
 
     @Test
-    fun `isValidCvv returns true for 4 digit cvv`() {
-        assertTrue(isValidCvv("1234"))
-    }
-
-    @Test
     fun `isValidCvv returns false for 2 digit cvv`() {
         assertFalse(isValidCvv("12"))
     }
@@ -152,8 +147,8 @@ class CardValidatorsTest {
     }
 
     @Test
-    fun `isValidCvv accepts brand parameter`() {
-        assertTrue(isValidCvv("1234", "AMEX"))
+    fun `isValidCvv returns true for 4 digit cvv`() {
+        assertTrue(isValidCvv("1234"))
     }
 
     // Additional edge cases for isValidCardNumber
