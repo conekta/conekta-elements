@@ -89,6 +89,6 @@ private fun validateCvv(
 ): FieldError =
     when {
         cvv.isBlank() -> FieldError(true, messages.required)
-        !isValidCvv(cvv, brand.name) -> FieldError(true, messages.cvvMinLength)
+        !isValidCvv(cvv) -> FieldError(true, messages.cvvMinLength)
         else -> FieldError()
     }
