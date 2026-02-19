@@ -13,14 +13,13 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
     js {
-        outputModuleName = "shared"
         browser()
         nodejs()
         binaries.library()
         generateTypeScriptDefinitions()
         compilerOptions {
+            moduleName = "shared"
             target = "es2015"
-            freeCompilerArgs.add("-Xes-long-as-bigint")
         }
     }
     androidLibrary {
@@ -63,9 +62,6 @@ kotlin {
 
             // Serialization
             implementation(libs.kotlinx.serialization.json)
-
-            // Date/Time
-            implementation(libs.kotlinx.datetime)
 
             // Logging
             implementation(libs.kermit)

@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy-github-packages:
-    runs-on: aws-runner-set
+    runs-on: macos-latest
     permissions:
       contents: read
       packages: write
@@ -126,6 +126,7 @@ jobs:
     runs-on: macos-latest
     permissions:
       contents: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v6
 
@@ -203,11 +204,22 @@ jobs:
 
       - name: Update checksum in README
         if: steps.validate.outputs.skip == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           CHECKSUM="${{ steps.package.outputs.checksum }}"
+          VERSION="${{ steps.validate.outputs.tag_version }}"
           sed -i '' "s/checksum: \".*\"/checksum: \"$CHECKSUM\"/" README.md
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git diff --quiet README.md && exit 0
+          BRANCH="chore/xcframework-checksum-${VERSION}"
+          git checkout -b "$BRANCH"
           git add README.md
-          git diff --cached --quiet || git commit -m "chore: update XCFramework checksum to $CHECKSUM"
-          git push origin HEAD:main
+          git commit -m "chore: update XCFramework checksum to $CHECKSUM"
+          git push origin "$BRANCH"
+          gh pr create \
+            --base main \
+            --head "$BRANCH" \
+            --title "chore: update XCFramework checksum for v${VERSION}" \
+            --body "Automated checksum update after XCFramework release v${VERSION}."

@@ -48,10 +48,7 @@ object CardFormatters {
         return sharedIsValidExpiryDate(month, year)
     }
 
-    fun isValidCvv(
-        cvv: String,
-        brand: CardBrand,
-    ): Boolean = sharedIsValidCvv(cvv, brand.name)
+    fun isValidCvv(cvv: String): Boolean = sharedIsValidCvv(cvv)
 
     private fun withCursor(
         formatted: String,
