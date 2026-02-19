@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy-github-packages:
-    runs-on: aws-runner-set
+    runs-on: macos-latest
     permissions:
       contents: read
       packages: write
