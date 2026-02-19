@@ -3,6 +3,7 @@ package io.conekta.elements.tokenizer.validators
 data class ValidationMessages(
     val required: String,
     val cardMinLength: String,
+    val invalidCard: String,
     val expiryYearInvalid: String,
     val cvvMinLength: String,
 )
@@ -57,7 +58,8 @@ private fun validateCardNumber(
 ): FieldError =
     when {
         rawText.isBlank() -> FieldError(true, messages.required)
-        !isValidCardNumber(digits) -> FieldError(true, messages.cardMinLength)
+        digits.length < 15 -> FieldError(true, messages.cardMinLength)
+        !isValidCardNumber(digits) -> FieldError(true, messages.invalidCard)
         else -> FieldError()
     }
 

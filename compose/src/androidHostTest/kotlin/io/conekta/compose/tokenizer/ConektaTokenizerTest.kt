@@ -1,6 +1,7 @@
 package io.conekta.compose.tokenizer
 
 import androidx.compose.ui.test.ExperimentalTestApi
+import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
@@ -147,7 +148,7 @@ class ConektaTokenizerTest {
             // Fill all fields
             onNodeWithText("0000 0000 0000 0000").performTextInput("4242424242424242")
             onNodeWithText("MM/YY", substring = true).performTextInput("1226")
-            onNodeWithText("CVV", substring = true).performTextInput("123")
+            onNode(hasText("CVV", substring = true) and hasSetTextAction()).performTextInput("123")
 
             // Submit
             onNode(hasText("Continuar") or hasText("Continue")).performClick()
@@ -172,7 +173,7 @@ class ConektaTokenizerTest {
             ).performTextInput("Test User")
             onNodeWithText("0000 0000 0000 0000").performTextInput("4242424242424242")
             onNodeWithText("MM/YY", substring = true).performTextInput("1226")
-            onNodeWithText("CVV", substring = true).performTextInput("123")
+            onNode(hasText("CVV", substring = true) and hasSetTextAction()).performTextInput("123")
 
             onNode(hasText("Continuar") or hasText("Continue")).performClick()
             waitForIdle()
