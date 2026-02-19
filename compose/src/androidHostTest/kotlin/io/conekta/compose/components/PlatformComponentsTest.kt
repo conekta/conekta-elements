@@ -15,6 +15,7 @@ import org.robolectric.RobolectricTestRunner
 class PlatformComponentsTest {
     @Before
     fun setUp() = initComposeResourcesContext()
+
     @OptIn(ExperimentalTestApi::class)
     @Test
     fun conektaLogoImageRendersWithoutCrash() =

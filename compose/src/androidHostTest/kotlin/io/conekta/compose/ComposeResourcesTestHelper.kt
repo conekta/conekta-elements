@@ -12,9 +12,11 @@ import org.robolectric.Robolectric
  */
 @Suppress("UNCHECKED_CAST")
 fun initComposeResourcesContext() {
-    val providerClass = Class.forName("org.jetbrains.compose.resources.AndroidContextProvider")
-        as Class<android.content.ContentProvider>
+    val providerClass =
+        Class.forName("org.jetbrains.compose.resources.AndroidContextProvider")
+            as Class<android.content.ContentProvider>
     val context = ApplicationProvider.getApplicationContext<android.app.Application>()
-    Robolectric.buildContentProvider(providerClass)
+    Robolectric
+        .buildContentProvider(providerClass)
         .create("${context.packageName}.resources.AndroidContextProvider")
 }

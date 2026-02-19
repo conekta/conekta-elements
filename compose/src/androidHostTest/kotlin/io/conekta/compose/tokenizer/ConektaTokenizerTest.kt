@@ -19,6 +19,7 @@ import org.robolectric.RobolectricTestRunner
 class ConektaTokenizerTest {
     @Before
     fun setUp() = initComposeResourcesContext()
+
     private val defaultConfig =
         TokenizerConfig(
             publicKey = "key_test_123",
