@@ -20,7 +20,7 @@
 
     <string name="label_card_number">Card number</string>
     <string name="label_cardholder_name">Cardholder name</string>
-    <string name="label_cvv">Security code</string>
+    <string name="label_cvv">CVV</string>
     <string name="label_expiry">Expiration</string>
 
     <string name="pay_securely_with">PAY SECURELY WITH</string>
