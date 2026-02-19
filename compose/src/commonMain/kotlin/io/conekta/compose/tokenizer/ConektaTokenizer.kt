@@ -177,8 +177,7 @@ private fun TokenizerContent(
                 .background(Color.White)
                 .pointerInput(Unit) {
                     detectTapGestures(onTap = { focusManager.clearFocus() })
-                }
-                .padding(16.dp),
+                }.padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         // Header
