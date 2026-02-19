@@ -13,8 +13,8 @@ Both examples require a **Conekta public key** to work. Replace `YOUR_PUBLIC_KEY
 
 You can get your public key from the [Conekta Dashboard](https://panel.conekta.com/).
 
-- **Production keys** start with `key_`
-- **Test/Sandbox keys** start with `key_` (from the sandbox environment)
+- **Production keys** start with `key_` (from the production environment)
+- **Test/Sandbox keys** start with `key_` (from the sandbox environment at panel.stg.conekta.io)
 
 ---
 
@@ -31,8 +31,8 @@ You can get your public key from the [Conekta Dashboard](https://panel.conekta.c
 1. Add the SDK dependency in `build.gradle.kts`:
 
 ```kotlin
-implementation("io.conekta.elements:compose-android:1.0.17")
-implementation("io.conekta.elements:shared-android:1.0.17")
+implementation("io.conekta:conekta-elements-compose-android:0.0.1-beta.4")
+implementation("io.conekta:conekta-elements-shared-android:0.0.1-beta.4")
 ```
 
 2. Register `ExampleApplication` in `AndroidManifest.xml` to enable card brand icon loading:
@@ -44,7 +44,7 @@ implementation("io.conekta.elements:shared-android:1.0.17")
 3. Set your public key in `MainActivity.kt`:
 
 ```kotlin
-private const val CONEKTA_PUBLIC_KEY = "key_your_public_key"
+private const val CONEKTA_PUBLIC_KEY = "YOUR_PUBLIC_KEY_HERE"
 ```
 
 4. Build and run.
@@ -55,7 +55,7 @@ private const val CONEKTA_PUBLIC_KEY = "key_your_public_key"
 |------|-------------|
 | `MainActivity.kt` | Renders `ConektaTokenizer` composable and handles token/error callbacks |
 | `ExampleApplication.kt` | Configures Coil image loader for SVG card brand icons |
-| `build.gradle.kts` | Dependencies: SDK, Compose, Coil, Ktor |
+| `build.gradle.kts` | Dependencies: SDK, Compose |
 | `AndroidManifest.xml` | Internet permission and Application class registration |
 
 ---
@@ -84,7 +84,7 @@ private const val CONEKTA_PUBLIC_KEY = "key_your_public_key"
 3. Set your public key in `ContentView.swift`:
 
 ```swift
-private static let conektaPublicKey = "key_your_public_key"
+private static let conektaPublicKey = "YOUR_PUBLIC_KEY_HERE"
 ```
 
 4. Build and run.

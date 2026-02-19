@@ -14,9 +14,7 @@ struct ContentView: View {
             config: SharedTokenizerConfig(
                 publicKey: ContentView.conektaPublicKey,
                 merchantName: "My Store",
-                collectCardholderName: true,
-                baseUrl: "https://api.conekta.io/",
-                rsaPublicKey: ""
+                collectCardholderName: true
             ),
             onSuccess: { tokenResult in
                 alertTitle = "Token Created"
@@ -28,7 +26,13 @@ struct ContentView: View {
             },
             onError: { error in
                 alertTitle = "Error"
-                alertMessage = "Payment could not be processed. Please try again."
+                if let apiError = error as? SharedTokenizerError.ApiError {
+                    alertMessage = "\(apiError.code): \(apiError.message)"
+                } else if let networkError = error as? SharedTokenizerError.NetworkError {
+                    alertMessage = networkError.message
+                } else {
+                    alertMessage = "Payment could not be processed. Please try again."
+                }
                 showingAlert = true
             }
         )

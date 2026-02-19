@@ -44,8 +44,4 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.activity:activity-compose:1.9.3")
 
-    // Image loading (required for card brand icons)
-    implementation("io.coil-kt.coil3:coil-compose:3.3.0")
-    implementation("io.ktor:ktor-client-core:3.1.0")
-    implementation("io.ktor:ktor-client-okhttp:3.1.0")
 }

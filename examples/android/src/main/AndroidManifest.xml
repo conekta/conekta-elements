@@ -5,7 +5,7 @@
 
     <application
         android:name=".ExampleApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:label="Conekta Example"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.Material.Light.NoActionBar">
