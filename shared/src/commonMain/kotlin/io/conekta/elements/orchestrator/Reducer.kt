@@ -88,7 +88,7 @@ private fun reduceSetActive(state: OrchestratorState, method: PaymentMethodType)
 
   effects += Effect.AnalyticsEvent(
     name = "method_selected",
-    payloadJson = """{"method":"$method"}"""
+    payloadJson = "{}" // TODO: add payload
   )
 
   return DispatchResult(

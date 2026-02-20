@@ -1,4 +1,4 @@
-export type MoleculeId = 'expressCheckout';
+export type MoleculeId = 'expressCheckout' | 'applePay' | 'googlePay';
 
 export type InitArgs = {
     checkoutRequestId: string;
