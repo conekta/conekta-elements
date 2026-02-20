@@ -1,5 +1,5 @@
 import React, { createContext, useContext } from 'react';
-import { ConektaElements } from 'ct-conekta-elements-orchestator-lib';
+import { ConektaElements } from '@conekta/elements';
 
 
 const Ctx = createContext<typeof ConektaElements | null>(null);

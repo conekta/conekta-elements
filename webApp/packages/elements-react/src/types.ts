@@ -1,5 +1,5 @@
 import type React from 'react';
-import type { InitArgs } from 'ct-conekta-elements-orchestator-lib';
+import type { InitArgs } from '@conekta/elements';
 
 export type ElementsInitOptions = Omit<InitArgs, 'container'>;
 
