@@ -1,5 +1,5 @@
 import React from 'react';
-import { ConektaElements } from './ConektaElements';
+import { ConektaElement } from './ConektaElements';
 import type { ElementsInitOptions } from './types';
 
 type Props = {
@@ -26,7 +26,7 @@ export const ExpressCheckout: React.FC<Props> = ({
     style,
 }) => {
     return (
-        <ConektaElements
+        <ConektaElement
             className={className}
             style={style}
             molecule="expressCheckout"

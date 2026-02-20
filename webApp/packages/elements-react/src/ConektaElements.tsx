@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import type { ElementsProps } from './types';
 import { useElements } from './ElementsProvider';
 
-export const ConektaElements: React.FC<ElementsProps> = ({ className, style, ...options }) => {
+export const ConektaElement: React.FC<ElementsProps> = ({ className, style, ...options }) => {
     const elements = useElements();
     const ref = useRef<HTMLDivElement | null>(null);
 

@@ -9,6 +9,21 @@ export default defineConfig({
     emptyOutDir: true,
   },
   server: { port: 8080 },
+  define: {
+    'process.env': {},
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV ?? 'development'),
+  },
+
+  optimizeDeps: {
+    include: ['zoid'],
+    esbuildOptions: {
+      define: {
+        'process.env': '{}',
+        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV ?? 'development'),
+        'process': '{"env":{}}',
+      },
+    },
+  },
   test: {
     globals: true,
     environment: 'node',

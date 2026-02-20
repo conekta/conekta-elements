@@ -127,8 +127,8 @@ importers:
         specifier: ^18.3.1
         version: 18.3.1
       zoid:
-        specifier: ^9.0.80
-        version: 9.0.86
+        specifier: 9.0.80
+        version: 9.0.80
     devDependencies:
       '@types/node':
         specifier: ^25.2.2
@@ -5515,8 +5515,8 @@ packages:
   zalgo-promise@1.0.48:
     resolution: {integrity: sha512-LLHANmdm53+MucY9aOFIggzYtUdkSBFxUsy4glTTQYNyK6B3uCPWTbfiGvSrEvLojw0mSzyFJ1/RRLv+QMNdzQ==}
 
-  zoid@9.0.86:
-    resolution: {integrity: sha512-hWcLj0s4cHKErUUn0Nz2bvuCStA9/y3sz/0gFxvAhompu9v54i+Pik0Kx39pWPB8qbiEN7MRyHohv1ZERlHeSg==}
+  zoid@9.0.80:
+    resolution: {integrity: sha512-qop3GeE2rCOaEJayS+ZoyDQ/EteQutjfjmxZTv/7m6nhYWkKVCW4wct2FoOpjR6KEDJrTrOnTnZ6BaLR5qscFQ==}
 
   zustand@4.5.7:
     resolution: {integrity: sha512-CHOUy7mu3lbD6o6LJLfllpjkzhHXSBlX8B9+qPddUsIfeF5S/UZ5q0kmCsnRqT1UHFQZchNFDDzMbQsuesHWlw==}
@@ -11639,7 +11639,7 @@ snapshots:
 
   zalgo-promise@1.0.48: {}
 
-  zoid@9.0.86:
+  zoid@9.0.80:
     dependencies:
       belter: 1.0.190
       cross-domain-utils: 2.0.38

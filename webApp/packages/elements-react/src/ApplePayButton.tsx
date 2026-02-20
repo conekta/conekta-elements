@@ -1,5 +1,5 @@
 import React from 'react';
-import { ConektaElements } from './ConektaElements';
+import { ConektaElement } from './ConektaElements';
 import type { ElementsInitOptions } from './types';
 
 type Props = {
@@ -17,7 +17,7 @@ export const ApplePayButton: React.FC<Props> = (props) => {
     const { checkoutRequestId, locale, theme, onInit, onSuccess, onError, className, style } = props;
 
     return (
-        <ConektaElements
+        <ConektaElement
             className={className}
             style={style}
             molecule="applePay"
