@@ -1,0 +1,1 @@
+export const GOOGLE_PAY_TAG = 'conekta-google-pay-button';

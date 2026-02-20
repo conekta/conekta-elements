@@ -18,5 +18,7 @@ node_modules/
 webApp/dist/
 webApp/build-storybook.log
 webApp/storybook.log
+webApp/packages/elements/dist
+webApp/packages/elements-react/dist
 storybook-static
 .env
