@@ -14,7 +14,7 @@ import kotlin.js.JsExport
 @OptIn(ExperimentalJsExport::class)
 @JsExport
 class Amount(
-    private val value: Long,
+    private val value: Int,
 ) {
     /**
      * Converts the amount from cents (integer value) to major units (decimal value).

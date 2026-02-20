@@ -73,10 +73,7 @@ fun isValidExpiryDate(
 /**
  * Validate CVV (3-4 digits accepted)
  */
-fun isValidCvv(
-    cvv: String,
-    cardBrand: String = "",
-): Boolean {
+fun isValidCvv(cvv: String): Boolean {
     val digits = cvv.filter { it.isDigit() }
     return digits.length in 3..4
 }

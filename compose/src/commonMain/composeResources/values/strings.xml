@@ -20,7 +20,7 @@
 
     <string name="label_card_number">Número de tarjeta</string>
     <string name="label_cardholder_name">Nombre en la tarjeta</string>
-    <string name="label_cvv">Código de seguridad</string>
+    <string name="label_cvv">CVV</string>
     <string name="label_expiry">Expiración</string>
 
     <string name="pay_securely_with">PAGA SEGURO CON</string>

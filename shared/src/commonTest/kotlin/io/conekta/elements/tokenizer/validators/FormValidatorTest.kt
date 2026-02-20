@@ -1,6 +1,5 @@
 package io.conekta.elements.tokenizer.validators
 
-import io.conekta.elements.tokenizer.models.CardBrand
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -12,6 +11,7 @@ class FormValidatorTest {
         ValidationMessages(
             required = "Required",
             cardMinLength = "Card too short",
+            invalidCard = "Invalid card",
             expiryYearInvalid = "Invalid expiry",
             cvvMinLength = "CVV too short",
         )
@@ -74,7 +74,6 @@ class FormValidatorTest {
                 cardNumber = "4242 4242 4242 4242",
                 expiryDate = "12/26",
                 cvv = "123",
-                detectedBrand = CardBrand.VISA,
                 collectCardholderName = true,
                 messages = messages,
             )
@@ -89,7 +88,6 @@ class FormValidatorTest {
                 cardNumber = "4242 4242 4242 4242",
                 expiryDate = "12/26",
                 cvv = "123",
-                detectedBrand = CardBrand.VISA,
                 collectCardholderName = false,
                 messages = messages,
             )
@@ -106,7 +104,6 @@ class FormValidatorTest {
                 cardNumber = "4242 4242 4242 4242",
                 expiryDate = "12/26",
                 cvv = "123",
-                detectedBrand = CardBrand.VISA,
                 collectCardholderName = true,
                 messages = messages,
             )
@@ -122,7 +119,6 @@ class FormValidatorTest {
                 cardNumber = "",
                 expiryDate = "12/26",
                 cvv = "123",
-                detectedBrand = CardBrand.VISA,
                 collectCardholderName = true,
                 messages = messages,
             )
@@ -138,7 +134,6 @@ class FormValidatorTest {
                 cardNumber = "4242 4242 4242 4242",
                 expiryDate = "",
                 cvv = "123",
-                detectedBrand = CardBrand.VISA,
                 collectCardholderName = true,
                 messages = messages,
             )
@@ -154,7 +149,6 @@ class FormValidatorTest {
                 cardNumber = "4242 4242 4242 4242",
                 expiryDate = "12/26",
                 cvv = "",
-                detectedBrand = CardBrand.VISA,
                 collectCardholderName = true,
                 messages = messages,
             )
@@ -165,19 +159,33 @@ class FormValidatorTest {
     // validateForm - invalid values
 
     @Test
-    fun `validateForm detects invalid card number`() {
+    fun `validateForm detects card number too short`() {
         val result =
             validateForm(
                 cardholderName = "John",
                 cardNumber = "1234",
                 expiryDate = "12/26",
                 cvv = "123",
-                detectedBrand = CardBrand.UNKNOWN,
                 collectCardholderName = true,
                 messages = messages,
             )
         assertTrue(result.cardNumber.isError)
         assertEquals("Card too short", result.cardNumber.message)
+    }
+
+    @Test
+    fun `validateForm detects invalid card number failing Luhn check`() {
+        val result =
+            validateForm(
+                cardholderName = "John",
+                cardNumber = "2424 2424 2424 2424",
+                expiryDate = "12/26",
+                cvv = "123",
+                collectCardholderName = true,
+                messages = messages,
+            )
+        assertTrue(result.cardNumber.isError)
+        assertEquals("Invalid card", result.cardNumber.message)
     }
 
     @Test
@@ -188,7 +196,6 @@ class FormValidatorTest {
                 cardNumber = "4242 4242 4242 4242",
                 expiryDate = "13/26",
                 cvv = "123",
-                detectedBrand = CardBrand.VISA,
                 collectCardholderName = true,
                 messages = messages,
             )
@@ -204,7 +211,6 @@ class FormValidatorTest {
                 cardNumber = "4242 4242 4242 4242",
                 expiryDate = "12/26",
                 cvv = "12",
-                detectedBrand = CardBrand.VISA,
                 collectCardholderName = true,
                 messages = messages,
             )
@@ -220,7 +226,6 @@ class FormValidatorTest {
                 cardNumber = "",
                 expiryDate = "",
                 cvv = "",
-                detectedBrand = CardBrand.UNKNOWN,
                 collectCardholderName = true,
                 messages = messages,
             )
@@ -241,7 +246,6 @@ class FormValidatorTest {
                 cardNumber = "4242 4242 4242 4242",
                 expiryDate = "12/26",
                 cvv = "123",
-                detectedBrand = CardBrand.VISA,
                 collectCardholderName = false,
                 messages = messages,
             )
@@ -256,7 +260,6 @@ class FormValidatorTest {
                 cardNumber = "4242 4242 4242 4242",
                 expiryDate = "12/",
                 cvv = "123",
-                detectedBrand = CardBrand.VISA,
                 collectCardholderName = true,
                 messages = messages,
             )
@@ -272,7 +275,6 @@ class FormValidatorTest {
                 cardNumber = "4242 4242 4242 4242",
                 expiryDate = "1",
                 cvv = "123",
-                detectedBrand = CardBrand.VISA,
                 collectCardholderName = true,
                 messages = messages,
             )
@@ -288,7 +290,6 @@ class FormValidatorTest {
                 cardNumber = "3782 8224 6310 005",
                 expiryDate = "12/26",
                 cvv = "1234",
-                detectedBrand = CardBrand.AMEX,
                 collectCardholderName = true,
                 messages = messages,
             )
@@ -303,7 +304,6 @@ class FormValidatorTest {
                 cardNumber = "4242 4242 4242 4242",
                 expiryDate = "12/26",
                 cvv = "123",
-                detectedBrand = CardBrand.VISA,
                 collectCardholderName = true,
                 messages = messages,
             )
@@ -319,7 +319,6 @@ class FormValidatorTest {
                 cardNumber = "   ",
                 expiryDate = "12/26",
                 cvv = "123",
-                detectedBrand = CardBrand.VISA,
                 collectCardholderName = true,
                 messages = messages,
             )
@@ -333,6 +332,7 @@ class FormValidatorTest {
     fun `ValidationMessages stores all messages`() {
         assertEquals("Required", messages.required)
         assertEquals("Card too short", messages.cardMinLength)
+        assertEquals("Invalid card", messages.invalidCard)
         assertEquals("Invalid expiry", messages.expiryYearInvalid)
         assertEquals("CVV too short", messages.cvvMinLength)
     }

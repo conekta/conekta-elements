@@ -1,10 +1,9 @@
 package io.conekta.elements.tokenizer.validators
 
-import io.conekta.elements.tokenizer.models.CardBrand
-
 data class ValidationMessages(
     val required: String,
     val cardMinLength: String,
+    val invalidCard: String,
     val expiryYearInvalid: String,
     val cvvMinLength: String,
 )
@@ -33,7 +32,6 @@ fun validateForm(
     cardNumber: String,
     expiryDate: String,
     cvv: String,
-    detectedBrand: CardBrand,
     collectCardholderName: Boolean,
     messages: ValidationMessages,
 ): ValidationResult {
@@ -43,7 +41,7 @@ fun validateForm(
         cardholderName = validateRequired(cardholderName, collectCardholderName, messages.required),
         cardNumber = validateCardNumber(cardDigits, cardNumber, messages),
         expiryDate = validateExpiry(expiryDate, messages),
-        cvv = validateCvv(cvv, detectedBrand, messages),
+        cvv = validateCvv(cvv, messages),
     )
 }
 
@@ -60,7 +58,8 @@ private fun validateCardNumber(
 ): FieldError =
     when {
         rawText.isBlank() -> FieldError(true, messages.required)
-        !isValidCardNumber(digits) -> FieldError(true, messages.cardMinLength)
+        digits.length < 15 -> FieldError(true, messages.cardMinLength)
+        !isValidCardNumber(digits) -> FieldError(true, messages.invalidCard)
         else -> FieldError()
     }
 
@@ -84,11 +83,10 @@ private fun validateExpiry(
 
 private fun validateCvv(
     cvv: String,
-    brand: CardBrand,
     messages: ValidationMessages,
 ): FieldError =
     when {
         cvv.isBlank() -> FieldError(true, messages.required)
-        !isValidCvv(cvv, brand.name) -> FieldError(true, messages.cvvMinLength)
+        !isValidCvv(cvv) -> FieldError(true, messages.cvvMinLength)
         else -> FieldError()
     }

@@ -280,22 +280,22 @@ class CardFormattersTest {
 
     @Test
     fun `isValidCvv returns true for 3 digit cvv`() {
-        assertTrue(CardFormatters.isValidCvv("123", CardBrand.VISA))
+        assertTrue(CardFormatters.isValidCvv("123"))
     }
 
     @Test
     fun `isValidCvv returns true for 4 digit cvv`() {
-        assertTrue(CardFormatters.isValidCvv("1234", CardBrand.AMEX))
+        assertTrue(CardFormatters.isValidCvv("1234"))
     }
 
     @Test
     fun `isValidCvv returns false for 2 digit cvv`() {
-        assertFalse(CardFormatters.isValidCvv("12", CardBrand.VISA))
+        assertFalse(CardFormatters.isValidCvv("12"))
     }
 
     @Test
     fun `isValidCvv returns false for empty cvv`() {
-        assertFalse(CardFormatters.isValidCvv("", CardBrand.VISA))
+        assertFalse(CardFormatters.isValidCvv(""))
     }
 
     // Additional formatCardNumber edge cases
@@ -486,17 +486,7 @@ class CardFormattersTest {
     // Additional isValidCvv edge cases
 
     @Test
-    fun `isValidCvv returns true for 3 digit with MASTERCARD`() {
-        assertTrue(CardFormatters.isValidCvv("123", CardBrand.MASTERCARD))
-    }
-
-    @Test
-    fun `isValidCvv returns true for 4 digit with UNKNOWN brand`() {
-        assertTrue(CardFormatters.isValidCvv("1234", CardBrand.UNKNOWN))
-    }
-
-    @Test
     fun `isValidCvv returns false for single digit`() {
-        assertFalse(CardFormatters.isValidCvv("1", CardBrand.VISA))
+        assertFalse(CardFormatters.isValidCvv("1"))
     }
 }

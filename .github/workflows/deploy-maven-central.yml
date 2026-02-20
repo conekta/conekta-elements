@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy-maven-central:
-    runs-on: aws-runner-set
+    runs-on: macos-latest
     permissions:
       contents: read
     steps:
