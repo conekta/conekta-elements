@@ -158,7 +158,7 @@ private fun reduceMethodResult(state: OrchestratorState, method: PaymentMethodTy
   val nextViewState = when (status) {
     ResultStatus.succeeded -> ViewState.success
     ResultStatus.failed -> ViewState.error
-    ResultStatus.requires_action -> ViewState.editing // por ahora
+    ResultStatus.requires_action -> ViewState.editing
     ResultStatus.unknown -> ViewState.editing
   }
 

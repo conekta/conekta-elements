@@ -24,7 +24,6 @@ data class CheckoutDto(
     val expiredAt: Int,
     val startsAt: Int,
 
-    // ✅ enum exportado (Opción A)
     val allowedPaymentMethods: Array<PaymentMethodType>,
 
     val slug: String,
@@ -46,7 +45,6 @@ data class CheckoutDto(
 
     val femsaMigrated: Boolean,
 
-    // si lo tienes en domain
     val threeDs: String?,
 
     val maxFailedRetries: Int?,
