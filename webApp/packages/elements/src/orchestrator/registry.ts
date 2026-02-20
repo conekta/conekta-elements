@@ -1,4 +1,4 @@
-import type { ElementRPC, PaymentMethod } from '../shared/types';
+import type { ElementMountOptions, ElementRPC, PaymentMethod } from '../shared/types';
 
 export type OrchestratorCtx = {
     baseUrl: string;
@@ -14,7 +14,7 @@ export type ZoidInstance = {
     close?: () => void;
 };
 
-export type ElementFactory = (props: any) => ZoidInstance;
+export type ElementFactory = (props: ElementMountOptions) => ZoidInstance;
 export type MethodFactory = (ctx: OrchestratorCtx) => ElementFactory;
 
 const factories: Partial<Record<PaymentMethod, MethodFactory>> = {};

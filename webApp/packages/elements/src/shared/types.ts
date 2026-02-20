@@ -40,11 +40,10 @@ export type OrchestratorConfig = {
     baseUrl?: string;
     locale?: string;
     theme?: Record<string, any>;
-    sdkVersion?: string;
-    correlationId?: string;
+    fingerprint?: string;
 };
 
-export type ElementMountOptions = {
+export type ElementMountAttributes = {
     checkoutRequestId: string;
     needsShippingContact: boolean;
     hasBuyerInfo: boolean;
@@ -53,7 +52,10 @@ export type ElementMountOptions = {
     active?: boolean;
     locale?: string;
     theme?: Record<string, any>;
-    // callbacks - child -> parent
+    fingerprint?: string;
+};
+
+export type ElementMountCallbacks = {
     onReady?: (e: ReadyEvent) => void;
     onStateChange?: (e: StateChangeEvent) => void;
     onActionRequired?: (e: ActionRequiredEvent) => void;
@@ -61,6 +63,8 @@ export type ElementMountOptions = {
     onResult?: (e: ResultEvent) => void;
     onLog?: (e: any) => void;
 };
+
+export type ElementMountOptions = ElementMountAttributes & ElementMountCallbacks;
 
 export type ElementRPC = {
     submit: () => Promise<void>;

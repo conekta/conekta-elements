@@ -2,13 +2,13 @@ import type { InitArgs } from '../public/types';
 import type { PaymentMethod, ResultEvent } from '../shared/types';
 import { createOrchestrator } from '../orchestrator/createOrchestrator';
 import { resolveContainer } from './resolveContainer';
-import { getMoleculeMethods } from './molecules';
+import { getMoleculeMethods } from './molecules/registry';
 
 import type { MethodLifecycleEvent } from '../orchestrator/types';
 
 import { ConektaJsClient, Effect, OrchestrationEngineJs, OrchestratorCore, Policy, ResultStatus, PaymentMethodType } from 'shared';
 import { toKmpResultStatus, toPaymentMethod, toViewState } from '../shared/paymentMethodMapper';
-
+import { getMethodModule } from './methods/registry';
 
 export const createElementsRuntime = () => {
 
@@ -68,7 +68,7 @@ export const createElementsRuntime = () => {
 
         args.onInit?.({ checkoutRequestId: args.checkoutRequestId });
 
-        // 1) fetch checkout -> allowed methods (stub por ahora)
+        // 1) fetch checkout
         const checkout = await conektaJsClient.getCheckoutById(args.checkoutRequestId);
         const allowed = checkout.allowedPaymentMethods;
 
@@ -80,13 +80,22 @@ export const createElementsRuntime = () => {
 
         // 4) mount each method
         for (const method of moleculeMethods) {
+            const module = getMethodModule(method);
+
+            if (!module) continue;
+
+            const eligible = await module.isEligible({ method, deps: { client: conektaJsClient, checkoutRequest: checkout, locale: args.locale, theme: args.theme } });
+            if (!eligible) continue;
+
+            const extraProps = await module.buildMountProps({ method, deps: { client: conektaJsClient, checkoutRequest: checkout, locale: args.locale, theme: args.theme } });
+
             orchestrator.mount(method.name, slotByMethod[method.name], {
                 checkoutRequestId: args.checkoutRequestId,
                 needsShippingContact: checkout.needsShippingContact,
                 hasBuyerInfo: checkout.orderTemplate.customerInfo?.name !== '',
                 locale: args.locale,
                 theme: args.theme,
-
+                ...extraProps,
                 onReady: async () => await engine.onMethodReady(method),
                 onStateChange: (_data: any) => { },
                 onActionRequired: (_evt: any) => { },

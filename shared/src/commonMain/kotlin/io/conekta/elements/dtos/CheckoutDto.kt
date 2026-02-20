@@ -14,15 +14,15 @@ data class CheckoutDto(
     val companyId: String,
     val name: String,
 
-    val amount: Long,
+    val amount: Int,
     val quantity: Int,
     val liveMode: Boolean,
     val status: CheckoutStatus,
     val type: String,
     val recurrent: Boolean,
 
-    val expiredAt: Long,
-    val startsAt: Long,
+    val expiredAt: Int,
+    val startsAt: Int,
 
     // ✅ enum exportado (Opción A)
     val allowedPaymentMethods: Array<PaymentMethodType>,
@@ -52,6 +52,8 @@ data class CheckoutDto(
     val maxFailedRetries: Int?,
     val failureUrl: String?,
     val successUrl: String?,
+
+    val plans: Array<PlanDto> = emptyArray()
 )
 
 @JsExport
@@ -73,7 +75,7 @@ data class OrderTemplateDto(
     val shippingLines: Array<JsonElement>?,
     val taxLines: Array<JsonElement>?,
     val discountLines: Array<JsonElement>?,
-    val subtotal: Long?,
+    val subtotal: Int?,
 )
 
 @JsExport

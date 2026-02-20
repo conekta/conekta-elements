@@ -1,6 +1,7 @@
 package io.conekta.elements.network
 
 import io.conekta.elements.dtos.CheckoutDto
+import io.conekta.elements.dtos.FeatureFlagDto
 import io.conekta.elements.mappers.toDto
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -32,6 +33,16 @@ class ConektaJsClient(
 
         checkout.toDto()
     }
+
+    fun getFeatureFlagByName(appId: String, flagName: String): Promise<FeatureFlagDto> =
+        scope.promise {
+            val featureFlag =
+                checkoutService
+                    .getFeatureFlagByName(appId, flagName)
+                    .getOrElse { throw it }
+
+            featureFlag.toDto()
+        }
 
     fun close() {
         checkoutService.close()

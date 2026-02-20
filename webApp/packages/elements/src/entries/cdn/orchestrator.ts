@@ -1,6 +1,4 @@
 import { ConektaElements } from '../../public';
-import { registerApplePay } from '../../methods/applePay/register';
-import { registerGooglePay } from '../../methods/googlePay/register';
 
 declare global {
     interface Window {
@@ -8,6 +6,4 @@ declare global {
     }
 }
 
-registerApplePay();
-registerGooglePay();
 window.ConektaElements = ConektaElements;

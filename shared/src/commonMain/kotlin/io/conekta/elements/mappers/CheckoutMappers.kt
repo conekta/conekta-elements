@@ -1,7 +1,15 @@
 package io.conekta.elements.mappers
 
 import io.conekta.elements.models.Checkout
-import io.conekta.elements.dtos.*
+import io.conekta.elements.models.Provider
+import io.conekta.elements.models.OrderTemplate
+import io.conekta.elements.models.CustomerInfo
+import io.conekta.elements.models.Plan
+import io.conekta.elements.dtos.CheckoutDto
+import io.conekta.elements.dtos.ProviderDto
+import io.conekta.elements.dtos.OrderTemplateDto
+import io.conekta.elements.dtos.CustomerInfoDto
+import io.conekta.elements.dtos.PlanDto
 
 internal fun Checkout.toDto(): CheckoutDto =
     CheckoutDto(
@@ -9,14 +17,14 @@ internal fun Checkout.toDto(): CheckoutDto =
         entityId = entityId,
         companyId = companyId,
         name = name,
-        amount = amount,
+        amount = amount.toInt(),
         quantity = quantity,
         liveMode = liveMode,
         status = status,
         type = type,
         recurrent = recurrent,
-        expiredAt = expiredAt,
-        startsAt = startsAt,
+        expiredAt = expiredAt.toInt(),
+        startsAt = startsAt.toInt(),
         allowedPaymentMethods = allowedPaymentMethods.toTypedArray(),
         slug = slug,
         url = url,
@@ -30,13 +38,14 @@ internal fun Checkout.toDto(): CheckoutDto =
         redirectionTime = redirectionTime,
         providers = providers.map { it.toDto() }.toTypedArray(),
         femsaMigrated = femsaMigrated,
-        threeDs = threeDs?.name, // o mapping mejor si exportas enum
+        threeDs = threeDs?.name,
         maxFailedRetries = maxFailedRetries,
         failureUrl = failureUrl,
         successUrl = successUrl,
+        plans = (plans ?: emptyList()).map { it.toDto() }.toTypedArray(),
     )
 
-internal fun io.conekta.elements.models.Provider.toDto(): ProviderDto =
+internal fun Provider.toDto(): ProviderDto =
     ProviderDto(
         id = id,
         name = name,
@@ -44,7 +53,7 @@ internal fun io.conekta.elements.models.Provider.toDto(): ProviderDto =
         haveAccount = haveAccount,
     )
 
-internal fun io.conekta.elements.models.OrderTemplate.toDto(): OrderTemplateDto =
+internal fun OrderTemplate.toDto(): OrderTemplateDto =
     OrderTemplateDto(
         lineItems = lineItems.toTypedArray(),
         customerInfo = customerInfo?.toDto(),
@@ -53,10 +62,10 @@ internal fun io.conekta.elements.models.OrderTemplate.toDto(): OrderTemplateDto 
         shippingLines = shippingLines?.toTypedArray(),
         taxLines = taxLines?.toTypedArray(),
         discountLines = discountLines?.toTypedArray(),
-        subtotal = subtotal,
+        subtotal = subtotal?.toInt(),
     )
 
-internal fun io.conekta.elements.models.CustomerInfo.toDto(): CustomerInfoDto =
+internal fun CustomerInfo.toDto(): CustomerInfoDto =
     CustomerInfoDto(
         corporate = corporate,
         customerFingerprint = customerFingerprint,
@@ -64,4 +73,22 @@ internal fun io.conekta.elements.models.CustomerInfo.toDto(): CustomerInfoDto =
         email = email,
         name = name,
         phone = phone,
+    )
+
+internal fun Plan.toDto(): PlanDto =
+    PlanDto(
+        id = id,
+        name = name,
+        amount = amount.toInt(),
+        currency = currency,
+        interval = interval?.name ?: "",
+        frequency = frequency,
+        expiryCount = expiryCount,
+        subscriptionStart = subscriptionStart.toInt(),
+        subscriptionEnd = subscriptionEnd.toInt(),
+        trialStart = trialStart.toInt(),
+        trialEnd = trialEnd.toInt(),
+        trialPeriodDays = trialPeriodDays,
+        liveMode = liveMode,
+        createdAt = createdAt.toInt(),
     )

@@ -26,13 +26,11 @@ export const createOrchestrator = (config: OrchestratorConfig = {}): Orchestrato
         const methodFactory = getMethodFactory(method);
         const elementFactory = methodFactory({ baseUrl });
         // 2) compose props
-        const props = {
+        const props: ElementMountOptions = {
             ...opts,
-            paymentMethod: method,
             locale: config.locale,
             theme: config.theme,
-            sdkVersion: config.sdkVersion,
-            correlationId: config.correlationId,
+            fingerprint: config.fingerprint,
 
             // Wire callbacks -> event bus
             onReady: (data: ReadyEvent) => {

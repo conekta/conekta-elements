@@ -73,6 +73,9 @@ data class Checkout(
     val failureUrl: String? = null,
     @SerialName("successUrl")
     val successUrl: String? = null,
+
+    @SerialName("plans")
+    val plans: List<Plan>? = null,
 )
 
 @Serializable
@@ -143,3 +146,32 @@ data class CustomerInfo(
     val name: String = "",
     val phone: String = "",
 )
+
+@Serializable
+data class Plan(
+    val id: String,
+    val name: String = "",
+    val amount: Long = 0,
+    val currency: String = "MXN",
+    val interval: SubscriptionInterval = SubscriptionInterval.month,
+    val frequency: Int = 0,
+    val expiryCount: Int = 0,
+    val subscriptionStart: Long = 0,
+    val subscriptionEnd: Long = 0,
+    val trialStart: Long = 0,
+    val trialEnd: Long = 0,
+    val trialPeriodDays: Int = 0,
+    val liveMode: Boolean = false,
+    val createdAt: Long = 0,
+)
+
+@Serializable
+enum class SubscriptionInterval {
+    day,
+    week,
+    month,
+    year,
+    half_month,
+    minute
+  }
+  

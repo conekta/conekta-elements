@@ -3,6 +3,7 @@ package io.conekta.elements.network
 import io.conekta.elements.network.ConektaHttpClient
 import io.conekta.elements.network.sdkUserAgent
 import io.conekta.elements.models.Checkout
+import io.conekta.elements.models.FeatureFlag
 import io.ktor.client.call.body
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
@@ -32,6 +33,42 @@ class CheckoutSsrApiService(
             if (response.status.isSuccess()) {
                 val checkout: Checkout = response.body()
                 Result.success(checkout)
+            } else {
+                val errorBody = response.bodyAsText()
+                Result.failure(
+                    CheckoutSsrException(
+                        CheckoutSsrError.HttpError(
+                            status = response.status.value,
+                            body = errorBody,
+                        ),
+                    ),
+                )
+            }
+        } catch (e: CheckoutSsrException) {
+            Result.failure(e)
+        } catch (e: Exception) {
+            Result.failure(
+                CheckoutSsrException(
+                    CheckoutSsrError.NetworkError(e.message ?: "Unknown network error"),
+                ),
+            )
+        }
+
+        suspend fun getFeatureFlagByName(appId: String, flagName: String): Result<FeatureFlag> =
+        try {
+            val base = normalizeBaseUrl(config.baseUrl)
+            val url = "${base}api/feature-flags/$appId/$flagName"
+
+            val response = httpClient.get(url) {
+                headers {
+                    append(HttpHeaders.AcceptLanguage, config.language)
+                    append("x-source", config.source)
+                }
+            }
+
+            if (response.status.isSuccess()) {
+                val featureFlag: FeatureFlag = response.body()
+                Result.success(featureFlag)
             } else {
                 val errorBody = response.bodyAsText()
                 Result.failure(
