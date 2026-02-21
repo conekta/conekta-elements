@@ -20,3 +20,5 @@ webApp/build-storybook.log
 webApp/storybook.log
 storybook-static
 .env
+# Local Xcode config (developer-specific signing)
+Local.xcconfig

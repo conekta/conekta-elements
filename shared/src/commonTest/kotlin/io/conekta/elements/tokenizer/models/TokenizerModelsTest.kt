@@ -97,6 +97,40 @@ class TokenizerConfigTest {
     }
 
     @Test
+    fun `secondary constructor with publicKey only uses all defaults`() {
+        val config = TokenizerConfig("key_test_123")
+        assertEquals("key_test_123", config.publicKey)
+        assertEquals("Demo Store", config.merchantName)
+        assertTrue(config.collectCardholderName)
+        assertEquals("https://api.conekta.io/", config.baseUrl)
+        assertTrue(config.rsaPublicKey.startsWith("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjet2"))
+    }
+
+    @Test
+    fun `secondary constructor with three params uses default baseUrl and rsaPublicKey`() {
+        val config = TokenizerConfig("key_test_123", "Custom Store", false)
+        assertEquals("key_test_123", config.publicKey)
+        assertEquals("Custom Store", config.merchantName)
+        assertFalse(config.collectCardholderName)
+        assertEquals("https://api.conekta.io/", config.baseUrl)
+        assertTrue(config.rsaPublicKey.startsWith("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjet2"))
+    }
+
+    @Test
+    fun `secondary constructors produce same result as primary with same values`() {
+        val fromPrimary =
+            TokenizerConfig(
+                publicKey = "key_test_123",
+                merchantName = "Demo Store",
+                collectCardholderName = true,
+            )
+        val fromSecondary1 = TokenizerConfig("key_test_123")
+        val fromSecondary3 = TokenizerConfig("key_test_123", "Demo Store", true)
+        assertEquals(fromPrimary, fromSecondary1)
+        assertEquals(fromPrimary, fromSecondary3)
+    }
+
+    @Test
     fun `TokenizerConfig equality considers baseUrl and rsaPublicKey`() {
         val config1 = TokenizerConfig(publicKey = "key_test_123", baseUrl = "https://a.com/")
         val config2 = TokenizerConfig(publicKey = "key_test_123", baseUrl = "https://b.com/")

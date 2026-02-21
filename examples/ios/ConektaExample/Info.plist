@@ -35,5 +35,7 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
+	<key>ConektaPublicKey</key>
+	<string>$(CONEKTA_PUBLIC_KEY)</string>
 </dict>
 </plist>
