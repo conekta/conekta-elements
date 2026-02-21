@@ -34,8 +34,7 @@ kotlin {
 
 dependencies {
     // Conekta Elements SDK
-    implementation("io.conekta:conekta-elements-compose-android:0.2.0-beta")
-    implementation("io.conekta:conekta-elements-shared-android:0.2.0-beta")
+    implementation("io.conekta:conekta-elements-compose:0.2.0-beta")
 
     // Compose
     val composeBom = platform("androidx.compose:compose-bom:2024.11.00")
