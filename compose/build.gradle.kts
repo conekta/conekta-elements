@@ -56,12 +56,9 @@ kotlin {
     // https://developer.android.com/kotlin/multiplatform/migrate
     val xcfName = "composeKit"
     val xcf = XCFramework(xcfName)
+    val iosTargets = listOf(iosX64(), iosArm64(), iosSimulatorArm64())
 
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64(),
-    ).forEach {
+    iosTargets.forEach {
         it.binaries.framework {
             baseName = xcfName
             binaryOption("bundleId", "$group.$xcfName")
@@ -249,14 +246,14 @@ tasks.register("embedComposeResourcesToXCFramework") {
         val src = resourcesDir.asFile
         val xcf = xcfDir.get().asFile
 
-        listOf(
-            "ios-arm64/composeKit.framework",
-            "ios-arm64_x86_64-simulator/composeKit.framework",
-        ).forEach { slice ->
-            val dest = xcf.resolve("$slice/composeResources")
-            dest.deleteRecursively()
-            src.copyRecursively(dest)
-        }
+        xcf.listFiles { file -> file.isDirectory && file.name.startsWith("ios-") }
+            ?.flatMap { arch -> arch.listFiles { f -> f.isDirectory && f.extension == "framework" }?.toList().orEmpty() }
+            ?.forEach { framework ->
+                val dest = framework.resolve("composeResources")
+                dest.deleteRecursively()
+                src.copyRecursively(dest)
+            }
+            ?: logger.warn("No XCFramework slices found in ${xcf.path}")
     }
 }
 
