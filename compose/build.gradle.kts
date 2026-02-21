@@ -246,14 +246,22 @@ tasks.register("embedComposeResourcesToXCFramework") {
         val src = resourcesDir.asFile
         val xcf = xcfDir.get().asFile
 
-        xcf.listFiles { file -> file.isDirectory && file.name.startsWith("ios-") }
-            ?.flatMap { arch -> arch.listFiles { f -> f.isDirectory && f.extension == "framework" }?.toList().orEmpty() }
-            ?.forEach { framework ->
+        val archDirs = xcf.listFiles { file -> file.isDirectory && file.name.startsWith("ios-") }
+        val slices =
+            archDirs?.flatMap { arch ->
+                val frameworks = arch.listFiles { f -> f.isDirectory && f.extension == "framework" }
+                frameworks?.toList().orEmpty()
+            }
+
+        if (slices.isNullOrEmpty()) {
+            logger.warn("No XCFramework slices found in ${xcf.path}")
+        } else {
+            slices.forEach { framework ->
                 val dest = framework.resolve("composeResources")
                 dest.deleteRecursively()
                 src.copyRecursively(dest)
             }
-            ?: logger.warn("No XCFramework slices found in ${xcf.path}")
+        }
     }
 }
 
