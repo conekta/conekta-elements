@@ -118,11 +118,12 @@ class TokenizerConfigTest {
 
     @Test
     fun `secondary constructors produce same result as primary with same values`() {
-        val fromPrimary = TokenizerConfig(
-            publicKey = "key_test_123",
-            merchantName = "Demo Store",
-            collectCardholderName = true,
-        )
+        val fromPrimary =
+            TokenizerConfig(
+                publicKey = "key_test_123",
+                merchantName = "Demo Store",
+                collectCardholderName = true,
+            )
         val fromSecondary1 = TokenizerConfig("key_test_123")
         val fromSecondary3 = TokenizerConfig("key_test_123", "Demo Store", true)
         assertEquals(fromPrimary, fromSecondary1)
