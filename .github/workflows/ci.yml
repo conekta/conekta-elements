@@ -24,6 +24,9 @@ jobs:
         with:
           cache-read-only: ${{ github.ref != 'refs/heads/main' }}
 
+      - name: iOS shared tests
+        run: make ios-test
+
       - name: verify ios resources
         run: make verify-ios-resources
 
