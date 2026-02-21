@@ -9,7 +9,7 @@ Both examples require a **Conekta public key** to work. Replace `YOUR_PUBLIC_KEY
 | Platform | File                                                                 |
 |----------|----------------------------------------------------------------------|
 | Android  | `android/src/main/java/com/conekta/example/MainActivity.kt` (line 36) |
-| iOS      | `ios/ConektaExample/ContentView.swift` (line 12)                      |
+| iOS      | `ios/Local.xcconfig` (see iOS setup below)                            |
 
 You can get your public key from the [Conekta Dashboard](https://panel.conekta.com/).
 
@@ -81,13 +81,25 @@ private const val CONEKTA_PUBLIC_KEY = "YOUR_PUBLIC_KEY_HERE"
    - Select "Add Local..." and point to the `conekta-elements` root directory
    - Add the `composeKit` library to your target
 
-3. Set your public key in `ContentView.swift`:
+3. Create the local config file (this file is gitignored):
 
-```swift
-private static let conektaPublicKey = "YOUR_PUBLIC_KEY_HERE"
+```bash
+cp ios/Local.xcconfig.example ios/Local.xcconfig
 ```
 
-4. Build and run.
+4. Edit `ios/Local.xcconfig` and set your keys:
+
+```
+DEVELOPMENT_TEAM = YOUR_TEAM_ID
+CONEKTA_PUBLIC_KEY = YOUR_PUBLIC_KEY_HERE
+```
+
+5. In Xcode, set `Local.xcconfig` for both Debug and Release configurations:
+   - Select the **project** (not the target) in the navigator
+   - Go to the **Info** tab
+   - Under **Configurations**, select `Local` from the dropdown for each configuration
+
+6. Build and run.
 
 ### Key files
 
