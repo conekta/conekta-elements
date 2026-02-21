@@ -1,7 +1,6 @@
 package io.conekta.elements.tokenizer.api
 
 import io.conekta.elements.tokenizer.crypto.CardEncryptor
-import io.conekta.elements.tokenizer.crypto.EncryptedCardData
 import io.conekta.elements.tokenizer.models.TokenizerConfig
 import io.conekta.elements.tokenizer.models.TokenizerError
 import io.ktor.client.HttpClient
@@ -52,17 +51,8 @@ class TokenizerApiServiceTest {
             }
         }
 
-    private val fakeEncryptor =
-        object : CardEncryptor {
-            override fun encryptCardData(
-                cardJson: String,
-                rsaPublicKeyBase64: String,
-            ): EncryptedCardData =
-                EncryptedCardData(
-                    encryptedData = "fake_encrypted_data",
-                    encryptedKey = "fake_encrypted_key",
-                )
-        }
+    // Fake encryptor that prefixes each plaintext so we can verify it in the request body
+    private val fakeEncryptor = CardEncryptor { plaintext, _ -> "enc:$plaintext" }
 
     @Test
     fun tokenizeSuccessReturnsTokenResult() =
@@ -214,7 +204,6 @@ class TokenizerApiServiceTest {
                     cryptoService = fakeEncryptor,
                 )
 
-            // Card number with spaces (as formatted input)
             val result =
                 service.tokenize(
                     cardNumber = "4242 4242 4242 4242",
@@ -267,21 +256,16 @@ class TokenizerApiServiceTest {
         }
 
     @Test
-    fun tokenizePassesCardDataToEncryptor() =
+    fun tokenizePassesEachFieldToEncryptor() =
         runTest {
-            var capturedCardJson = ""
+            val capturedPlaintexts = mutableListOf<String>()
             var capturedRsaKey = ""
 
             val capturingEncryptor =
-                object : CardEncryptor {
-                    override fun encryptCardData(
-                        cardJson: String,
-                        rsaPublicKeyBase64: String,
-                    ): EncryptedCardData {
-                        capturedCardJson = cardJson
-                        capturedRsaKey = rsaPublicKeyBase64
-                        return EncryptedCardData("data", "key")
-                    }
+                CardEncryptor { plaintext, rsaKey ->
+                    capturedPlaintexts.add(plaintext)
+                    capturedRsaKey = rsaKey
+                    "encrypted"
                 }
 
             val mockClient =
@@ -306,12 +290,13 @@ class TokenizerApiServiceTest {
                 cardholderName = "Jane Smith",
             )
 
-            assertTrue(capturedCardJson.contains("4111111111111111"), "Card number should be in JSON")
-            assertTrue(capturedCardJson.contains("03"), "Exp month should be in JSON")
-            assertTrue(capturedCardJson.contains("29"), "Exp year should be in JSON")
-            assertTrue(capturedCardJson.contains("456"), "CVC should be in JSON")
-            assertTrue(capturedCardJson.contains("Jane Smith"), "Cardholder name should be in JSON")
+            assertTrue(capturedPlaintexts.contains("4111111111111111"), "Card number should be encrypted")
+            assertTrue(capturedPlaintexts.contains("03"), "Exp month should be encrypted")
+            assertTrue(capturedPlaintexts.contains("29"), "Exp year should be encrypted")
+            assertTrue(capturedPlaintexts.contains("456"), "CVC should be encrypted")
+            assertTrue(capturedPlaintexts.contains("Jane Smith"), "Cardholder name should be encrypted")
             assertEquals("test_rsa_key", capturedRsaKey, "RSA key from config should be passed")
+            assertEquals(5, capturedPlaintexts.size, "Exactly 5 fields should be encrypted")
         }
 
     @Test
@@ -424,13 +409,7 @@ class TokenizerApiServiceTest {
     @Test
     fun tokenizeEncryptionFailureReturnsNetworkError() =
         runTest {
-            val failingEncryptor =
-                object : CardEncryptor {
-                    override fun encryptCardData(
-                        cardJson: String,
-                        rsaPublicKeyBase64: String,
-                    ): EncryptedCardData = throw RuntimeException("Encryption failed")
-                }
+            val failingEncryptor = CardEncryptor { _, _ -> throw RuntimeException("Encryption failed") }
 
             val mockClient =
                 createMockClient(
@@ -459,9 +438,7 @@ class TokenizerApiServiceTest {
             val exception = result.exceptionOrNull()
             assertIs<TokenizerApiException>(exception)
             val networkError = assertIs<TokenizerError.NetworkError>(exception.tokenizerError)
-            assertTrue(
-                networkError.message.contains("Encryption failed"),
-            )
+            assertTrue(networkError.message.contains("Encryption failed"))
         }
 
     @Test

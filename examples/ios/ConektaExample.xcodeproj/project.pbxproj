@@ -3,14 +3,14 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A1000001 /* ConektaExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001; };
-		A1000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000002; };
-		A1000003 /* ConektaTokenizerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000003; };
-		A1000004 /* composeKit in Frameworks */ = {isa = PBXBuildFile; productRef = A5000001; };
+		A1000001 /* ConektaExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001 /* ConektaExampleApp.swift */; };
+		A1000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000002 /* ContentView.swift */; };
+		A1000003 /* ConektaTokenizerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000003 /* ConektaTokenizerView.swift */; };
+		A1000004 /* composeKit in Frameworks */ = {isa = PBXBuildFile; productRef = A5000001 /* composeKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -65,7 +65,7 @@
 /* Begin PBXNativeTarget section */
 		A6000001 /* ConektaExample */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A8000001;
+			buildConfigurationList = A8000001 /* Build configuration list for PBXNativeTarget "ConektaExample" */;
 			buildPhases = (
 				A3000002 /* Sources */,
 				A3000001 /* Frameworks */,
@@ -91,9 +91,9 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1600;
-				LastUpgradeCheck = 1600;
+				LastUpgradeCheck = 2620;
 			};
-			buildConfigurationList = A8000002;
+			buildConfigurationList = A8000002 /* Build configuration list for PBXProject "ConektaExample" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -214,8 +214,10 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = DZUVGYHJ5F;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -235,6 +237,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -274,8 +277,10 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = DZUVGYHJ5F;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -288,6 +293,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -319,7 +325,7 @@
 /* Begin XCLocalSwiftPackageReference section */
 		A5000002 /* XCLocalSwiftPackageReference "../../" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = "../../";
+			relativePath = ../../;
 		};
 /* End XCLocalSwiftPackageReference section */
 
@@ -329,7 +335,6 @@
 			productName = composeKit;
 		};
 /* End XCSwiftPackageProductDependency section */
-
 	};
-	rootObject = A7000001;
+	rootObject = A7000001 /* Project object */;
 }

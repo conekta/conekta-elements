@@ -24,15 +24,6 @@ data class CardPayloadDto(
 )
 
 /**
- * Encrypted request body sent to POST /tokens.
- */
-@Serializable
-data class TokenRequestDto(
-    val data: String,
-    val key: String,
-)
-
-/**
  * Successful token response from the API.
  */
 @Serializable

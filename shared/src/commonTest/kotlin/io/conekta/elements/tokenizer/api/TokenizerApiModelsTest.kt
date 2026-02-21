@@ -46,13 +46,6 @@ class TokenizerApiModelsTest {
     }
 
     @Test
-    fun tokenRequestDtoSerialization() {
-        val req = TokenRequestDto(data = "encrypted_data", key = "encrypted_key")
-        val serialized = json.encodeToString(TokenRequestDto.serializer(), req)
-        assertEquals("""{"data":"encrypted_data","key":"encrypted_key"}""", serialized)
-    }
-
-    @Test
     fun tokenResponseDtoDeserialization() {
         val jsonStr = """{"id":"tok_abc123","livemode":false,"used":false,"object":"token"}"""
         val dto = json.decodeFromString(TokenResponseDto.serializer(), jsonStr)
@@ -254,14 +247,6 @@ class TokenizerApiModelsTest {
         val original = CardPayloadDto(card = CardDataDto("456", "01", "28", "Jane", "5555555555554444"))
         val serialized = json.encodeToString(CardPayloadDto.serializer(), original)
         val deserialized = json.decodeFromString(CardPayloadDto.serializer(), serialized)
-        assertEquals(original, deserialized)
-    }
-
-    @Test
-    fun tokenRequestDtoRoundTrip() {
-        val original = TokenRequestDto(data = "enc_data", key = "enc_key")
-        val serialized = json.encodeToString(TokenRequestDto.serializer(), original)
-        val deserialized = json.decodeFromString(TokenRequestDto.serializer(), serialized)
         assertEquals(original, deserialized)
     }
 

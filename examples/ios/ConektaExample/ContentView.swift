@@ -11,7 +11,7 @@ struct ContentView: View {
 
     var body: some View {
         ConektaTokenizerView(
-            config: SharedTokenizerConfig(
+            config: TokenizerConfig(
                 publicKey: ContentView.conektaPublicKey,
                 merchantName: "My Store",
                 collectCardholderName: true
@@ -26,9 +26,9 @@ struct ContentView: View {
             },
             onError: { error in
                 alertTitle = "Error"
-                if let apiError = error as? SharedTokenizerError.ApiError {
+                if let apiError = error as? TokenizerError.TokenizerApiError {
                     alertMessage = "\(apiError.code): \(apiError.message)"
-                } else if let networkError = error as? SharedTokenizerError.NetworkError {
+                } else if let networkError = error as? TokenizerError.TokenizerNetworkError {
                     alertMessage = networkError.message
                 } else {
                     alertMessage = "Payment could not be processed. Please try again."
