@@ -119,7 +119,7 @@ The `compose` module produces `composeKit.xcframework`, distributed as a zip ass
 
 ### Option 1 — Direct XCFramework (Xcode)
 
-1. Download `composeKit.xcframework.zip` from the [latest release](https://github.com/conekta/conekta-elements/releases/tag/latest)
+1. Download `composeKit.xcframework.zip` from the [0.2.0-beta.2 release](https://github.com/conekta/conekta-elements/releases/tag/0.2.0-beta.2)
 2. Unzip and drag `composeKit.xcframework` into your Xcode project
 3. In your target → **General** → **Frameworks, Libraries, and Embedded Content**, set it to **Embed & Sign**
 
@@ -134,7 +134,7 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "composeKit",
-            url: "https://github.com/conekta/conekta-elements/releases/download/latest/composeKit.xcframework.zip",
+            url: "https://github.com/conekta/conekta-elements/releases/download/0.2.0-beta.2/composeKit.xcframework.zip",
             checksum: "e5fc1a7030756eea3f8cc4c229c178baac9369e4c3ba3238274f03824fdb02b2"
         ),
         .target(

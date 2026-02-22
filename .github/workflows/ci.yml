@@ -35,7 +35,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - name: Validate README version matches gradle.properties
+      - name: Validate README and Package.swift versions match gradle.properties
         run: |
           VERSION=$(grep '^conekta.version=' gradle.properties | cut -d'=' -f2)
           FAILED=false
@@ -45,8 +45,13 @@ jobs:
               FAILED=true
             fi
           done
+          PACKAGE_URL="https://github.com/conekta/conekta-elements/releases/download/$VERSION/composeKit.xcframework.zip"
+          if ! grep -q "$PACKAGE_URL" Package.swift; then
+            echo "::error::Package.swift does not contain expected URL $PACKAGE_URL"
+            FAILED=true
+          fi
           if [ "$FAILED" = "true" ]; then exit 1; fi
-          echo "README version check passed: $VERSION"
+          echo "README + Package.swift version checks passed: $VERSION"
 
       - uses: actions/setup-java@v5
         with:
