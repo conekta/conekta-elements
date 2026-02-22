@@ -31,9 +31,10 @@ You can get your public key from the [Conekta Dashboard](https://panel.conekta.c
 1. Add the SDK dependency in `build.gradle.kts`:
 
 ```kotlin
-implementation("io.conekta:conekta-elements-compose-android:0.2.0-beta")
-implementation("io.conekta:conekta-elements-shared-android:0.2.0-beta")
+implementation("io.conekta:conekta-elements-compose:0.2.0-beta.2")
 ```
+
+`conekta-elements-shared` is included transitively.
 
 2. Register `ExampleApplication` in `AndroidManifest.xml` to enable card brand icon loading:
 
