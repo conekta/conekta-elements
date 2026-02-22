@@ -4,7 +4,7 @@
 
 <p align="center">
   <a href="https://central.sonatype.com/artifact/io.conekta/conekta-elements-compose"><img src="https://img.shields.io/maven-central/v/io.conekta/conekta-elements-compose?label=maven-central" alt="Maven Central"/></a>
-  <img src="https://img.shields.io/badge/kotlin-2.3.0-7F52FF?logo=kotlin&logoColor=white" alt="Kotlin 2.3.0"/>
+  <img src="https://img.shields.io/badge/kotlin-2.1.0-7F52FF?logo=kotlin&logoColor=white" alt="Kotlin 2.1.0"/>
   <img src="https://img.shields.io/badge/license-MIT-green" alt="License MIT"/>
 </p>
 
