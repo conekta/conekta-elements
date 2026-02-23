@@ -345,52 +345,49 @@ private fun PaymentMethodsSection(
                     methods.forEachIndexed { index, method ->
                         val selected = selectedPaymentMethod == method
 
-                        when (method) {
-                            CheckoutPaymentMethods.CARD -> {
-                                if (selected) {
-                                    Column(modifier = Modifier.zIndex(1f)) {
-                                        CheckoutCardMethodSection(
-                                            onSelect = { onMethodSelected(method) },
-                                            cardholderName = cardholderName,
-                                            onCardholderNameChange = onCardholderNameChange,
-                                            cardNumber = cardNumber,
-                                            onCardNumberChange = onCardNumberChange,
-                                            expiryDate = expiryDate,
-                                            onExpiryDateChange = onExpiryDateChange,
-                                            cvv = cvv,
-                                            onCvvChange = onCvvChange,
-                                            cardholderNamePlaceholderOverride =
-                                                stringResource(Res.string.placeholder_cardholder_name_checkout),
-                                        )
-                                    }
-                                } else {
-                                    CheckoutCardMethodItem(selected = false, onClick = { onMethodSelected(method) })
-                                }
-                            }
-                            CheckoutPaymentMethods.CASH -> {
-                                if (selected) {
-                                    Column(modifier = Modifier.zIndex(1f)) {
-                                        CheckoutCashMethodSection(
-                                            onSelect = { onMethodSelected(method) },
-                                        )
-                                    }
-                                } else {
-                                    CheckoutCashMethodItem(selected = false, onClick = { onMethodSelected(method) })
-                                }
-                            }
-                            CheckoutPaymentMethods.BANK_TRANSFER -> {
-                                if (selected) {
-                                    Column(modifier = Modifier.zIndex(1f)) {
-                                        CheckoutBankTransferMethodSection(
-                                            onSelect = { onMethodSelected(method) },
-                                        )
-                                    }
-                                } else {
-                                    CheckoutBankTransferMethodItem(
-                                        selected = false,
-                                        onClick = { onMethodSelected(method) },
+                        when {
+                            method == CheckoutPaymentMethods.CARD && selected -> {
+                                Column(modifier = Modifier.zIndex(1f)) {
+                                    CheckoutCardMethodSection(
+                                        onSelect = { onMethodSelected(method) },
+                                        cardholderName = cardholderName,
+                                        onCardholderNameChange = onCardholderNameChange,
+                                        cardNumber = cardNumber,
+                                        onCardNumberChange = onCardNumberChange,
+                                        expiryDate = expiryDate,
+                                        onExpiryDateChange = onExpiryDateChange,
+                                        cvv = cvv,
+                                        onCvvChange = onCvvChange,
+                                        cardholderNamePlaceholderOverride =
+                                            stringResource(Res.string.placeholder_cardholder_name_checkout),
                                     )
                                 }
+                            }
+                            method == CheckoutPaymentMethods.CARD -> {
+                                CheckoutCardMethodItem(selected = false, onClick = { onMethodSelected(method) })
+                            }
+                            method == CheckoutPaymentMethods.CASH && selected -> {
+                                Column(modifier = Modifier.zIndex(1f)) {
+                                    CheckoutCashMethodSection(
+                                        onSelect = { onMethodSelected(method) },
+                                    )
+                                }
+                            }
+                            method == CheckoutPaymentMethods.CASH -> {
+                                CheckoutCashMethodItem(selected = false, onClick = { onMethodSelected(method) })
+                            }
+                            method == CheckoutPaymentMethods.BANK_TRANSFER && selected -> {
+                                Column(modifier = Modifier.zIndex(1f)) {
+                                    CheckoutBankTransferMethodSection(
+                                        onSelect = { onMethodSelected(method) },
+                                    )
+                                }
+                            }
+                            method == CheckoutPaymentMethods.BANK_TRANSFER -> {
+                                CheckoutBankTransferMethodItem(
+                                    selected = false,
+                                    onClick = { onMethodSelected(method) },
+                                )
                             }
                         }
 
