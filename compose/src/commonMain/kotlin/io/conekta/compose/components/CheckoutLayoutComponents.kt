@@ -194,9 +194,9 @@ private fun CheckoutBreakdown(
         }
 
         discountLines.forEach { line ->
-            BreakdownAmountRow(
+            BreakdownDiscountAmountRow(
                 label = line.description.ifBlank { stringResource(Res.string.checkout_discount_label) },
-                amount = -line.amount,
+                amount = line.amount,
             )
         }
     }
@@ -206,6 +206,25 @@ private fun CheckoutBreakdown(
 private fun BreakdownAmountRow(
     label: String,
     amount: Long,
+) {
+    BreakdownAmountRow(label = label, amountTextOverride = formatAmount(amount))
+}
+
+@Composable
+private fun BreakdownDiscountAmountRow(
+    label: String,
+    amount: Long,
+) {
+    BreakdownAmountRow(
+        label = label,
+        amountTextOverride = "-${formatAmount(amount)}",
+    )
+}
+
+@Composable
+private fun BreakdownAmountRow(
+    label: String,
+    amountTextOverride: String,
 ) {
     val fontFamily = LocalConektaFontFamily.current
     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -221,7 +240,7 @@ private fun BreakdownAmountRow(
         )
         Spacer(modifier = Modifier.weight(1f))
         Text(
-            text = formatAmount(amount),
+            text = amountTextOverride,
             style =
                 TextStyle(
                     fontFamily = fontFamily,
@@ -234,8 +253,5 @@ private fun BreakdownAmountRow(
 }
 
 private fun formatAmount(amountInCents: Long): String {
-    val negative = amountInCents < 0
-    val absCents = if (negative) -amountInCents else amountInCents
-    val fixed = Amount(absCents.toInt()).toFixed(2)
-    return if (negative) "-$$fixed" else "$$fixed"
+    return "$${Amount(amountInCents.toInt()).toFixed(2)}"
 }
