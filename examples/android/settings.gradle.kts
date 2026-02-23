@@ -16,3 +16,10 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "ConektaExample"
+
+includeBuild("../..") {
+    dependencySubstitution {
+        substitute(module("io.conekta:conekta-elements-compose")).using(project(":compose"))
+        substitute(module("io.conekta:conekta-elements-shared")).using(project(":shared"))
+    }
+}

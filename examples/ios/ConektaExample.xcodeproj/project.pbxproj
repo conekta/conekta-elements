@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -11,6 +11,7 @@
 		A1000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000002 /* ContentView.swift */; };
 		A1000003 /* ConektaTokenizerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000003 /* ConektaTokenizerView.swift */; };
 		A1000004 /* composeKit in Frameworks */ = {isa = PBXBuildFile; productRef = A5000001 /* composeKit */; };
+		A1000005 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2000006 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -18,6 +19,8 @@
 		A2000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A2000003 /* ConektaTokenizerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConektaTokenizerView.swift; sourceTree = "<group>"; };
 		A2000004 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A2000005 /* Local.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Local.xcconfig; sourceTree = "<group>"; };
+		A2000006 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A2000010 /* ConektaExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ConektaExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -37,6 +40,7 @@
 			isa = PBXGroup;
 			children = (
 				A4000002 /* ConektaExample */,
+				A2000005 /* Local.xcconfig */,
 				A4000003 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -48,6 +52,7 @@
 				A2000002 /* ContentView.swift */,
 				A2000003 /* ConektaTokenizerView.swift */,
 				A2000004 /* Info.plist */,
+				A2000006 /* Assets.xcassets */,
 			);
 			path = ConektaExample;
 			sourceTree = "<group>";
@@ -103,7 +108,7 @@
 			);
 			mainGroup = A4000001;
 			packageReferences = (
-				A5000002 /* XCLocalSwiftPackageReference "../../" */,
+				A5000002 /* XCLocalSwiftPackageReference "LocalConektaElements" */,
 			);
 			productRefGroup = A4000003 /* Products */;
 			projectDirPath = "";
@@ -119,6 +124,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1000005 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -140,6 +146,7 @@
 /* Begin XCBuildConfiguration section */
 		A9000001 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A2000005 /* Local.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -162,10 +169,12 @@
 		};
 		A9000002 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A2000005 /* Local.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "${TEAM_ID}";
 				INFOPLIST_FILE = ConektaExample/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -318,9 +327,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		A5000002 /* XCLocalSwiftPackageReference "../../" */ = {
+		A5000002 /* XCLocalSwiftPackageReference "LocalConektaElements" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = ../../;
+			relativePath = LocalConektaElements;
 		};
 /* End XCLocalSwiftPackageReference section */
 

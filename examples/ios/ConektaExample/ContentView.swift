@@ -1,7 +1,11 @@
 import SwiftUI
+import UIKit
 import composeKit
 
 struct ContentView: View {
+    private static let tabBarContentInset: CGFloat = 72
+
+    @State private var selectedTab: Int = 0
     @State private var showingAlert = false
     @State private var alertTitle = ""
     @State private var alertMessage = ""
@@ -14,38 +18,97 @@ struct ContentView: View {
         return key
     }()
 
+    private static let checkoutRequestId: String = {
+        guard let value = Bundle.main.infoDictionary?["ConektaCheckoutRequestId"] as? String, !value.isEmpty else {
+            return "dc5baf10-0f2b-4378-9f74-afa6bb418198"
+        }
+        return value
+    }()
+
+    private static let checkoutJwtToken: String = {
+        guard let value = Bundle.main.infoDictionary?["ConektaJwtToken"] as? String, !value.isEmpty else {
+            return "jwt_mock_123"
+        }
+        return value
+    }()
+
     var body: some View {
-        ConektaTokenizerView(
-            config: TokenizerConfig(
-                publicKey: ContentView.conektaPublicKey,
-                merchantName: "My Store",
-                collectCardholderName: true
-            ),
-            onSuccess: { tokenResult in
-                alertTitle = "Token Created"
-                alertMessage = """
-                Token: \(tokenResult.token)
-                Last 4: \(tokenResult.lastFour)
-                """
-                showingAlert = true
-            },
-            onError: { error in
-                alertTitle = "Error"
-                if let apiError = error as? TokenizerError.TokenizerApiError {
-                    alertMessage = "\(apiError.code): \(apiError.message)"
-                } else if let networkError = error as? TokenizerError.TokenizerNetworkError {
-                    alertMessage = networkError.message
-                } else {
-                    alertMessage = "Payment could not be processed. Please try again."
+        TabView(selection: $selectedTab) {
+            ConektaTokenizerView(
+                config: TokenizerConfig(
+                    publicKey: ContentView.conektaPublicKey,
+                    merchantName: "My Store",
+                    collectCardholderName: true
+                ),
+                onSuccess: { tokenResult in
+                    alertTitle = "Token Created"
+                    alertMessage = """
+                    Token: \(tokenResult.token)
+                    Last 4: \(tokenResult.lastFour)
+                    """
+                    showingAlert = true
+                },
+                onError: { error in
+                    alertTitle = "Error"
+                    if let apiError = error as? TokenizerError.TokenizerApiError {
+                        alertMessage = "\(apiError.code): \(apiError.message)"
+                    } else if let networkError = error as? TokenizerError.TokenizerNetworkError {
+                        alertMessage = networkError.message
+                    } else {
+                        alertMessage = "Payment could not be processed. Please try again."
+                    }
+                    showingAlert = true
                 }
-                showingAlert = true
+            )
+            .safeAreaInset(edge: .bottom) {
+                Color.clear.frame(height: ContentView.tabBarContentInset)
             }
-        )
-        .ignoresSafeArea(.container, edges: .bottom)
+            .tabItem {
+                Label("Tokenizer", systemImage: "creditcard")
+            }
+            .tag(0)
+
+            ConektaCheckoutView(
+                config: CheckoutConfig(
+                    checkoutRequestId: ContentView.checkoutRequestId,
+                    publicKey: ContentView.conektaPublicKey,
+                    jwtToken: ContentView.checkoutJwtToken
+                ),
+                onPaymentMethodSelected: { method in
+                    print("Payment method selected: \(method)")
+                },
+                onError: { error in
+                    print("Checkout error: \(error)")
+                }
+            )
+            .safeAreaInset(edge: .bottom) {
+                Color.clear.frame(height: ContentView.tabBarContentInset)
+            }
+            .tabItem {
+                Label("Checkout", systemImage: "cart")
+            }
+            .tag(1)
+        }
         .alert(alertTitle, isPresented: $showingAlert) {
             Button("OK", role: .cancel) { }
         } message: {
             Text(alertMessage)
         }
     }
+}
+
+private struct ConektaCheckoutView: UIViewControllerRepresentable {
+    let config: CheckoutConfig
+    let onPaymentMethodSelected: (String) -> Void
+    let onError: (CheckoutError) -> Void
+
+    func makeUIViewController(context: Context) -> UIViewController {
+        ConektaCheckoutViewControllerKt.ConektaCheckoutMockViewController(
+            config: config,
+            onPaymentMethodSelected: onPaymentMethodSelected,
+            onError: onError
+        )
+    }
+
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
 }

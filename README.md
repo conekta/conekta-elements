@@ -46,23 +46,6 @@ dependencies {
 
 Artifacts are published to Maven Central. No additional repository configuration required.
 
-For GitHub Packages:
-
-```kotlin
-// settings.gradle.kts
-dependencyResolutionManagement {
-    repositories {
-        maven {
-            url = uri("https://maven.pkg.github.com/conekta/conekta-elements")
-            credentials {
-                username = providers.gradleProperty("gpr.user").orNull ?: System.getenv("GP_USER")
-                password = providers.gradleProperty("gpr.token").orNull ?: System.getenv("GP_TOKEN")
-            }
-        }
-    }
-}
-```
-
 ### Coil setup (required for compose module)
 
 The compose module uses Coil to load card brand icons from CDN. Initialize it in your `Application` class:

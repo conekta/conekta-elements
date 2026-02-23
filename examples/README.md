@@ -54,7 +54,7 @@ private const val CONEKTA_PUBLIC_KEY = "YOUR_PUBLIC_KEY_HERE"
 
 | File | Description |
 |------|-------------|
-| `MainActivity.kt` | Renders `ConektaTokenizer` composable and handles token/error callbacks |
+| `MainActivity.kt` | Renders `ConektaCheckout` with a mocked checkout response to test payment method rendering locally |
 | `ExampleApplication.kt` | Configures Coil image loader for SVG card brand icons |
 | `build.gradle.kts` | Dependencies: SDK, Compose |
 | `AndroidManifest.xml` | Internet permission and Application class registration |

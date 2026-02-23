@@ -3,6 +3,30 @@
     <string name="button_processing">Procesando…</string>
 
     <string name="card_information_title">Información de la tarjeta</string>
+    <string name="checkout_button_pay">Pagar</string>
+    <string name="checkout_empty_methods">No hay métodos de pago disponibles</string>
+    <string name="checkout_error_loading">No fue posible cargar el checkout</string>
+    <string name="checkout_footer_help">Ayuda</string>
+    <string name="checkout_footer_locale">ES</string>
+    <string name="checkout_footer_privacy">Privacidad</string>
+    <string name="checkout_loading">Cargando checkout…</string>
+    <string name="checkout_method_bank_transfer">Transferencia</string>
+    <string name="checkout_method_card">Tarjeta</string>
+    <string name="checkout_method_cash">Conekta Efectivo</string>
+    <string name="checkout_method_title">Método de pago</string>
+    <string name="checkout_cash_points_message">Puedes pagar en más de 14 mil puntos</string>
+    <string name="checkout_cash_see_map">Ver mapa</string>
+    <string name="checkout_cash_reference_message">Te enviaremos una referencia de pago con todas las instrucciones a tu correo para que completes tu compra.</string>
+    <string name="checkout_bank_transfer_reference_message">Te enviaremos una referencia de pago con todas las instrucciones a tu correo para que completes tu compra.</string>
+    <string name="checkout_quantity_label">Cantidad:</string>
+    <string name="checkout_subtotal_label">Subtotal</string>
+    <string name="checkout_tax_label">Impuestos</string>
+    <string name="checkout_shipping_label">Envío</string>
+    <string name="checkout_discount_label">Descuentos</string>
+    <string name="checkout_total_title">Total</string>
+    <string name="checkout_validation_checkout_request_id_required">checkoutRequestId es obligatorio</string>
+    <string name="checkout_validation_jwt_token_required">jwtToken es obligatorio</string>
+    <string name="checkout_validation_public_key_required">publicKey es obligatorio</string>
 
     <string name="conekta_description">Conekta es el portal que usa %1$s para procesar sus pagos en línea de manera segura y confiable.</string>
 
@@ -28,6 +52,7 @@
     <string name="payment_protected">Tu pago está protegido</string>
 
     <string name="placeholder_cardholder_name">Nombre como aparece en la tarjeta</string>
+    <string name="placeholder_cardholder_name_checkout">Nombre del titular de tarjeta</string>
     <string name="placeholder_cvv">CVV</string>
     <string name="placeholder_expiry">MM/YY</string>
 

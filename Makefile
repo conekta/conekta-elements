@@ -26,5 +26,7 @@ build-XCFramework:
 	# Before releasing: update Package.swift binaryTarget from path: to url: + checksum:
 ios-test:
 	./gradlew :shared:iosSimulatorArm64Test
+sync-ios-resources:
+	./gradlew :compose:syncComposeResourcesToSPM
 verify-ios-resources:
 	./gradlew :compose:verifyComposeResourcesSync

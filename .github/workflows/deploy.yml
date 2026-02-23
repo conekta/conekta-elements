@@ -1,15 +1,14 @@
-name: Deploy_github
+name: Deploy
 
 on:
   release:
     types: [published]
 
 jobs:
-  deploy-github-packages:
+  deploy-maven-central:
     runs-on: macos-latest
     permissions:
       contents: read
-      packages: write
     steps:
       - uses: actions/checkout@v6
 
@@ -22,7 +21,7 @@ jobs:
           echo "tag_version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "module_version=$MODULE_VERSION" >> "$GITHUB_OUTPUT"
           if [ "$VERSION" != "$MODULE_VERSION" ]; then
-            echo "::warning::Tag $VERSION does not match conekta.version $MODULE_VERSION, skipping deploy-github-packages"
+            echo "::warning::Tag $VERSION does not match conekta.version $MODULE_VERSION, skipping deploy-maven-central"
             echo "skip=true" >> "$GITHUB_OUTPUT"
           else
             echo "skip=false" >> "$GITHUB_OUTPUT"
@@ -42,12 +41,15 @@ jobs:
       - uses: android-actions/setup-android@v3
         if: steps.validate.outputs.skip == 'false'
 
-      - name: Publish to GitHub Packages
+      - name: Publish to Maven Central
         if: steps.validate.outputs.skip == 'false'
-        run: ./gradlew :shared:publishAllPublicationsToGitHubPackagesRepository :compose:publishAllPublicationsToGitHubPackagesRepository --no-configuration-cache
+        run: ./gradlew :shared:publishAllPublicationsToMavenCentralRepository :compose:publishAllPublicationsToMavenCentralRepository --no-configuration-cache
         env:
-          GP_USER: ${{ github.actor }}
-          GP_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.SIGNING_KEY_ID }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_PASSWORD }}
 
   deploy-webapp:
     runs-on: aws-runner-set

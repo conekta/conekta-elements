@@ -3,6 +3,30 @@
     <string name="button_processing">Processing…</string>
 
     <string name="card_information_title">Card information</string>
+    <string name="checkout_button_pay">Pay</string>
+    <string name="checkout_empty_methods">No payment methods are available</string>
+    <string name="checkout_error_loading">Could not load checkout</string>
+    <string name="checkout_footer_help">Help</string>
+    <string name="checkout_footer_locale">EN</string>
+    <string name="checkout_footer_privacy">Privacy</string>
+    <string name="checkout_loading">Loading checkout…</string>
+    <string name="checkout_method_bank_transfer">Transfer</string>
+    <string name="checkout_method_card">Card</string>
+    <string name="checkout_method_cash">Conekta Cash</string>
+    <string name="checkout_method_title">Payment method</string>
+    <string name="checkout_cash_points_message">You can pay in more than 14 thousand points</string>
+    <string name="checkout_cash_see_map">See map</string>
+    <string name="checkout_cash_reference_message">We will send a payment reference with all the instructions to your email so you can complete your purchase.</string>
+    <string name="checkout_bank_transfer_reference_message">We will send a payment reference with all the instructions to your email so you can complete your purchase.</string>
+    <string name="checkout_quantity_label">Quantity:</string>
+    <string name="checkout_subtotal_label">Subtotal</string>
+    <string name="checkout_tax_label">Taxes</string>
+    <string name="checkout_shipping_label">Shipping</string>
+    <string name="checkout_discount_label">Discounts</string>
+    <string name="checkout_total_title">Total</string>
+    <string name="checkout_validation_checkout_request_id_required">checkoutRequestId is required</string>
+    <string name="checkout_validation_jwt_token_required">jwtToken is required</string>
+    <string name="checkout_validation_public_key_required">publicKey is required</string>
 
     <string name="conekta_description">Conekta is the portal that %1$s uses to process their online payments securely and reliably.</string>
 
@@ -28,6 +52,7 @@
     <string name="payment_protected">Your payment is protected</string>
 
     <string name="placeholder_cardholder_name">Name as it appears on card</string>
+    <string name="placeholder_cardholder_name_checkout">Name on card</string>
     <string name="placeholder_cvv">CVV</string>
     <string name="placeholder_expiry">MM/YY</string>
 

@@ -14,16 +14,32 @@ object CDNResources {
 
     object Icons {
         private const val ICONS_PATH = "$BASE_CDN_URL/checkout/img/logos"
+        private const val PAYMENT_METHOD_ICONS_PATH = "$BASE_CDN_URL/checkout/img/icons"
         const val APPLE = "$ICONS_PATH/logo-apple-with-text.svg"
         const val VISA = "$ICONS_PATH/logo-visa.svg"
         const val MASTERCARD = "$ICONS_PATH/logo-mastercard.svg"
         const val SPINNER = "$BASE_CDN_URL/checkout/img/icons/spinner.svg"
+        const val CARD = "$PAYMENT_METHOD_ICONS_PATH/card.svg"
+        const val BANK_TRANSFER = "$PAYMENT_METHOD_ICONS_PATH/bankTransfer.svg"
+        const val CASH = "$PAYMENT_METHOD_ICONS_PATH/cash.svg"
     }
 
     object Colors {
         const val WHITE = "#fff"
         const val BLACK = "#000"
         const val DARK_BLUE = "#1E293B"
+        const val CHECKOUT_BACKGROUND = "#F7F8FD"
+        const val CHECKOUT_BORDER = "#D8D8E8"
+        const val CHECKOUT_SELECTED_BORDER = "#212247"
+        const val CHECKOUT_BREAKDOWN_BACKGROUND = "#050505"
+        const val CHECKOUT_ON_SURFACE = "#020617"
+        const val CHECKOUT_INK = "#0F112A"
+    }
+
+    object Links {
+        const val PRIVACY = "https://www.conekta.com/legal/privacy"
+        const val HELP = "https://help.conekta.com/hc/es-419/sections/360007368253-Link-de-Pago"
+        const val CASH_MAP = "https://map.conekta.com/"
     }
 
     object Opacity {

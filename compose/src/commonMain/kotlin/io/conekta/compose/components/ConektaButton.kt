@@ -26,13 +26,14 @@ fun ConektaButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    height: Int = 48,
 ) {
     Button(
         onClick = onClick,
         modifier =
             modifier
                 .fillMaxWidth()
-                .height(48.dp),
+                .height(height.dp),
         enabled = enabled,
         colors =
             ButtonDefaults.buttonColors(

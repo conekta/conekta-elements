@@ -177,19 +177,6 @@ mavenPublishing {
     }
 }
 
-publishing {
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/conekta/conekta-elements")
-            credentials {
-                username = project.findProperty("gpr.user") as String? ?: System.getenv("GP_USER")
-                password = project.findProperty("gpr.token") as String? ?: System.getenv("GP_TOKEN")
-            }
-        }
-    }
-}
-
 tasks.register<ValidateStringsOrderTask>("validateStringsOrder") {
     group = "verification"
     description = "Validates that all string resources are in alphabetical order"
@@ -277,6 +264,19 @@ tasks.register<VerifyComposeResourcesSyncTask>("verifyComposeResourcesSync") {
     spmResourcesDir =
         layout.buildDirectory.dir(
             "XCFrameworks/release/composeKit.xcframework/ios-arm64/composeKit.framework/composeResources",
+        )
+}
+
+tasks.register<SyncComposeResourcesToSPMTask>("syncComposeResourcesToSPM") {
+    group = "build"
+    description = "Syncs processed Compose resources to Sources/ComposeResources for SPM"
+
+    dependsOn("iosArm64ProcessResources")
+
+    builtResourcesDir = layout.buildDirectory.dir("processedResources/iosArm64/main/composeResources")
+    spmResourcesDir =
+        rootProject.layout.projectDirectory.dir(
+            "Sources/ComposeResources/compose-resources/composeResources",
         )
 }
 

@@ -47,4 +47,4 @@ make compose-test   # Compose module tests + coverage
 
 ## Publishing
 
-Published to GitHub Packages: `maven.pkg.github.com/conekta/conekta-elements`
+Published to Maven Central.

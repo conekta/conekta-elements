@@ -34,6 +34,7 @@ kotlin {
 
 dependencies {
     // Conekta Elements SDK
+    // Resolved from the local workspace via includeBuild/dependencySubstitution in settings.gradle.kts
     implementation("io.conekta:conekta-elements-compose:0.2.0-beta.2")
 
     // Compose

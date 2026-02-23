@@ -73,6 +73,59 @@ fun MyPaymentScreen() {
 }
 ```
 
+## Checkout dinámico (métodos de pago)
+
+```kotlin
+import io.conekta.compose.checkout.ConektaCheckout
+import io.conekta.elements.checkout.models.CheckoutConfig
+import io.conekta.elements.checkout.models.CheckoutError
+
+@Composable
+fun MyCheckoutScreen() {
+    ConektaCheckout(
+        config = CheckoutConfig(
+            checkoutRequestId = "dc5baf10-0f2b-4378-9f74-afa6bb418198",
+            publicKey = "key_xxxxx",
+            jwtToken = "jwt_xxxxx",
+        ),
+        onPaymentMethodSelected = { method ->
+            println("Selected method: $method")
+        },
+        onError = { error: CheckoutError ->
+            println("Checkout error: $error")
+        },
+    )
+}
+```
+
+### Simulación local sin backend
+
+```kotlin
+ConektaCheckout(
+    config = CheckoutConfig(
+        checkoutRequestId = "dc5baf10-0f2b-4378-9f74-afa6bb418198",
+        publicKey = "key_mock_123",
+        jwtToken = "jwt_mock_123",
+    ),
+    onPaymentMethodSelected = { method -> println(method) },
+    onError = { error -> println(error) },
+    checkoutApiServiceFactory = { config ->
+        object : CheckoutApiService(config) {
+            override suspend fun fetchCheckout(): Result<CheckoutResult> =
+                Result.success(
+                    CheckoutResult(
+                        orderId = "ord_2zb4KeLHjraBbRJgs",
+                        checkoutId = "dc5baf10-0f2b-4378-9f74-afa6bb418198",
+                        amount = 12000,
+                        currency = "MXN",
+                        allowedPaymentMethods = listOf("card", "bnpl", "cash", "pay_by_bank", "bank_transfer", "apple"),
+                    ),
+                )
+        }
+    },
+)
+```
+
 ## Características
 
 ### ✅ Diseño Basado en Figma

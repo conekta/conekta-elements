@@ -126,19 +126,6 @@ mavenPublishing {
     }
 }
 
-publishing {
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/conekta/conekta-elements")
-            credentials {
-                username = project.findProperty("gpr.user") as String? ?: System.getenv("GP_USER")
-                password = project.findProperty("gpr.token") as String? ?: System.getenv("GP_TOKEN")
-            }
-        }
-    }
-}
-
 // Disable browser tests, use only Node.js for testing
 tasks.named("jsBrowserTest") {
     enabled = false

@@ -10,17 +10,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.BottomSheetDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,35 +28,21 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.conekta.compose.components.CardBrandIconsRow
-import io.conekta.compose.components.CheckCircleIcon
-import io.conekta.compose.components.CloseIcon
 import io.conekta.compose.components.ConektaButton
+import io.conekta.compose.components.ConektaCardFieldsSection
 import io.conekta.compose.components.ConektaLogoImage
-import io.conekta.compose.components.ConektaTextField
-import io.conekta.compose.components.CvvIcon
 import io.conekta.compose.components.InfoOutlinedIcon
+import io.conekta.compose.components.PaymentProtectionSheet
 import io.conekta.compose.generated.resources.Res
 import io.conekta.compose.generated.resources.button_continue
 import io.conekta.compose.generated.resources.button_processing
 import io.conekta.compose.generated.resources.card_information_title
-import io.conekta.compose.generated.resources.conekta_description
 import io.conekta.compose.generated.resources.content_description_security_info
 import io.conekta.compose.generated.resources.error_field_required
-import io.conekta.compose.generated.resources.label_card_number
-import io.conekta.compose.generated.resources.label_cardholder_name
-import io.conekta.compose.generated.resources.label_cvv
-import io.conekta.compose.generated.resources.label_expiry
 import io.conekta.compose.generated.resources.pay_securely_with
-import io.conekta.compose.generated.resources.payment_protected
-import io.conekta.compose.generated.resources.placeholder_cardholder_name
-import io.conekta.compose.generated.resources.placeholder_cvv
-import io.conekta.compose.generated.resources.placeholder_expiry
 import io.conekta.compose.generated.resources.validation_card_min_length
 import io.conekta.compose.generated.resources.validation_cvv_min_length
 import io.conekta.compose.generated.resources.validation_expiry_year_invalid
@@ -165,11 +145,6 @@ private fun TokenizerContent(
             cvvMinLength = stringResource(Res.string.validation_cvv_min_length),
         )
 
-    val detectedBrand =
-        remember(cardNumber.text) {
-            CardFormatters.detectCardBrand(cardNumber.text)
-        }
-
     Column(
         modifier =
             Modifier
@@ -203,91 +178,42 @@ private fun TokenizerContent(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Form
-        if (config.collectCardholderName) {
-            ConektaTextField(
-                value = cardholderName,
-                onValueChange = {
-                    cardholderName = it
-                    cardholderNameError = false
-                    cardholderNameErrorMsg = null
-                },
-                label = stringResource(Res.string.label_cardholder_name),
-                placeholder = stringResource(Res.string.placeholder_cardholder_name),
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next,
-                enabled = !isProcessing,
-                isError = cardholderNameError,
-                errorMessage = cardholderNameErrorMsg,
-            )
-        }
-
-        // Card Number with brand icon
-        ConektaTextField(
-            value = cardNumber,
-            onValueChange = { newValue ->
-                cardNumber = CardFormatters.formatCardNumber(newValue)
+        ConektaCardFieldsSection(
+            collectCardholderName = config.collectCardholderName,
+            cardholderName = cardholderName,
+            onCardholderNameChange = {
+                cardholderName = it
+                cardholderNameError = false
+                cardholderNameErrorMsg = null
+            },
+            cardNumber = cardNumber,
+            onCardNumberChange = {
+                cardNumber = it
                 cardNumberError = false
                 cardNumberErrorMsg = null
             },
-            label = stringResource(Res.string.label_card_number),
-            placeholder = "0000 0000 0000 0000",
-            keyboardType = KeyboardType.Number,
-            imeAction = ImeAction.Next,
-            enabled = !isProcessing,
-            isError = cardNumberError,
-            errorMessage = cardNumberErrorMsg,
-            trailingContent = {
-                CardBrandIconsRow(
-                    detectedBrand = detectedBrand,
-                )
+            expiryDate = expiryDate,
+            onExpiryDateChange = {
+                expiryDate = it
+                expiryDateError = false
+                expiryDateErrorMsg = null
             },
+            cvv = cvv,
+            onCvvChange = {
+                cvv = it
+                cvvError = false
+                cvvErrorMsg = null
+            },
+            enabled = !isProcessing,
+            cardholderNameError = cardholderNameError,
+            cardholderNameErrorMessage = cardholderNameErrorMsg,
+            cardNumberError = cardNumberError,
+            cardNumberErrorMessage = cardNumberErrorMsg,
+            expiryDateError = expiryDateError,
+            expiryDateErrorMessage = expiryDateErrorMsg,
+            cvvError = cvvError,
+            cvvErrorMessage = cvvErrorMsg,
         )
-
-        // Expiry and CVV Row
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            ConektaTextField(
-                value = expiryDate,
-                onValueChange = { newValue ->
-                    expiryDate = CardFormatters.formatExpiryDate(newValue)
-                    expiryDateError = false
-                    expiryDateErrorMsg = null
-                },
-                label = stringResource(Res.string.label_expiry),
-                placeholder = stringResource(Res.string.placeholder_expiry),
-                keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Next,
-                modifier = Modifier.weight(1f),
-                enabled = !isProcessing,
-                isError = expiryDateError,
-                errorMessage = expiryDateErrorMsg,
-            )
-
-            ConektaTextField(
-                value = cvv,
-                onValueChange = { newValue ->
-                    cvv = CardFormatters.formatCvv(newValue, detectedBrand)
-                    cvvError = false
-                    cvvErrorMsg = null
-                },
-                label = stringResource(Res.string.label_cvv),
-                placeholder = stringResource(Res.string.placeholder_cvv),
-                keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Done,
-                modifier = Modifier.weight(1f),
-                enabled = !isProcessing,
-                isError = cvvError,
-                errorMessage = cvvErrorMsg,
-                trailingContent = {
-                    CvvIcon(
-                        modifier = Modifier.size(32.dp),
-                    )
-                },
-            )
-        }
 
         Spacer(modifier = Modifier.weight(1f))
 
@@ -394,96 +320,6 @@ private fun TokenizerHeader(
                 imageVector = InfoOutlinedIcon,
                 contentDescription = stringResource(Res.string.content_description_security_info),
                 tint = ConektaColors.Neutral7,
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun PaymentProtectionSheet(
-    merchantName: String,
-    onDismiss: () -> Unit,
-) {
-    val fontFamily = LocalConektaFontFamily.current
-    val sheetState =
-        rememberModalBottomSheetState(
-            skipPartiallyExpanded = false,
-        )
-
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = sheetState,
-        dragHandle = {
-            BottomSheetDefaults.DragHandle(
-                color = ConektaColors.Neutral5,
-            )
-        },
-        containerColor = ConektaColors.Surface,
-        shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
-        scrimColor = Color.Black.copy(alpha = 0.5f),
-    ) {
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 32.dp)
-                    .padding(bottom = 32.dp),
-        ) {
-            // Close button (X) at top right
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End,
-            ) {
-                IconButton(onClick = onDismiss) {
-                    CloseIcon(
-                        modifier = Modifier.size(24.dp),
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Title with check icon
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                // Green check icon from Figma
-                CheckCircleIcon(
-                    modifier = Modifier.size(24.dp),
-                )
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Text(
-                    text = stringResource(Res.string.payment_protected),
-                    style =
-                        TextStyle(
-                            fontFamily = fontFamily,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = ConektaColors.DarkIndigo,
-                            lineHeight = 20.sp,
-                        ),
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Description text
-            Text(
-                text = stringResource(Res.string.conekta_description, merchantName),
-                style =
-                    TextStyle(
-                        fontFamily = fontFamily,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Normal,
-                        color = ConektaColors.Neutral8,
-                        lineHeight = 22.sp,
-                    ),
-                modifier = Modifier.fillMaxWidth(),
             )
         }
     }
