@@ -252,6 +252,4 @@ private fun BreakdownAmountRow(
     }
 }
 
-private fun formatAmount(amountInCents: Long): String {
-    return "$${Amount(amountInCents.toInt()).toFixed(2)}"
-}
+private fun formatAmount(amountInCents: Long): String = "$${Amount(amountInCents.toInt()).toFixed(2)}"

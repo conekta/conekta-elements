@@ -28,7 +28,6 @@ internal actual fun ProvideLanguage(
 ) {
     val baseContext = LocalContext.current
     val targetLocale = Locale.forLanguageTag(normalizeLanguageTag(languageTag))
-    Locale.setDefault(targetLocale)
     val localizedConfiguration =
         Configuration(baseContext.resources.configuration).apply {
             setLocale(targetLocale)
