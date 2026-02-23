@@ -10,6 +10,43 @@ class CheckoutApiModelsTest {
     private val json = Json { ignoreUnknownKeys = true }
 
     @Test
+    fun checkoutRequestResponseDtoDeserializesRequiredFields() {
+        val payload =
+            """
+            {
+              "id":"0f3e251c-90b7-4846-9ecb-e48b447f25e4",
+              "amount":30000,
+              "allowedPaymentMethods":["Card","Apple"],
+              "providers":[
+                {"id":"647f8b322a0818004a414694","name":"datalogic","paymentMethod":"cash"},
+                {"id":"66df25a6af1debf142e80026","name":"bbva","paymentMethod":"cash"}
+              ],
+              "orderTemplate":{
+                "currency":"MXN",
+                "lineItems":[
+                  {"name":"Apple test 3","quantity":1,"unitPrice":30000}
+                ],
+                "taxLines":[],
+                "discountLines":[],
+                "shippingLines":[]
+              }
+            }
+            """.trimIndent()
+
+        val dto = json.decodeFromString(CheckoutRequestResponseDto.serializer(), payload)
+
+        assertEquals("0f3e251c-90b7-4846-9ecb-e48b447f25e4", dto.id)
+        assertEquals(30000L, dto.amount)
+        assertEquals(listOf("Card", "Apple"), dto.allowedPaymentMethods)
+        assertEquals(2, dto.providers.size)
+        assertEquals("datalogic", dto.providers.first().name)
+        assertEquals("MXN", dto.orderTemplate?.currency)
+        assertEquals(1, dto.orderTemplate?.lineItems?.size)
+        assertEquals("Apple test 3", dto.orderTemplate?.lineItems?.first()?.name)
+        assertEquals(30000L, dto.orderTemplate?.lineItems?.first()?.unitPrice)
+    }
+
+    @Test
     fun orderResponseDtoDeserializesRequiredFields() {
         val payload =
             """

@@ -3,6 +3,7 @@ package io.conekta.elements.checkout.api
 import io.conekta.elements.checkout.models.CheckoutConfig
 import io.conekta.elements.checkout.models.CheckoutError
 import io.conekta.elements.checkout.models.CheckoutPaymentMethods
+import io.conekta.elements.localization.ConektaLanguage
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
@@ -31,7 +32,7 @@ class CheckoutApiServiceTest {
     private fun createMockClient(
         statusCode: HttpStatusCode = HttpStatusCode.OK,
         responseBody: String = "",
-        onRequest: ((String, String?, String?) -> Unit)? = null,
+        onRequest: ((String, String?, String?, String?) -> Unit)? = null,
     ): HttpClient =
         HttpClient(MockEngine) {
             install(ContentNegotiation) {
@@ -43,6 +44,7 @@ class CheckoutApiServiceTest {
                         request.url.toString(),
                         request.headers[HttpHeaders.Authorization],
                         request.headers["x-jwt-token"],
+                        request.headers[HttpHeaders.AcceptLanguage],
                     )
                     respond(
                         content = responseBody,
@@ -62,14 +64,19 @@ class CheckoutApiServiceTest {
                     responseBody =
                         """
                         {
-                          "id":"ord_2zb4KeLHjraBbRJgs",
-                          "amount":12000,
-                          "currency":"MXN",
-                          "line_items":{"data":[{"name":"Aretes Tres Círculos Numerales","quantity":1,"unit_price":10000}]},
-                          "tax_lines":{"data":[{"description":"test","amount":2000}]},
-                          "checkout":{
-                            "id":"dc5baf10-0f2b-4378-9f74-afa6bb418198",
-                            "allowed_payment_methods":["card","bnpl","cash","pay_by_bank","bank_transfer","apple"]
+                          "id":"0f3e251c-90b7-4846-9ecb-e48b447f25e4",
+                          "amount":30000,
+                          "allowedPaymentMethods":["Card","Apple","cash","BankTransfer"],
+                          "providers":[
+                            {"id":"647f8b322a0818004a414694","name":"datalogic","paymentMethod":"cash"},
+                            {"id":"66df25a6af1debf142e80026","name":"bbva","paymentMethod":"cash"}
+                          ],
+                          "orderTemplate":{
+                            "currency":"MXN",
+                            "lineItems":[{"name":"Apple test 3","quantity":1,"unitPrice":30000}],
+                            "taxLines":[{"description":"test","amount":2000}],
+                            "discountLines":[],
+                            "shippingLines":[]
                           }
                         }
                         """.trimIndent(),
@@ -80,27 +87,69 @@ class CheckoutApiServiceTest {
 
             assertTrue(result.isSuccess)
             val checkout = result.getOrThrow()
-            assertEquals("ord_2zb4KeLHjraBbRJgs", checkout.orderId)
-            assertEquals("dc5baf10-0f2b-4378-9f74-afa6bb418198", checkout.checkoutId)
+            assertEquals("0f3e251c-90b7-4846-9ecb-e48b447f25e4", checkout.orderId)
+            assertEquals("0f3e251c-90b7-4846-9ecb-e48b447f25e4", checkout.checkoutId)
+            assertEquals(30000L, checkout.amount)
+            assertEquals("MXN", checkout.currency)
+            assertEquals(
+                listOf(
+                    CheckoutPaymentMethods.CARD,
+                    "apple",
+                    "cash",
+                    CheckoutPaymentMethods.BANK_TRANSFER,
+                ),
+                checkout.allowedPaymentMethods,
+            )
+            assertEquals(1, checkout.lineItems.size)
+            assertEquals("Apple test 3", checkout.lineItems.first().name)
+            assertEquals(30000L, checkout.lineItems.first().unitPrice)
+            assertEquals(1, checkout.taxLines.size)
+            assertEquals("test", checkout.taxLines.first().description)
+            assertEquals(2000L, checkout.taxLines.first().amount)
+            assertEquals(2, checkout.providers.size)
+            assertEquals("datalogic", checkout.providers.first().name)
+            assertEquals(CheckoutPaymentMethods.CASH, checkout.providers.first().paymentMethod)
+        }
+
+    @Test
+    fun fetchCheckoutOldOrderResponseStillSupported() =
+        runTest {
+            val mockClient =
+                createMockClient(
+                    statusCode = HttpStatusCode.OK,
+                    responseBody =
+                        """
+                        {
+                          "id":"ord_legacy",
+                          "amount":12000,
+                          "currency":"MXN",
+                          "line_items":{"data":[{"name":"Aretes Tres Círculos Numerales","quantity":1,"unit_price":10000}]},
+                          "tax_lines":{"data":[{"description":"test","amount":2000}]},
+                          "checkout":{
+                            "id":"chk_legacy",
+                            "allowed_payment_methods":["card","cash","bank_transfer"]
+                          }
+                        }
+                        """.trimIndent(),
+                )
+
+            val service = CheckoutApiService(config = testConfig, httpClient = mockClient)
+            val result = service.fetchCheckout()
+
+            assertTrue(result.isSuccess)
+            val checkout = result.getOrThrow()
+            assertEquals("ord_legacy", checkout.orderId)
+            assertEquals("chk_legacy", checkout.checkoutId)
             assertEquals(12000L, checkout.amount)
             assertEquals("MXN", checkout.currency)
             assertEquals(
                 listOf(
                     CheckoutPaymentMethods.CARD,
-                    "bnpl",
                     CheckoutPaymentMethods.CASH,
-                    "pay_by_bank",
                     CheckoutPaymentMethods.BANK_TRANSFER,
-                    "apple",
                 ),
                 checkout.allowedPaymentMethods,
             )
-            assertEquals(1, checkout.lineItems.size)
-            assertEquals("Aretes Tres Círculos Numerales", checkout.lineItems.first().name)
-            assertEquals(10000L, checkout.lineItems.first().unitPrice)
-            assertEquals(1, checkout.taxLines.size)
-            assertEquals("test", checkout.taxLines.first().description)
-            assertEquals(2000L, checkout.taxLines.first().amount)
         }
 
     @Test
@@ -109,6 +158,7 @@ class CheckoutApiServiceTest {
             var capturedUrl = ""
             var capturedAuthorization: String? = null
             var capturedJwt: String? = null
+            var capturedAcceptLanguage: String? = null
 
             val mockClient =
                 createMockClient(
@@ -116,16 +166,17 @@ class CheckoutApiServiceTest {
                     responseBody =
                         """
                         {
-                          "id":"ord_1",
-                          "amount":1000,
-                          "currency":"MXN",
-                          "checkout":{"id":"chk_1","allowed_payment_methods":["card"]}
+                          "id":"0f3e251c-90b7-4846-9ecb-e48b447f25e4",
+                          "amount":30000,
+                          "allowedPaymentMethods":["Card"],
+                          "orderTemplate":{"currency":"MXN","lineItems":[],"taxLines":[],"discountLines":[],"shippingLines":[]}
                         }
                         """.trimIndent(),
-                    onRequest = { url, authorization, jwt ->
+                    onRequest = { url, authorization, jwt, acceptLanguage ->
                         capturedUrl = url
                         capturedAuthorization = authorization
                         capturedJwt = jwt
+                        capturedAcceptLanguage = acceptLanguage
                     },
                 )
 
@@ -134,11 +185,45 @@ class CheckoutApiServiceTest {
 
             assertTrue(result.isSuccess)
             assertEquals(
-                "https://test.conekta.com/checkouts/dc5baf10-0f2b-4378-9f74-afa6bb418198",
+                "https://test.conekta.com/checkout-requests/dc5baf10-0f2b-4378-9f74-afa6bb418198",
                 capturedUrl,
             )
             assertEquals("Bearer key_test_abc123", capturedAuthorization)
             assertEquals("jwt_test_token", capturedJwt)
+            assertEquals(ConektaLanguage.ES, capturedAcceptLanguage)
+        }
+
+    @Test
+    fun fetchCheckoutSendsAcceptLanguageFromConfig() =
+        runTest {
+            var capturedAcceptLanguage: String? = null
+            val config =
+                testConfig.copy(
+                    languageTag = ConektaLanguage.EN,
+                )
+
+            val mockClient =
+                createMockClient(
+                    statusCode = HttpStatusCode.OK,
+                    responseBody =
+                        """
+                        {
+                          "id":"0f3e251c-90b7-4846-9ecb-e48b447f25e4",
+                          "amount":30000,
+                          "allowedPaymentMethods":["Card"],
+                          "orderTemplate":{"currency":"MXN","lineItems":[],"taxLines":[],"discountLines":[],"shippingLines":[]}
+                        }
+                        """.trimIndent(),
+                    onRequest = { _, _, _, acceptLanguage ->
+                        capturedAcceptLanguage = acceptLanguage
+                    },
+                )
+
+            val service = CheckoutApiService(config = config, httpClient = mockClient)
+            val result = service.fetchCheckout()
+
+            assertTrue(result.isSuccess)
+            assertEquals(ConektaLanguage.EN, capturedAcceptLanguage)
         }
 
     @Test

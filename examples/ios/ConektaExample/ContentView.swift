@@ -20,7 +20,7 @@ struct ContentView: View {
 
     private static let checkoutRequestId: String = {
         guard let value = Bundle.main.infoDictionary?["ConektaCheckoutRequestId"] as? String, !value.isEmpty else {
-            return "dc5baf10-0f2b-4378-9f74-afa6bb418198"
+            return "0f3e251c-90b7-4846-9ecb-e48b447f25e4"
         }
         return value
     }()
@@ -31,6 +31,8 @@ struct ContentView: View {
         }
         return value
     }()
+
+    private static let checkoutBaseUrl = "https://services.stg.conekta.io/checkout-bff/v1/"
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -72,7 +74,9 @@ struct ContentView: View {
                 config: CheckoutConfig(
                     checkoutRequestId: ContentView.checkoutRequestId,
                     publicKey: ContentView.conektaPublicKey,
-                    jwtToken: ContentView.checkoutJwtToken
+                    jwtToken: ContentView.checkoutJwtToken,
+                    merchantName: "My Store",
+                    baseUrl: ContentView.checkoutBaseUrl
                 ),
                 onPaymentMethodSelected: { method in
                     print("Payment method selected: \(method)")
@@ -103,7 +107,7 @@ private struct ConektaCheckoutView: UIViewControllerRepresentable {
     let onError: (CheckoutError) -> Void
 
     func makeUIViewController(context: Context) -> UIViewController {
-        ConektaCheckoutViewControllerKt.ConektaCheckoutMockViewController(
+        ConektaCheckoutViewControllerKt.ConektaCheckoutViewController(
             config: config,
             onPaymentMethodSelected: onPaymentMethodSelected,
             onError: onError

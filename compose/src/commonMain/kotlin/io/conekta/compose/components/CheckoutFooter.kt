@@ -34,7 +34,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.conekta.compose.generated.resources.Res
 import io.conekta.compose.generated.resources.checkout_footer_help
-import io.conekta.compose.generated.resources.checkout_footer_locale
 import io.conekta.compose.generated.resources.checkout_footer_privacy
 import io.conekta.compose.theme.ConektaColors
 import io.conekta.compose.theme.LocalConektaFontFamily
@@ -86,7 +85,7 @@ fun CheckoutFooter(
                     modifier = Modifier.size(16.dp),
                 )
                 Text(
-                    text = stringResource(Res.string.checkout_footer_locale),
+                    text = selectedLanguageTag.uppercase(),
                     style = TextStyle(fontFamily = fontFamily, fontSize = 14.sp, color = ConektaColors.Neutral8),
                 )
                 Icon(

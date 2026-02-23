@@ -16,6 +16,46 @@ data class CheckoutOrderResponseDto(
 )
 
 @Serializable
+data class CheckoutRequestResponseDto(
+    val id: String,
+    val amount: Long,
+    val status: String? = null,
+    @SerialName("allowedPaymentMethods") val allowedPaymentMethods: List<String> = emptyList(),
+    @SerialName("orderTemplate") val orderTemplate: CheckoutOrderTemplateDto? = null,
+    val providers: List<CheckoutProviderDto> = emptyList(),
+    @SerialName("startsAt") val startsAt: Long? = null,
+)
+
+@Serializable
+data class CheckoutOrderTemplateDto(
+    val currency: String = "MXN",
+    @SerialName("lineItems") val lineItems: List<CheckoutLineItemTemplateDto> = emptyList(),
+    @SerialName("taxLines") val taxLines: List<CheckoutAmountLineTemplateDto> = emptyList(),
+    @SerialName("discountLines") val discountLines: List<CheckoutAmountLineTemplateDto> = emptyList(),
+    @SerialName("shippingLines") val shippingLines: List<CheckoutAmountLineTemplateDto> = emptyList(),
+)
+
+@Serializable
+data class CheckoutLineItemTemplateDto(
+    val name: String = "",
+    val quantity: Long = 0,
+    @SerialName("unitPrice") val unitPrice: Long = 0,
+)
+
+@Serializable
+data class CheckoutAmountLineTemplateDto(
+    val description: String? = null,
+    val amount: Long = 0,
+)
+
+@Serializable
+data class CheckoutProviderDto(
+    val id: String = "",
+    val name: String = "",
+    @SerialName("paymentMethod") val paymentMethod: String = "",
+)
+
+@Serializable
 data class CheckoutDetailsDto(
     val id: String,
     @SerialName("allowed_payment_methods") val allowedPaymentMethods: List<String> = emptyList(),

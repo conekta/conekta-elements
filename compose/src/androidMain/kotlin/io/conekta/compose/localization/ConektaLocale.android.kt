@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import java.util.Locale
@@ -28,11 +29,19 @@ internal actual fun ProvideLanguage(
 ) {
     val baseContext = LocalContext.current
     val targetLocale = Locale.forLanguageTag(normalizeLanguageTag(languageTag))
+    val previousLocale = Locale.getDefault()
     val localizedConfiguration =
         Configuration(baseContext.resources.configuration).apply {
             setLocale(targetLocale)
         }
     val localizedContext = baseContext.createConfigurationContext(localizedConfiguration)
+
+    DisposableEffect(targetLocale) {
+        Locale.setDefault(targetLocale)
+        onDispose {
+            Locale.setDefault(previousLocale)
+        }
+    }
 
     CompositionLocalProvider(
         LocalContext provides localizedContext,

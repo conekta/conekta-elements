@@ -69,6 +69,7 @@ import io.conekta.elements.checkout.models.CheckoutConfigValidator
 import io.conekta.elements.checkout.models.CheckoutError
 import io.conekta.elements.checkout.models.CheckoutMethodPolicy
 import io.conekta.elements.checkout.models.CheckoutPaymentMethods
+import io.conekta.elements.checkout.models.CheckoutProvider
 import io.conekta.elements.checkout.models.CheckoutResult
 import io.conekta.elements.models.Amount
 import io.conekta.elements.resources.CDNResources
@@ -78,6 +79,19 @@ private const val AUTO_LANGUAGE_TAG = "auto"
 private val CheckoutBg = colorFromHex(CDNResources.Colors.CHECKOUT_BACKGROUND)
 private val Border = colorFromHex(CDNResources.Colors.CHECKOUT_BORDER)
 private val OnSurface = colorFromHex(CDNResources.Colors.CHECKOUT_ON_SURFACE)
+
+private object CheckoutResultCache {
+    private val cache = mutableMapOf<String, CheckoutResult>()
+
+    fun get(checkoutRequestId: String): CheckoutResult? = cache[checkoutRequestId]
+
+    fun put(
+        checkoutRequestId: String,
+        result: CheckoutResult,
+    ) {
+        cache[checkoutRequestId] = result
+    }
+}
 
 @Composable
 fun ConektaCheckout(
@@ -141,9 +155,9 @@ private fun CheckoutContent(
     val publicKeyRequiredMessage = stringResource(Res.string.checkout_validation_public_key_required)
     val jwtTokenRequiredMessage = stringResource(Res.string.checkout_validation_jwt_token_required)
 
-    var isLoading by remember { mutableStateOf(true) }
+    var isLoading by remember(config.checkoutRequestId) { mutableStateOf(true) }
     var loadError by remember { mutableStateOf<String?>(null) }
-    var checkoutResult by remember { mutableStateOf<CheckoutResult?>(null) }
+    var checkoutResult by remember(config.checkoutRequestId) { mutableStateOf(CheckoutResultCache.get(config.checkoutRequestId)) }
     var selectedPaymentMethod by remember { mutableStateOf<String?>(null) }
     var showProtectionSheet by remember { mutableStateOf(false) }
 
@@ -171,6 +185,17 @@ private fun CheckoutContent(
             return@LaunchedEffect
         }
 
+        if (checkoutResult != null) {
+            val defaultMethod =
+                CheckoutMethodPolicy.selectDefaultSupportedMethod(checkoutResult?.allowedPaymentMethods.orEmpty())
+            if (selectedPaymentMethod == null && defaultMethod != null) {
+                selectedPaymentMethod = defaultMethod
+                onPaymentMethodSelected(defaultMethod)
+            }
+            isLoading = false
+            return@LaunchedEffect
+        }
+
         isLoading = true
         loadError = null
 
@@ -178,6 +203,7 @@ private fun CheckoutContent(
             .fetchCheckout()
             .onSuccess { checkout ->
                 checkoutResult = checkout
+                CheckoutResultCache.put(config.checkoutRequestId, checkout)
                 val defaultMethod =
                     CheckoutMethodPolicy.selectDefaultSupportedMethod(checkout.allowedPaymentMethods)
                 if (defaultMethod == null) {
@@ -241,6 +267,7 @@ private fun CheckoutContent(
             cardNumber = cardNumber,
             expiryDate = expiryDate,
             cvv = cvv,
+            cashProviders = checkoutResult?.providers.orEmpty(),
             onCardholderNameChange = { cardholderName = it },
             onCardNumberChange = { cardNumber = it },
             onExpiryDateChange = { expiryDate = it },
@@ -304,6 +331,7 @@ private fun PaymentMethodsSection(
     cardNumber: TextFieldValue,
     expiryDate: TextFieldValue,
     cvv: TextFieldValue,
+    cashProviders: List<CheckoutProvider>,
     onCardholderNameChange: (TextFieldValue) -> Unit,
     onCardNumberChange: (TextFieldValue) -> Unit,
     onExpiryDateChange: (TextFieldValue) -> Unit,
@@ -370,6 +398,7 @@ private fun PaymentMethodsSection(
                                 Column(modifier = Modifier.zIndex(1f)) {
                                     CheckoutCashMethodSection(
                                         onSelect = { onMethodSelected(method) },
+                                        providers = cashProviders,
                                     )
                                 }
                             }

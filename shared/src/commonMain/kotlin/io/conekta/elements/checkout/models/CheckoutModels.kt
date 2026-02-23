@@ -2,6 +2,7 @@
 
 package io.conekta.elements.checkout.models
 
+import io.conekta.elements.localization.ConektaLanguage
 import kotlin.native.ObjCName
 
 private const val PRODUCTION_BASE_URL = "https://api.conekta.io/"
@@ -13,6 +14,7 @@ data class CheckoutConfig(
     val jwtToken: String,
     val merchantName: String = "Demo Store",
     val baseUrl: String = PRODUCTION_BASE_URL,
+    val languageTag: String = ConektaLanguage.ES,
 ) {
     constructor(
         checkoutRequestId: String,
@@ -24,6 +26,7 @@ data class CheckoutConfig(
         jwtToken = jwtToken,
         merchantName = "Demo Store",
         baseUrl = PRODUCTION_BASE_URL,
+        languageTag = ConektaLanguage.ES,
     )
 }
 
@@ -34,6 +37,7 @@ data class CheckoutResult(
     val amount: Long,
     val currency: String,
     val allowedPaymentMethods: List<String>,
+    val providers: List<CheckoutProvider> = emptyList(),
     val lineItems: List<CheckoutLineItem> = emptyList(),
     val taxLines: List<CheckoutAmountLine> = emptyList(),
     val discountLines: List<CheckoutAmountLine> = emptyList(),
@@ -51,6 +55,13 @@ data class CheckoutLineItem(
 data class CheckoutAmountLine(
     val description: String,
     val amount: Long,
+)
+
+@ObjCName("CheckoutProvider")
+data class CheckoutProvider(
+    val id: String,
+    val name: String,
+    val paymentMethod: String,
 )
 
 @ObjCName("CheckoutError")
