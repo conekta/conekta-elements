@@ -4,17 +4,23 @@ import io.conekta.elements.checkout.models.CheckoutAmountLine
 import io.conekta.elements.checkout.models.CheckoutConfig
 import io.conekta.elements.checkout.models.CheckoutError
 import io.conekta.elements.checkout.models.CheckoutLineItem
+import io.conekta.elements.checkout.models.CheckoutOrderResult
 import io.conekta.elements.checkout.models.CheckoutPaymentMethods
 import io.conekta.elements.checkout.models.CheckoutProvider
 import io.conekta.elements.checkout.models.CheckoutResult
 import io.conekta.elements.localization.normalizeConektaLanguageTag
 import io.conekta.elements.network.ConektaHttpClient
+import io.conekta.elements.network.HEADER_CONEKTA_CLIENT_USER_AGENT
 import io.conekta.elements.network.sdkUserAgent
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
+import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
+import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 
 open class CheckoutApiService(
@@ -25,20 +31,95 @@ open class CheckoutApiService(
 
     open suspend fun fetchCheckout(): Result<CheckoutResult> =
         try {
+            val url = "${baseUrl()}checkout-requests/${config.checkoutRequestId}"
+            val requestHeaders = commonHeaders()
+            logRequestHeaders(method = "GET", url = url, headers = requestHeaders)
+
             val response =
-                httpClient.get("${baseUrl()}checkout-requests/${config.checkoutRequestId}") {
+                httpClient.get(url) {
                     headers {
-                        append(HttpHeaders.Authorization, "Bearer ${config.publicKey}")
-                        append("x-jwt-token", config.jwtToken)
-                        append(HttpHeaders.AcceptLanguage, normalizeConektaLanguageTag(config.languageTag))
-                        append(HttpHeaders.Accept, "application/vnd.conekta-v2.2.0+json")
-                        append("Conekta-Client-User-Agent", sdkUserAgent)
+                        requestHeaders.forEach { (name, value) -> set(name, value) }
                     }
                 }
 
             if (response.status.isSuccess()) {
                 val body = response.bodyAsText()
                 parseCheckoutResult(body)
+            } else {
+                val errorBody = response.bodyAsText()
+                val errorResponse =
+                    try {
+                        json.decodeFromString(CheckoutErrorResponseDto.serializer(), errorBody)
+                    } catch (_: Exception) {
+                        null
+                    }
+
+                if (errorResponse != null) {
+                    Result.failure(
+                        CheckoutApiException(
+                            CheckoutError.ApiError(
+                                code = errorResponse.type,
+                                message =
+                                    errorResponse.messageToPurchaser.ifEmpty {
+                                        errorResponse.message.ifEmpty { errorBody }
+                                    },
+                            ),
+                        ),
+                    )
+                } else {
+                    Result.failure(
+                        CheckoutApiException(
+                            CheckoutError.NetworkError("HTTP ${response.status.value}: $errorBody"),
+                        ),
+                    )
+                }
+            }
+        } catch (e: CheckoutApiException) {
+            Result.failure(e)
+        } catch (e: Exception) {
+            Result.failure(
+                CheckoutApiException(
+                    CheckoutError.NetworkError(e.message ?: "Unknown network error"),
+                ),
+            )
+        }
+
+    open suspend fun createOrder(
+        paymentMethod: String,
+        tokenId: String? = null,
+    ): Result<CheckoutOrderResult> =
+        try {
+            val apiValue =
+                CheckoutPaymentMethods.toApiValue(paymentMethod)
+                    ?: return Result.failure(
+                        CheckoutApiException(
+                            CheckoutError.ValidationError("Unsupported payment method: $paymentMethod"),
+                        ),
+                    )
+
+            val requestBody =
+                CreateOrderRequestDto(
+                    checkoutRequestId = config.checkoutRequestId,
+                    paymentMethod = apiValue,
+                    tokenId = tokenId,
+                )
+            val url = "${baseOrigin()}/checkout-bff/v2/order"
+            val requestHeaders = commonHeaders()
+            logRequestHeaders(method = "POST", url = url, headers = requestHeaders)
+
+            val response =
+                httpClient.post(url) {
+                    contentType(ContentType.Application.Json)
+                    headers {
+                        requestHeaders.forEach { (name, value) -> set(name, value) }
+                    }
+                    setBody(json.encodeToString(CreateOrderRequestDto.serializer(), requestBody))
+                }
+
+            if (response.status.isSuccess()) {
+                val body = response.bodyAsText()
+                val dto = json.decodeFromString(CreateOrderResponseDto.serializer(), body)
+                Result.success(CheckoutOrderResult(orderId = dto.id))
             } else {
                 val errorBody = response.bodyAsText()
                 val errorResponse =
@@ -211,7 +292,53 @@ open class CheckoutApiService(
     private fun isCheckoutRequestResponse(body: String): Boolean =
         body.contains("\"allowedPaymentMethods\"") || body.contains("\"orderTemplate\"")
 
+    private fun commonHeaders(): Map<String, String> =
+        mapOf(
+            HttpHeaders.Authorization to "Bearer ${config.publicKey}",
+            "x-jwt-token" to config.jwtToken,
+            HttpHeaders.AcceptLanguage to normalizeConektaLanguageTag(config.languageTag),
+            HttpHeaders.Accept to "application/vnd.conekta-v2.2.0+json",
+            HEADER_CONEKTA_CLIENT_USER_AGENT to sdkUserAgent,
+        )
+
+    private fun logRequestHeaders(
+        method: String,
+        url: String,
+        headers: Map<String, String>,
+    ) {
+        val payload =
+            headers.entries.joinToString(separator = ", ") { (key, value) ->
+                "$key=${maskHeaderValue(key, value)}"
+            }
+        println("ConektaCheckoutApi [$method] $url headers: $payload")
+    }
+
+    private fun maskHeaderValue(
+        headerName: String,
+        headerValue: String,
+    ): String =
+        when (headerName.lowercase()) {
+            "authorization",
+            "x-jwt-token",
+            -> {
+                if (headerValue.length <= 10) {
+                    "***"
+                } else {
+                    "${headerValue.take(6)}***${headerValue.takeLast(4)}"
+                }
+            }
+            else -> headerValue
+        }
+
     private fun baseUrl(): String = if (config.baseUrl.endsWith('/')) config.baseUrl else "${config.baseUrl}/"
+
+    private fun baseOrigin(): String {
+        val url = config.baseUrl
+        val schemeEnd = url.indexOf("://")
+        if (schemeEnd == -1) return url
+        val pathStart = url.indexOf('/', schemeEnd + 3)
+        return if (pathStart == -1) url else url.substring(0, pathStart)
+    }
 }
 
 class CheckoutApiException(

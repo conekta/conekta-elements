@@ -1,6 +1,7 @@
 package io.conekta.elements.tokenizer.formatters
 
 import io.conekta.elements.tokenizer.models.CardBrand
+import io.conekta.elements.tokenizer.models.CardTokenizationData
 import io.conekta.elements.utils.currentTwoDigitYear
 
 /**
@@ -8,6 +9,23 @@ import io.conekta.elements.utils.currentTwoDigitYear
  * No Compose dependencies — can be used from any platform.
  */
 object CardInputFormatters {
+    fun extractTokenizationData(
+        cardNumber: String,
+        expiryDate: String,
+        cvv: String,
+        cardholderName: String,
+    ): CardTokenizationData {
+        val cardDigits = cardNumber.filter { it.isDigit() }
+        val expiryDigits = expiryDate.filter { it.isDigit() }
+        return CardTokenizationData(
+            cardNumber = cardDigits,
+            expMonth = expiryDigits.take(2),
+            expYear = expiryDigits.drop(2).take(2),
+            cvv = cvv.filter { it.isDigit() },
+            cardholderName = cardholderName,
+        )
+    }
+
     /**
      * Format card number string with spaces every 4 digits.
      * Limits input to 16 digits.

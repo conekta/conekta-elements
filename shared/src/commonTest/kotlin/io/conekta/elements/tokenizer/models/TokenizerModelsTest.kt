@@ -9,6 +9,29 @@ import kotlin.test.assertTrue
 
 class TokenizerConfigTest {
     @Test
+    fun `TokenizerConfigValidator returns error when publicKey is blank`() {
+        val error =
+            TokenizerConfigValidator.validate(
+                config = TokenizerConfig(publicKey = ""),
+                messages = TokenizerConfigValidationMessages(publicKeyRequired = "publicKey is required"),
+            )
+
+        assertIs<TokenizerError.ValidationError>(error)
+        assertEquals("publicKey is required", error.message)
+    }
+
+    @Test
+    fun `TokenizerConfigValidator returns null when publicKey exists`() {
+        val error =
+            TokenizerConfigValidator.validate(
+                config = TokenizerConfig(publicKey = "key_test_123"),
+                messages = TokenizerConfigValidationMessages(publicKeyRequired = "publicKey is required"),
+            )
+
+        assertEquals(null, error)
+    }
+
+    @Test
     fun `TokenizerConfig stores publicKey and merchantName`() {
         val config =
             TokenizerConfig(

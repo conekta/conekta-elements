@@ -42,8 +42,20 @@ class CheckoutApiModelsTest {
         assertEquals("datalogic", dto.providers.first().name)
         assertEquals("MXN", dto.orderTemplate?.currency)
         assertEquals(1, dto.orderTemplate?.lineItems?.size)
-        assertEquals("Apple test 3", dto.orderTemplate?.lineItems?.first()?.name)
-        assertEquals(30000L, dto.orderTemplate?.lineItems?.first()?.unitPrice)
+        assertEquals(
+            "Apple test 3",
+            dto.orderTemplate
+                ?.lineItems
+                ?.first()
+                ?.name,
+        )
+        assertEquals(
+            30000L,
+            dto.orderTemplate
+                ?.lineItems
+                ?.first()
+                ?.unitPrice,
+        )
     }
 
     @Test

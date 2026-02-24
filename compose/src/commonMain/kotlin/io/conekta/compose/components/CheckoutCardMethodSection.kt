@@ -22,6 +22,14 @@ fun CheckoutCardMethodSection(
     cvv: TextFieldValue,
     onCvvChange: (TextFieldValue) -> Unit,
     cardholderNamePlaceholderOverride: String,
+    cardholderNameError: Boolean = false,
+    cardholderNameErrorMessage: String? = null,
+    cardNumberError: Boolean = false,
+    cardNumberErrorMessage: String? = null,
+    expiryDateError: Boolean = false,
+    expiryDateErrorMessage: String? = null,
+    cvvError: Boolean = false,
+    cvvErrorMessage: String? = null,
 ) {
     CheckoutSelectedMethodContainer {
         CheckoutMethodRow(
@@ -48,6 +56,14 @@ fun CheckoutCardMethodSection(
             onCvvChange = onCvvChange,
             cardholderNameFirst = false,
             cardholderNamePlaceholderOverride = cardholderNamePlaceholderOverride,
+            cardholderNameError = cardholderNameError,
+            cardholderNameErrorMessage = cardholderNameErrorMessage,
+            cardNumberError = cardNumberError,
+            cardNumberErrorMessage = cardNumberErrorMessage,
+            expiryDateError = expiryDateError,
+            expiryDateErrorMessage = expiryDateErrorMessage,
+            cvvError = cvvError,
+            cvvErrorMessage = cvvErrorMessage,
         )
     }
 }

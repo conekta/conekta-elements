@@ -1,5 +1,8 @@
 package io.conekta.elements.checkout.models
 
+import io.conekta.elements.validation.RequiredFieldValidationRule
+import io.conekta.elements.validation.RequiredFieldValidator
+
 object CheckoutMethodPolicy {
     val V1SupportedMethods: Set<String> =
         setOf(
@@ -26,15 +29,22 @@ object CheckoutConfigValidator {
         config: CheckoutConfig,
         messages: CheckoutConfigValidationMessages,
     ): CheckoutError.ValidationError? {
-        if (config.checkoutRequestId.isBlank()) {
-            return CheckoutError.ValidationError(messages.checkoutRequestIdRequired)
-        }
-        if (config.publicKey.isBlank()) {
-            return CheckoutError.ValidationError(messages.publicKeyRequired)
-        }
-        if (config.jwtToken.isBlank()) {
-            return CheckoutError.ValidationError(messages.jwtTokenRequired)
-        }
-        return null
+        val missingRequiredMessage =
+            RequiredFieldValidator.firstError(
+                RequiredFieldValidationRule(
+                    value = config.checkoutRequestId,
+                    requiredMessage = messages.checkoutRequestIdRequired,
+                ),
+                RequiredFieldValidationRule(
+                    value = config.publicKey,
+                    requiredMessage = messages.publicKeyRequired,
+                ),
+                RequiredFieldValidationRule(
+                    value = config.jwtToken,
+                    requiredMessage = messages.jwtTokenRequired,
+                ),
+            )
+
+        return missingRequiredMessage?.let { CheckoutError.ValidationError(it) }
     }
 }

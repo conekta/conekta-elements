@@ -83,6 +83,9 @@ struct ContentView: View {
                 },
                 onError: { error in
                     print("Checkout error: \(error)")
+                },
+                onOrderCreated: { result in
+                    print("Order created: orderId=\(result.orderId)")
                 }
             )
             .safeAreaInset(edge: .bottom) {
@@ -105,12 +108,14 @@ private struct ConektaCheckoutView: UIViewControllerRepresentable {
     let config: CheckoutConfig
     let onPaymentMethodSelected: (String) -> Void
     let onError: (CheckoutError) -> Void
+    var onOrderCreated: ((CheckoutOrderResult) -> Void)? = nil
 
     func makeUIViewController(context: Context) -> UIViewController {
         ConektaCheckoutViewControllerKt.ConektaCheckoutViewController(
             config: config,
             onPaymentMethodSelected: onPaymentMethodSelected,
-            onError: onError
+            onError: onError,
+            onOrderCreated: onOrderCreated
         )
     }
 

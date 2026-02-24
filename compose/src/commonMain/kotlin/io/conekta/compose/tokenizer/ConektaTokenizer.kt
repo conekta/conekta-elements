@@ -43,20 +43,27 @@ import io.conekta.compose.generated.resources.card_information_title
 import io.conekta.compose.generated.resources.content_description_security_info
 import io.conekta.compose.generated.resources.error_field_required
 import io.conekta.compose.generated.resources.pay_securely_with
+import io.conekta.compose.generated.resources.tokenizer_validation_public_key_required
 import io.conekta.compose.generated.resources.validation_card_min_length
 import io.conekta.compose.generated.resources.validation_cvv_min_length
 import io.conekta.compose.generated.resources.validation_expiry_year_invalid
 import io.conekta.compose.generated.resources.validation_invalid_card
+import io.conekta.compose.localization.normalizeLanguageTag
+import io.conekta.compose.localization.rememberDeviceLanguageTag
 import io.conekta.compose.theme.ConektaColors
 import io.conekta.compose.theme.ConektaTheme
 import io.conekta.compose.theme.LocalConektaFontFamily
 import io.conekta.elements.tokenizer.api.TokenizerApiException
 import io.conekta.elements.tokenizer.api.TokenizerApiService
+import io.conekta.elements.tokenizer.formatters.CardInputFormatters
 import io.conekta.elements.tokenizer.models.TokenResult
 import io.conekta.elements.tokenizer.models.TokenizerConfig
+import io.conekta.elements.tokenizer.models.TokenizerConfigValidationMessages
+import io.conekta.elements.tokenizer.models.TokenizerConfigValidator
 import io.conekta.elements.tokenizer.models.TokenizerError
 import io.conekta.elements.tokenizer.validators.ValidationMessages
 import io.conekta.elements.tokenizer.validators.validateForm
+import io.conekta.elements.utils.currentTwoDigitYear
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 
@@ -113,7 +120,14 @@ private fun TokenizerContent(
     val fontFamily = LocalConektaFontFamily.current
     val focusManager = LocalFocusManager.current
     val coroutineScope = rememberCoroutineScope()
-    val tokenizerApiService = remember(config) { TokenizerApiService(config) }
+    val deviceLanguageTag = normalizeLanguageTag(rememberDeviceLanguageTag())
+    val tokenizerApiService =
+        remember(config, deviceLanguageTag) {
+            TokenizerApiService(
+                config = config,
+                languageTag = deviceLanguageTag,
+            )
+        }
     var cardholderName by remember { mutableStateOf(TextFieldValue("")) }
     var cardNumber by remember { mutableStateOf(TextFieldValue("")) }
     var expiryDate by remember { mutableStateOf(TextFieldValue("")) }
@@ -136,12 +150,14 @@ private fun TokenizerContent(
     // Strings
     val buttonContinue = stringResource(Res.string.button_continue)
     val buttonProcessing = stringResource(Res.string.button_processing)
+    val publicKeyRequiredMessage = stringResource(Res.string.tokenizer_validation_public_key_required)
+    val minimumYearLabel = currentTwoDigitYear().toString().padStart(2, '0')
     val validationMessages =
         ValidationMessages(
             required = stringResource(Res.string.error_field_required),
             cardMinLength = stringResource(Res.string.validation_card_min_length),
             invalidCard = stringResource(Res.string.validation_invalid_card),
-            expiryYearInvalid = stringResource(Res.string.validation_expiry_year_invalid),
+            expiryYearInvalid = stringResource(Res.string.validation_expiry_year_invalid, minimumYearLabel),
             cvvMinLength = stringResource(Res.string.validation_cvv_min_length),
         )
 
@@ -241,24 +257,47 @@ private fun TokenizerContent(
                 cvvErrorMsg = result.cvv.message
 
                 if (!result.hasError) {
+                    val configValidationError =
+                        TokenizerConfigValidator.validate(
+                            config = config,
+                            messages = TokenizerConfigValidationMessages(publicKeyRequired = publicKeyRequiredMessage),
+                        )
+                    if (configValidationError != null) {
+                        onError(configValidationError)
+                        return@ConektaButton
+                    }
                     isProcessing = true
-                    val cardDigits = cardNumber.text.filter { it.isDigit() }
-                    val expiryDigits = expiryDate.text.filter { it.isDigit() }
-                    val expMonth = expiryDigits.take(2)
-                    val expYear = expiryDigits.drop(2).take(2)
-                    val cvvDigits = cvv.text.filter { it.isDigit() }
+                    val cardData =
+                        CardInputFormatters.extractTokenizationData(
+                            cardNumber = cardNumber.text,
+                            expiryDate = expiryDate.text,
+                            cvv = cvv.text,
+                            cardholderName = cardholderName.text,
+                        )
 
                     coroutineScope.launch {
                         val apiResult =
                             tokenizerApiService.tokenize(
-                                cardNumber = cardDigits,
-                                expMonth = expMonth,
-                                expYear = expYear,
-                                cvc = cvvDigits,
-                                cardholderName = cardholderName.text,
+                                cardNumber = cardData.cardNumber,
+                                expMonth = cardData.expMonth,
+                                expYear = cardData.expYear,
+                                cvc = cardData.cvv,
+                                cardholderName = cardData.cardholderName,
                             )
                         apiResult
                             .onSuccess { tokenResult ->
+                                cardholderName = TextFieldValue("")
+                                cardNumber = TextFieldValue("")
+                                expiryDate = TextFieldValue("")
+                                cvv = TextFieldValue("")
+                                cardholderNameError = false
+                                cardNumberError = false
+                                expiryDateError = false
+                                cvvError = false
+                                cardholderNameErrorMsg = null
+                                cardNumberErrorMsg = null
+                                expiryDateErrorMsg = null
+                                cvvErrorMsg = null
                                 onSuccess(tokenResult)
                             }.onFailure { error ->
                                 onError((error as TokenizerApiException).tokenizerError)

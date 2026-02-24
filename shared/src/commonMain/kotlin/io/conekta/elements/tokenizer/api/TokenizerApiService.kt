@@ -1,6 +1,8 @@
 package io.conekta.elements.tokenizer.api
 
+import io.conekta.elements.localization.normalizeConektaLanguageTag
 import io.conekta.elements.network.ConektaHttpClient
+import io.conekta.elements.network.HEADER_CONEKTA_CLIENT_USER_AGENT
 import io.conekta.elements.network.sdkUserAgent
 import io.conekta.elements.tokenizer.crypto.CardEncryptor
 import io.conekta.elements.tokenizer.crypto.CryptoService
@@ -28,6 +30,7 @@ import io.ktor.http.isSuccess
  */
 class TokenizerApiService(
     private val config: TokenizerConfig,
+    private val languageTag: String? = null,
     private val httpClient: HttpClient = ConektaHttpClient.create(),
     private val cryptoService: CardEncryptor = CryptoService(),
 ) {
@@ -60,9 +63,10 @@ class TokenizerApiService(
                 httpClient.post(url) {
                     contentType(ContentType.Application.Json)
                     headers {
-                        append(HttpHeaders.Authorization, "Bearer ${config.publicKey}")
-                        append(HttpHeaders.Accept, "application/vnd.conekta-v2.2.0+json")
-                        append("Conekta-Client-User-Agent", sdkUserAgent)
+                        set(HttpHeaders.Authorization, "Bearer ${config.publicKey}")
+                        set(HttpHeaders.AcceptLanguage, normalizeConektaLanguageTag(languageTag))
+                        set(HttpHeaders.Accept, "application/vnd.conekta-v2.2.0+json")
+                        set(HEADER_CONEKTA_CLIENT_USER_AGENT, sdkUserAgent)
                     }
                     setBody(requestBody)
                 }

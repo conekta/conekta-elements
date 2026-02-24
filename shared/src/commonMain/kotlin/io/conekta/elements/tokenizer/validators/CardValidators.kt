@@ -1,5 +1,8 @@
 package io.conekta.elements.tokenizer.validators
 
+import io.conekta.elements.utils.currentMonth
+import io.conekta.elements.utils.currentTwoDigitYear
+
 /**
  * Validation error messages
  *
@@ -65,8 +68,10 @@ fun isValidExpiryDate(
     if (monthInt !in 1..12) return false
     if (year.length != 2) return false
 
-    // TODO: Add actual date comparison using kotlinx-datetime
-    // For now, just validate format
+    val currentYearTwoDigits = currentTwoDigitYear()
+    if (yearInt < currentYearTwoDigits) return false
+    if (yearInt == currentYearTwoDigits && monthInt < currentMonth()) return false
+
     return true
 }
 

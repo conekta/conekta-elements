@@ -4,6 +4,21 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose") version "2.3.0"
 }
 
+import java.util.Properties
+
+val localProperties =
+    Properties().apply {
+        val file = file("local.properties")
+        if (file.exists()) {
+            file.inputStream().use(::load)
+        }
+    }
+
+val conektaPublicKey =
+    localProperties.getProperty("CONEKTA_PUBLIC_KEY")
+        ?: System.getenv("CONEKTA_PUBLIC_KEY")
+        ?: ""
+
 android {
     namespace = "com.conekta.example"
     compileSdk = 36
@@ -14,10 +29,12 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
+        buildConfigField("String", "CONEKTA_PUBLIC_KEY", "\"$conektaPublicKey\"")
     }
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     compileOptions {

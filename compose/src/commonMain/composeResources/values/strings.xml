@@ -10,6 +10,7 @@
     <string name="checkout_footer_locale">ES</string>
     <string name="checkout_footer_privacy">Privacidad</string>
     <string name="checkout_loading">Cargando checkout…</string>
+    <string name="checkout_error_toast_title">Mensaje de error</string>
     <string name="checkout_method_bank_transfer">Transferencia</string>
     <string name="checkout_method_card">Tarjeta</string>
     <string name="checkout_method_cash">Conekta Efectivo</string>
@@ -29,6 +30,7 @@
     <string name="checkout_validation_checkout_request_id_required">checkoutRequestId es obligatorio</string>
     <string name="checkout_validation_jwt_token_required">jwtToken es obligatorio</string>
     <string name="checkout_validation_public_key_required">publicKey es obligatorio</string>
+    <string name="tokenizer_validation_public_key_required">publicKey es obligatorio</string>
 
     <string name="conekta_description">Conekta es el portal que usa %1$s para procesar sus pagos en línea de manera segura y confiable.</string>
 
@@ -61,7 +63,7 @@
     <string name="validation_card_min_length">El número mínimo de caracteres es 15</string>
     <string name="validation_cvv_min_length">El número mínimo de caracteres es de 3</string>
     <string name="validation_expired_card">Tarjeta vencida</string>
-    <string name="validation_expiry_year_invalid">El año debe ser mayor o igual a 26</string>
+    <string name="validation_expiry_year_invalid">El año debe ser mayor o igual a %1$s</string>
     <string name="validation_invalid_card">Número de tarjeta inválido</string>
     <string name="validation_invalid_cvv">CVV inválido</string>
     <string name="validation_only_digits">Solo se permiten dígitos</string>

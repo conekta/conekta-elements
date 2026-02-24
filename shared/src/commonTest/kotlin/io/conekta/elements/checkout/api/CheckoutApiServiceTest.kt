@@ -7,14 +7,19 @@ import io.conekta.elements.localization.ConektaLanguage
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
+import io.ktor.client.engine.mock.toByteArray
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonNull
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -265,6 +270,171 @@ class CheckoutApiServiceTest {
 
             val service = CheckoutApiService(config = testConfig, httpClient = mockClient)
             val result = service.fetchCheckout()
+
+            assertTrue(result.isFailure)
+            val exception = result.exceptionOrNull()
+            assertIs<CheckoutApiException>(exception)
+            assertIs<CheckoutError.NetworkError>(exception.checkoutError)
+        }
+
+    // --- createOrder tests ---
+
+    private data class CapturedRequest(
+        val url: String = "",
+        val method: HttpMethod = HttpMethod.Get,
+        val body: String = "",
+        val authorization: String? = null,
+        val jwtToken: String? = null,
+    )
+
+    private fun createPostMockClient(
+        statusCode: HttpStatusCode = HttpStatusCode.OK,
+        responseBody: String = "",
+        onRequest: ((CapturedRequest) -> Unit)? = null,
+    ): HttpClient =
+        HttpClient(MockEngine) {
+            install(ContentNegotiation) {
+                json(Json { ignoreUnknownKeys = true })
+            }
+            engine {
+                addHandler { request ->
+                    val bodyText = request.body.toByteArray().decodeToString()
+                    onRequest?.invoke(
+                        CapturedRequest(
+                            url = request.url.toString(),
+                            method = request.method,
+                            body = bodyText,
+                            authorization = request.headers[HttpHeaders.Authorization],
+                            jwtToken = request.headers["x-jwt-token"],
+                        ),
+                    )
+                    respond(
+                        content = responseBody,
+                        status = statusCode,
+                        headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+                    )
+                }
+            }
+        }
+
+    @Test
+    fun createOrderCashSuccess() =
+        runTest {
+            val mockClient =
+                createPostMockClient(
+                    statusCode = HttpStatusCode.OK,
+                    responseBody = """{"id":"ord_cash_123"}""",
+                )
+
+            val service = CheckoutApiService(config = testConfig, httpClient = mockClient)
+            val result = service.createOrder(CheckoutPaymentMethods.CASH)
+
+            assertTrue(result.isSuccess)
+            assertEquals("ord_cash_123", result.getOrThrow().orderId)
+        }
+
+    @Test
+    fun createOrderBankTransferSuccess() =
+        runTest {
+            val mockClient =
+                createPostMockClient(
+                    statusCode = HttpStatusCode.OK,
+                    responseBody = """{"id":"ord_bank_456"}""",
+                )
+
+            val service = CheckoutApiService(config = testConfig, httpClient = mockClient)
+            val result = service.createOrder(CheckoutPaymentMethods.BANK_TRANSFER)
+
+            assertTrue(result.isSuccess)
+            assertEquals("ord_bank_456", result.getOrThrow().orderId)
+        }
+
+    @Test
+    fun createOrderCardWithTokenSuccess() =
+        runTest {
+            var capturedBody = ""
+            val mockClient =
+                createPostMockClient(
+                    statusCode = HttpStatusCode.OK,
+                    responseBody = """{"id":"ord_card_789"}""",
+                    onRequest = { captured -> capturedBody = captured.body },
+                )
+
+            val service = CheckoutApiService(config = testConfig, httpClient = mockClient)
+            val result = service.createOrder(CheckoutPaymentMethods.CARD, tokenId = "tok_test_abc")
+
+            assertTrue(result.isSuccess)
+            assertEquals("ord_card_789", result.getOrThrow().orderId)
+
+            val bodyJson = Json.decodeFromString<JsonObject>(capturedBody)
+            assertEquals("tok_test_abc", bodyJson["tokenId"]?.jsonPrimitive?.content)
+            assertEquals("Card", bodyJson["paymentMethod"]?.jsonPrimitive?.content)
+        }
+
+    @Test
+    fun createOrderSendsCorrectUrlAndBody() =
+        runTest {
+            var captured = CapturedRequest()
+            val mockClient =
+                createPostMockClient(
+                    statusCode = HttpStatusCode.OK,
+                    responseBody = """{"id":"ord_test"}""",
+                    onRequest = { captured = it },
+                )
+
+            val service = CheckoutApiService(config = testConfig, httpClient = mockClient)
+            service.createOrder(CheckoutPaymentMethods.CASH)
+
+            assertEquals("https://test.conekta.com/checkout-bff/v2/order", captured.url)
+            assertEquals(HttpMethod.Post, captured.method)
+            assertEquals("Bearer key_test_abc123", captured.authorization)
+            assertEquals("jwt_test_token", captured.jwtToken)
+
+            val bodyJson = Json.decodeFromString<JsonObject>(captured.body)
+            assertEquals("dc5baf10-0f2b-4378-9f74-afa6bb418198", bodyJson["checkoutRequestId"]?.jsonPrimitive?.content)
+            assertEquals("Cash", bodyJson["paymentMethod"]?.jsonPrimitive?.content)
+            assertTrue(bodyJson["tokenId"] is JsonNull || bodyJson["tokenId"] == null)
+        }
+
+    @Test
+    fun createOrderApiErrorReturnsFailure() =
+        runTest {
+            val mockClient =
+                createPostMockClient(
+                    statusCode = HttpStatusCode.UnprocessableEntity,
+                    responseBody =
+                        """
+                        {
+                          "object":"error",
+                          "type":"invalid_request_error",
+                          "message":"Invalid payment method",
+                          "message_to_purchaser":"No fue posible procesar el pago"
+                        }
+                        """.trimIndent(),
+                )
+
+            val service = CheckoutApiService(config = testConfig, httpClient = mockClient)
+            val result = service.createOrder(CheckoutPaymentMethods.CASH)
+
+            assertTrue(result.isFailure)
+            val exception = result.exceptionOrNull()
+            assertIs<CheckoutApiException>(exception)
+            val apiError = assertIs<CheckoutError.ApiError>(exception.checkoutError)
+            assertEquals("invalid_request_error", apiError.code)
+            assertEquals("No fue posible procesar el pago", apiError.message)
+        }
+
+    @Test
+    fun createOrderNetworkErrorReturnsFailure() =
+        runTest {
+            val mockClient =
+                createPostMockClient(
+                    statusCode = HttpStatusCode.InternalServerError,
+                    responseBody = "Internal Server Error",
+                )
+
+            val service = CheckoutApiService(config = testConfig, httpClient = mockClient)
+            val result = service.createOrder(CheckoutPaymentMethods.BANK_TRANSFER)
 
             assertTrue(result.isFailure)
             val exception = result.exceptionOrNull()

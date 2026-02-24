@@ -1,5 +1,6 @@
 package io.conekta.elements.tokenizer.api
 
+import io.conekta.elements.localization.ConektaLanguage
 import io.conekta.elements.tokenizer.crypto.CardEncryptor
 import io.conekta.elements.tokenizer.models.TokenizerConfig
 import io.conekta.elements.tokenizer.models.TokenizerError
@@ -31,13 +32,15 @@ class TokenizerApiServiceTest {
     private fun createMockClient(
         statusCode: HttpStatusCode = HttpStatusCode.OK,
         responseBody: String = "",
+        onRequest: ((String?) -> Unit)? = null,
     ): HttpClient =
         HttpClient(MockEngine) {
             install(ContentNegotiation) {
                 json(Json { ignoreUnknownKeys = true })
             }
             engine {
-                addHandler {
+                addHandler { request ->
+                    onRequest?.invoke(request.headers[HttpHeaders.AcceptLanguage])
                     respond(
                         content = responseBody,
                         status = statusCode,
@@ -49,6 +52,38 @@ class TokenizerApiServiceTest {
                     )
                 }
             }
+        }
+
+    @Test
+    fun tokenizeSendsAcceptLanguageHeader() =
+        runTest {
+            var capturedAcceptLanguage: String? = null
+            val mockClient =
+                createMockClient(
+                    statusCode = HttpStatusCode.OK,
+                    responseBody = """{"id":"tok_lang","livemode":false,"used":false,"object":"token"}""",
+                    onRequest = { acceptLanguage -> capturedAcceptLanguage = acceptLanguage },
+                )
+
+            val service =
+                TokenizerApiService(
+                    config = testConfig,
+                    languageTag = ConektaLanguage.EN,
+                    httpClient = mockClient,
+                    cryptoService = fakeEncryptor,
+                )
+
+            val result =
+                service.tokenize(
+                    cardNumber = "4242424242424242",
+                    expMonth = "12",
+                    expYear = "26",
+                    cvc = "123",
+                    cardholderName = "John Doe",
+                )
+
+            assertTrue(result.isSuccess)
+            assertEquals(ConektaLanguage.EN, capturedAcceptLanguage)
         }
 
     // Fake encryptor that prefixes each plaintext so we can verify it in the request body

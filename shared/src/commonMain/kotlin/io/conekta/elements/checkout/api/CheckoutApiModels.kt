@@ -91,3 +91,15 @@ data class CheckoutErrorResponseDto(
     val message: String = "",
     @SerialName("message_to_purchaser") val messageToPurchaser: String = "",
 )
+
+@Serializable
+data class CreateOrderRequestDto(
+    val checkoutRequestId: String,
+    val paymentMethod: String,
+    val tokenId: String? = null,
+)
+
+@Serializable
+data class CreateOrderResponseDto(
+    val id: String,
+)
