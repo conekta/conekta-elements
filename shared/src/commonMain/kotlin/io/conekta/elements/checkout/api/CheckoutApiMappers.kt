@@ -4,9 +4,11 @@ import io.conekta.elements.checkout.models.CheckoutAmountLine
 import io.conekta.elements.checkout.models.CheckoutCharge
 import io.conekta.elements.checkout.models.CheckoutChargePaymentMethod
 import io.conekta.elements.checkout.models.CheckoutLineItem
+import io.conekta.elements.checkout.models.CheckoutNextAction
 import io.conekta.elements.checkout.models.CheckoutOrderResult
 import io.conekta.elements.checkout.models.CheckoutPaymentMethods
 import io.conekta.elements.checkout.models.CheckoutProvider
+import io.conekta.elements.checkout.models.CheckoutRedirectToUrl
 import io.conekta.elements.checkout.models.CheckoutResult
 import io.conekta.elements.checkout.models.ProductTypes
 
@@ -14,6 +16,20 @@ internal fun CreateOrderResponseDto.toDomain(): CheckoutOrderResult =
     CheckoutOrderResult(
         orderId = id,
         status = status,
+        nextAction =
+            nextAction?.let {
+                CheckoutNextAction(
+                    redirectToUrl =
+                        it.redirectToUrl?.let { redirect ->
+                            CheckoutRedirectToUrl(
+                                returnUrl = redirect.returnUrl.orEmpty(),
+                                url = redirect.url.orEmpty(),
+                            )
+                        },
+                    type = it.type.orEmpty(),
+                )
+            },
+        urlRedirect = urlRedirect.orEmpty(),
         charges = charges.map { it.toDomain() },
     )
 

@@ -98,6 +98,16 @@ struct ContentView: View {
                         },
                         onOrderCreated: { result in
                             print("Order created: orderId=\(result.orderId)")
+                            print(
+                                """
+                                Order success payload:
+                                status=\(result.status)
+                                urlRedirect=\(result.urlRedirect)
+                                nextActionType=\(result.nextAction?.type ?? "")
+                                nextActionUrl=\(result.nextAction?.redirectToUrl?.url ?? "")
+                                nextActionReturnUrl=\(result.nextAction?.redirectToUrl?.returnUrl ?? "")
+                                """
+                            )
                         }
                     )
                 } else {

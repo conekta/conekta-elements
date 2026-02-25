@@ -187,6 +187,14 @@ private fun CheckoutExample() {
                 },
                 onOrderCreated = { result: CheckoutOrderResult ->
                     Log.d(TAG, "Order created: orderId=${result.orderId}")
+                    Log.d(
+                        TAG,
+                        "Order success payload: status=${result.status}, " +
+                            "urlRedirect=${result.urlRedirect}, " +
+                            "nextActionType=${result.nextAction?.type}, " +
+                            "nextActionUrl=${result.nextAction?.redirectToUrl?.url}, " +
+                            "nextActionReturnUrl=${result.nextAction?.redirectToUrl?.returnUrl}",
+                    )
                 },
             )
         }
@@ -218,8 +226,8 @@ private suspend fun fetchCheckoutRequestId(publicKey: String): String =
             "Box of Cohiba S1s", "Laptop Pro 15", "Wireless Headphones",
             "Coffee Maker", "Running Shoes", "Smart Watch",
         ).random()
-
         val body = JSONObject().apply {
+            put("three_ds_mode", "strict")
             put("currency", CurrencyCodes.MXN)
             put(
                 "customer_info",

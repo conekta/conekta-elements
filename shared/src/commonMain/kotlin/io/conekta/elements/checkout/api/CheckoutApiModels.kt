@@ -112,7 +112,21 @@ data class CreateOrderRequestDto(
 data class CreateOrderResponseDto(
     val id: String,
     val status: String = "",
+    @SerialName("nextAction") val nextAction: CreateOrderNextActionDto? = null,
+    @SerialName("urlRedirect") val urlRedirect: String? = null,
     val charges: List<CreateOrderChargeDto> = emptyList(),
+)
+
+@Serializable
+data class CreateOrderNextActionDto(
+    @SerialName("redirectToUrl") val redirectToUrl: CreateOrderRedirectToUrlDto? = null,
+    val type: String? = null,
+)
+
+@Serializable
+data class CreateOrderRedirectToUrlDto(
+    @SerialName("returnUrl") val returnUrl: String? = null,
+    val url: String? = null,
 )
 
 @Serializable

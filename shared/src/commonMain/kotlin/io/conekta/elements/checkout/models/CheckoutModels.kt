@@ -144,7 +144,21 @@ data class CheckoutProvider(
 data class CheckoutOrderResult(
     val orderId: String,
     val status: String = "",
+    val nextAction: CheckoutNextAction? = null,
+    val urlRedirect: String = "",
     val charges: List<CheckoutCharge> = emptyList(),
+)
+
+@ObjCName("CheckoutNextAction")
+data class CheckoutNextAction(
+    val redirectToUrl: CheckoutRedirectToUrl? = null,
+    val type: String = "",
+)
+
+@ObjCName("CheckoutRedirectToUrl")
+data class CheckoutRedirectToUrl(
+    val returnUrl: String = "",
+    val url: String = "",
 )
 
 @ObjCName("CheckoutCharge")
