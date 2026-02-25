@@ -63,6 +63,8 @@
     <string name="success_bank_transfer_clabe_format">CLABE: %1$s</string>
     <string name="success_bank_transfer_copy_number">Copiar número</string>
     <string name="success_bank_transfer_reference_title">REFERENCIA DE PAGO POR</string>
+    <string name="success_card_purchase_completed">Se completó tu compra en %1$s por %2$s</string>
+    <string name="success_card_title">Pago realizado con éxito</string>
     <string name="success_cash_bbva_step_1">Dirígete a cualquier sucursal de BBVA y busca una Practicaja</string>
     <string name="success_cash_bbva_step_2">Selecciona "Pagar Servicio" y luego, "Pago en Efectivo"</string>
     <string name="success_cash_bbva_step_3">Ingresa el número de convenio, la referencia y realiza tu pago</string>
@@ -79,6 +81,7 @@
     <string name="success_cash_step_2_suffix"> y proporciona la referencia.</string>
     <string name="success_cash_step_3">Proporciona al cajero el número de referencia y realiza tu pago</string>
     <string name="success_cash_store_title">REFERENCIA PARA PAGO EN TIENDAS</string>
+    <string name="success_detail_label">CONCEPTO</string>
     <string name="success_email_sent">Enviamos tu referencia de pago a %1$s</string>
     <string name="success_expires_at">Tienes tiempo hasta el %1$s a las %2$s</string>
     <string name="success_see_map">Ver mapa</string>

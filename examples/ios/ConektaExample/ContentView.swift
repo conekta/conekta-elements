@@ -26,7 +26,18 @@ struct ContentView: View {
         return value
     }()
 
+    private static let tokenizerRsaPublicKey: String = {
+        guard
+            let value = Bundle.main.infoDictionary?["ConektaTokenizerRsaPublicKey"] as? String,
+            !value.isEmpty
+        else {
+            fatalError("CONEKTA_TOKENIZER_RSA_PUBLIC_KEY not set in Local.xcconfig")
+        }
+        return value
+    }()
+
     private static let checkoutBaseUrl = "https://services.stg.conekta.io"
+    private static let tokenizerBaseUrl = "https://api.stg.conekta.io"
     private static let ordersUrl = "https://api.stg.conekta.io/orders"
 
     var body: some View {
@@ -35,7 +46,9 @@ struct ContentView: View {
                 config: TokenizerConfig(
                     publicKey: ContentView.conektaPublicKey,
                     merchantName: "My Store",
-                    collectCardholderName: true
+                    collectCardholderName: true,
+                    baseUrl: ContentView.tokenizerBaseUrl,
+                    rsaPublicKey: ContentView.tokenizerRsaPublicKey
                 ),
                 onSuccess: { tokenResult in
                     alertTitle = "Token Created"
@@ -73,7 +86,9 @@ struct ContentView: View {
                             publicKey: ContentView.conektaPublicKey,
                             jwtToken: ContentView.checkoutJwtToken,
                             merchantName: "My Store",
-                            baseUrl: ContentView.checkoutBaseUrl
+                            baseUrl: ContentView.checkoutBaseUrl,
+                            tokenizerBaseUrl: ContentView.tokenizerBaseUrl,
+                            tokenizerRsaPublicKey: ContentView.tokenizerRsaPublicKey
                         ),
                         onPaymentMethodSelected: { method in
                             print("Payment method selected: \(method)")

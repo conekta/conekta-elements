@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
@@ -48,6 +50,8 @@ fun ConektaCardFieldsSection(
     cardholderNamePlaceholderOverride: String? = null,
 ) {
     val detectedBrand = remember(cardNumber.text) { CardFormatters.detectCardBrand(cardNumber.text) }
+    val expiryFocusRequester = remember { FocusRequester() }
+    val cvvFocusRequester = remember { FocusRequester() }
 
     val cardholderPlaceholder =
         cardholderNamePlaceholderOverride ?: stringResource(Res.string.placeholder_cardholder_name)
@@ -77,7 +81,16 @@ fun ConektaCardFieldsSection(
 
         ConektaTextField(
             value = cardNumber,
-            onValueChange = { onCardNumberChange(CardFormatters.formatCardNumber(it)) },
+            onValueChange = {
+                val formatted = CardFormatters.formatCardNumber(it)
+                onCardNumberChange(formatted)
+
+                val previousDigitsCount = cardNumber.text.count(Char::isDigit)
+                val currentDigitsCount = formatted.text.count(Char::isDigit)
+                if (previousDigitsCount < 16 && currentDigitsCount == 16) {
+                    expiryFocusRequester.requestFocus()
+                }
+            },
             label = stringResource(Res.string.label_card_number),
             placeholder = "0000 0000 0000 0000",
             keyboardType = KeyboardType.Number,
@@ -96,12 +109,21 @@ fun ConektaCardFieldsSection(
         ) {
             ConektaTextField(
                 value = expiryDate,
-                onValueChange = { onExpiryDateChange(CardFormatters.formatExpiryDate(it)) },
+                onValueChange = {
+                    val formatted = CardFormatters.formatExpiryDate(it)
+                    onExpiryDateChange(formatted)
+
+                    val previousDigitsCount = expiryDate.text.count(Char::isDigit)
+                    val currentDigitsCount = formatted.text.count(Char::isDigit)
+                    if (previousDigitsCount < 4 && currentDigitsCount == 4) {
+                        cvvFocusRequester.requestFocus()
+                    }
+                },
                 label = stringResource(Res.string.label_expiry),
                 placeholder = stringResource(Res.string.placeholder_expiry),
                 keyboardType = KeyboardType.Number,
                 imeAction = ImeAction.Next,
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f).focusRequester(expiryFocusRequester),
                 enabled = enabled,
                 isError = expiryDateError,
                 errorMessage = expiryDateErrorMessage,
@@ -114,7 +136,7 @@ fun ConektaCardFieldsSection(
                 placeholder = stringResource(Res.string.placeholder_cvv),
                 keyboardType = KeyboardType.Number,
                 imeAction = ImeAction.Done,
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f).focusRequester(cvvFocusRequester),
                 enabled = enabled,
                 isError = cvvError,
                 errorMessage = cvvErrorMessage,

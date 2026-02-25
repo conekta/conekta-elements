@@ -22,6 +22,7 @@ object CDNResources {
         const val CARD = "$PAYMENT_METHOD_ICONS_PATH/card.svg"
         const val BANK_TRANSFER = "$PAYMENT_METHOD_ICONS_PATH/bankTransfer.svg"
         const val CASH = "$PAYMENT_METHOD_ICONS_PATH/cash.svg"
+        const val SUCCESS_CHECK = "$BASE_CDN_URL/checkout/img/Check.webp"
         const val BBVA = "$ICONS_PATH/small/bbva.svg"
         const val SEVEN_ELEVEN = "$ICONS_PATH/small/logo-seven-eleven.svg"
         const val FARMACIA_DEL_AHORRO = "$ICONS_PATH/small/logo-farmacia-del-ahorro.svg"
@@ -43,6 +44,18 @@ object CDNResources {
         const val CHECKOUT_BREAKDOWN_BACKGROUND = "#050505"
         const val CHECKOUT_ON_SURFACE = "#020617"
         const val CHECKOUT_INK = "#0F112A"
+        const val SUCCESS_SURFACE = "#FDFEFF"
+        const val SUCCESS_TEXT_PRIMARY = "#212247"
+        const val SUCCESS_TEXT_SECONDARY = "#585987"
+        const val SUCCESS_TEXT_TERTIARY = "#8D8FBA"
+        const val SUCCESS_ACCENT_BLUE = "#2C4CF5"
+        const val SUCCESS_LINK_BLUE = "#090E94"
+        const val SUCCESS_STEP_NUMBER_BG = "#E2E8F0"
+        const val SUCCESS_COPY_BUTTON_BG = "#E5EDFF"
+        const val SUCCESS_TOAST_BG = "#D8FDCF"
+        const val SUCCESS_TOAST_BORDER = "#9FE870"
+        const val SUCCESS_TOAST_TEXT = "#163300"
+        const val SUCCESS_TOAST_ICON = "#51A81B"
     }
 
     object Links {

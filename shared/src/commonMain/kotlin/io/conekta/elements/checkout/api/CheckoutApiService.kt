@@ -50,7 +50,7 @@ open class CheckoutApiService(
         } catch (e: Exception) {
             Result.failure(
                 CheckoutApiException(
-                    CheckoutError.NetworkError(e.message ?: "Unknown network error"),
+                    CheckoutError.NetworkError(e.asNetworkErrorMessage("Unknown network error")),
                 ),
             )
         }
@@ -98,7 +98,7 @@ open class CheckoutApiService(
         } catch (e: Exception) {
             Result.failure(
                 CheckoutApiException(
-                    CheckoutError.NetworkError(e.message ?: "Unknown network error"),
+                    CheckoutError.NetworkError(e.asNetworkErrorMessage("Unknown network error")),
                 ),
             )
         }
@@ -173,6 +173,18 @@ open class CheckoutApiService(
             HttpHeaders.Accept to HEADER_ACCEPT_CONEKTA_VERSION,
             HEADER_CONEKTA_CLIENT_USER_AGENT to sdkUserAgent,
         )
+
+    private fun Throwable.asNetworkErrorMessage(defaultMessage: String): String {
+        val type = this::class.simpleName ?: "Exception"
+        val directMessage = message?.trim().orEmpty()
+        val causeMessage = cause?.message?.trim().orEmpty()
+
+        return when {
+            directMessage.isNotEmpty() -> "$type: $directMessage"
+            causeMessage.isNotEmpty() -> "$type (cause: $causeMessage)"
+            else -> "$type: $defaultMessage"
+        }
+    }
 }
 
 class CheckoutApiException(

@@ -19,6 +19,11 @@ val conektaPublicKey =
         ?: System.getenv("CONEKTA_PUBLIC_KEY")
         ?: ""
 
+val conektaTokenizerRsaPublicKey =
+    localProperties.getProperty("CONEKTA_TOKENIZER_RSA_PUBLIC_KEY")
+        ?: System.getenv("CONEKTA_TOKENIZER_RSA_PUBLIC_KEY")
+        ?: ""
+
 android {
     namespace = "com.conekta.example"
     compileSdk = 36
@@ -30,6 +35,7 @@ android {
         versionCode = 1
         versionName = "1.0"
         buildConfigField("String", "CONEKTA_PUBLIC_KEY", "\"$conektaPublicKey\"")
+        buildConfigField("String", "CONEKTA_TOKENIZER_RSA_PUBLIC_KEY", "\"$conektaTokenizerRsaPublicKey\"")
     }
 
     buildFeatures {

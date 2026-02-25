@@ -19,6 +19,7 @@ data class CheckoutOrderResponseDto(
 @Serializable
 data class CheckoutRequestResponseDto(
     val id: String,
+    val name: String,
     val amount: Long,
     val status: String? = null,
     @SerialName("allowedPaymentMethods") val allowedPaymentMethods: List<String> = emptyList(),

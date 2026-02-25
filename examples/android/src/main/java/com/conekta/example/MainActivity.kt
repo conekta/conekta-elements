@@ -60,14 +60,6 @@ private const val TOKENIZER_BASE_URL = "https://api.stg.conekta.io"
 private const val CHECKOUT_BASE_URL = "https://services.stg.conekta.io"
 private const val TAG = "ConektaExample"
 private const val ORDERS_URL = "https://api.stg.conekta.io/orders"
-private const val TOKENIZER_RSA_PUBLIC_KEY =
-    "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2YrQXIfVCBU3MfG5gKxL" +
-        "Mh8o9kDW2gtb2yu2V6P0GX3yNazTF99Y1lcwI1pKpRBBheFVJ5U3mNCqvFRlIlLj" +
-        "flk/pgm1dwzjcDyaks3iYtbJnne8Ahaqam1Lm8RcM/AAiRv28/uHatw4PHQYPCq+" +
-        "ZAbSd+uYmozjGp9ISd0XLQSRO95LGrmMD4hBf50B2S+NPuQGO5xdXy/4Fpq6xmmO" +
-        "a0kTn6RETCZ4/tWZAsC8g7vjolETyJqyDCwnrtZdE4c2yhfEBz6PAGvdLKrobIOo" +
-        "brX2LynMj6oI8i0N3fRl97ScRask6bzWfnpje8iRq3mhvwHmUcP30BMFprXtK3zM" +
-        "GwIDAQAB"
 
 private enum class ExampleTab(
     val label: String,
@@ -102,6 +94,7 @@ private fun ExampleTabs() {
 @Composable
 private fun TokenizerExample() {
     val publicKey = requireConektaPublicKey()
+    val tokenizerRsaPublicKey = requireTokenizerRsaPublicKey()
     val context = LocalContext.current
     val appContext = context.applicationContext
     ConektaTokenizer(
@@ -110,7 +103,7 @@ private fun TokenizerExample() {
                 baseUrl = TOKENIZER_BASE_URL,
                 publicKey = publicKey,
                 merchantName = "My Store",
-                rsaPublicKey = TOKENIZER_RSA_PUBLIC_KEY,
+                rsaPublicKey = tokenizerRsaPublicKey,
             ),
         onSuccess = { result: TokenResult ->
             Log.d(TAG, "Tokenizer success: token=${result.token}, lastFour=${result.lastFour}")
@@ -146,6 +139,7 @@ private fun TokenizerExample() {
 @Composable
 private fun CheckoutExample() {
     val publicKey = requireConektaPublicKey()
+    val tokenizerRsaPublicKey = requireTokenizerRsaPublicKey()
     var checkoutRequestId by remember { mutableStateOf<String?>(null) }
     var fetchError by remember { mutableStateOf<String?>(null) }
 
@@ -178,7 +172,7 @@ private fun CheckoutExample() {
                     merchantName = "My Store",
                     baseUrl = CHECKOUT_BASE_URL,
                     tokenizerBaseUrl = TOKENIZER_BASE_URL,
-                    tokenizerRsaPublicKey = TOKENIZER_RSA_PUBLIC_KEY,
+                    tokenizerRsaPublicKey = tokenizerRsaPublicKey,
                 ),
                 onPaymentMethodSelected = { method ->
                     Log.d(TAG, "Payment method selected: $method")
@@ -280,4 +274,11 @@ private fun requireConektaPublicKey(): String =
         ?: error(
             "CONEKTA_PUBLIC_KEY is missing. Set it in examples/android/local.properties " +
                 "or export CONEKTA_PUBLIC_KEY before building.",
+        )
+
+private fun requireTokenizerRsaPublicKey(): String =
+    BuildConfig.CONEKTA_TOKENIZER_RSA_PUBLIC_KEY.takeIf { it.isNotBlank() }
+        ?: error(
+            "CONEKTA_TOKENIZER_RSA_PUBLIC_KEY is missing. Set it in examples/android/local.properties " +
+                "or export CONEKTA_TOKENIZER_RSA_PUBLIC_KEY before building.",
         )

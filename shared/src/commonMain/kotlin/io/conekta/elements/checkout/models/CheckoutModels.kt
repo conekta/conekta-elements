@@ -107,6 +107,7 @@ data class CheckoutConfig(
 data class CheckoutResult(
     val orderId: String,
     val checkoutId: String,
+    val name: String = "",
     val amount: Long,
     val currency: String,
     val allowedPaymentMethods: List<String>,

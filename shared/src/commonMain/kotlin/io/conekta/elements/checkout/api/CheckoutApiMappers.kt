@@ -44,6 +44,7 @@ internal fun CheckoutRequestResponseDto.toDomain(): CheckoutResult =
     CheckoutResult(
         orderId = id,
         checkoutId = id,
+        name = name,
         amount = amount,
         currency = orderTemplate.currency,
         allowedPaymentMethods = allowedPaymentMethods.map(::normalizePaymentMethodValue),
@@ -92,6 +93,7 @@ internal fun CheckoutOrderResponseDto.toDomain(): CheckoutResult =
     CheckoutResult(
         orderId = id,
         checkoutId = checkout.id,
+        name = "",
         amount = amount,
         currency = currency,
         allowedPaymentMethods = checkout.allowedPaymentMethods.map(::normalizePaymentMethodValue),

@@ -27,11 +27,6 @@ import io.conekta.compose.generated.resources.checkout_empty_methods
 import io.conekta.compose.generated.resources.checkout_validation_checkout_request_id_required
 import io.conekta.compose.generated.resources.checkout_validation_jwt_token_required
 import io.conekta.compose.generated.resources.checkout_validation_public_key_required
-import io.conekta.compose.generated.resources.error_field_required
-import io.conekta.compose.generated.resources.validation_card_min_length
-import io.conekta.compose.generated.resources.validation_cvv_min_length
-import io.conekta.compose.generated.resources.validation_expiry_year_invalid
-import io.conekta.compose.generated.resources.validation_invalid_card
 import io.conekta.compose.utils.colorFromHex
 import io.conekta.elements.checkout.api.CheckoutApiException
 import io.conekta.elements.checkout.api.CheckoutApiService
@@ -49,7 +44,6 @@ import io.conekta.elements.resources.CDNResources
 import io.conekta.elements.tokenizer.api.TokenizerApiService
 import io.conekta.elements.tokenizer.models.TokenizerConfig
 import io.conekta.elements.tokenizer.validators.ValidationMessages
-import io.conekta.elements.utils.currentTwoDigitYear
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 
@@ -94,12 +88,6 @@ internal fun CheckoutContent(
     val checkoutRequestIdRequiredMessage = stringResource(Res.string.checkout_validation_checkout_request_id_required)
     val publicKeyRequiredMessage = stringResource(Res.string.checkout_validation_public_key_required)
     val jwtTokenRequiredMessage = stringResource(Res.string.checkout_validation_jwt_token_required)
-    val requiredFieldMessage = stringResource(Res.string.error_field_required)
-    val cardMinLengthMessage = stringResource(Res.string.validation_card_min_length)
-    val invalidCardMessage = stringResource(Res.string.validation_invalid_card)
-    val minimumYearLabel = currentTwoDigitYear().toString().padStart(2, '0')
-    val expiryYearInvalidMessage = stringResource(Res.string.validation_expiry_year_invalid, minimumYearLabel)
-    val cvvMinLengthMessage = stringResource(Res.string.validation_cvv_min_length)
 
     var isLoading by remember(config.checkoutRequestId) { mutableStateOf(true) }
     var loadError by remember { mutableStateOf<String?>(null) }
@@ -112,22 +100,7 @@ internal fun CheckoutContent(
     var orderResult by remember { mutableStateOf<CheckoutOrderResult?>(null) }
 
     val cardFields = remember { CardFieldsState() }
-    val cardValidationMessages =
-        remember(
-            requiredFieldMessage,
-            cardMinLengthMessage,
-            invalidCardMessage,
-            expiryYearInvalidMessage,
-            cvvMinLengthMessage,
-        ) {
-            ValidationMessages(
-                required = requiredFieldMessage,
-                cardMinLength = cardMinLengthMessage,
-                invalidCard = invalidCardMessage,
-                expiryYearInvalid = expiryYearInvalidMessage,
-                cvvMinLength = cvvMinLengthMessage,
-            )
-        }
+    val cardValidationMessages = rememberCardValidationMessages()
 
     LaunchedEffect(config) {
         val validationError =
@@ -196,33 +169,42 @@ internal fun CheckoutContent(
     }
 
     val currentOrderResult = orderResult
-    val isCashSuccess =
-        currentOrderResult != null &&
-            selectedPaymentMethod == CheckoutPaymentMethods.CASH
-    val isBankTransferSuccess =
-        currentOrderResult != null &&
-            selectedPaymentMethod == CheckoutPaymentMethods.BANK_TRANSFER
-
-    if (isCashSuccess && checkoutResult != null) {
-        CashSuccessContent(
-            orderResult = currentOrderResult!!,
-            checkoutResult = checkoutResult!!,
-            merchantName = config.merchantName,
-            currentLanguageTag = currentLanguageTag,
-            onLanguageSelected = onLanguageSelected,
-        )
-        return
-    }
-
-    if (isBankTransferSuccess && checkoutResult != null) {
-        BankTransferSuccessContent(
-            orderResult = currentOrderResult!!,
-            checkoutResult = checkoutResult!!,
-            merchantName = config.merchantName,
-            currentLanguageTag = currentLanguageTag,
-            onLanguageSelected = onLanguageSelected,
-        )
-        return
+    if (currentOrderResult != null && checkoutResult != null) {
+        val shouldShowSuccess =
+            when (selectedPaymentMethod) {
+                CheckoutPaymentMethods.CASH,
+                CheckoutPaymentMethods.BANK_TRANSFER,
+                CheckoutPaymentMethods.CARD,
+                -> true
+                else -> false
+            }
+        if (shouldShowSuccess) {
+            CheckoutSuccessShell(
+                checkoutResult = checkoutResult!!,
+                merchantName = config.merchantName,
+                currentLanguageTag = currentLanguageTag,
+                onLanguageSelected = onLanguageSelected,
+            ) {
+                when (selectedPaymentMethod) {
+                    CheckoutPaymentMethods.CASH ->
+                        CashSuccessContent(
+                            orderResult = currentOrderResult,
+                            checkoutResult = checkoutResult!!,
+                        )
+                    CheckoutPaymentMethods.BANK_TRANSFER ->
+                        BankTransferSuccessContent(
+                            orderResult = currentOrderResult,
+                            checkoutResult = checkoutResult!!,
+                        )
+                    CheckoutPaymentMethods.CARD ->
+                        CardSuccessContent(
+                            checkoutResult = checkoutResult!!,
+                            merchantName = config.merchantName,
+                        )
+                }
+            }
+            return
+        }
     }
 
     CheckoutMainContent(

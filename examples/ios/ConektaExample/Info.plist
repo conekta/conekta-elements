@@ -48,5 +48,7 @@
 	<string>$(CONEKTA_CHECKOUT_REQUEST_ID)</string>
 	<key>ConektaJwtToken</key>
 	<string>$(CONEKTA_JWT_TOKEN)</string>
+	<key>ConektaTokenizerRsaPublicKey</key>
+	<string>$(CONEKTA_TOKENIZER_RSA_PUBLIC_KEY)</string>
 </dict>
 </plist>

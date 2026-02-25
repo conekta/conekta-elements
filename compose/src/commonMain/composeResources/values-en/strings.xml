@@ -63,6 +63,8 @@
     <string name="success_bank_transfer_clabe_format">CLABE: %1$s</string>
     <string name="success_bank_transfer_copy_number">Copy number</string>
     <string name="success_bank_transfer_reference_title">PAYMENT REFERENCE FOR</string>
+    <string name="success_card_purchase_completed">Your purchase at %1$s for %2$s was completed.</string>
+    <string name="success_card_title">Payment completed successfully</string>
     <string name="success_cash_bbva_step_1">Go to any BBVA branch and find a Practicaja</string>
     <string name="success_cash_bbva_step_2">Select "Pay Service" and then "Cash Payment"</string>
     <string name="success_cash_bbva_step_3">Enter the agreement number, reference, and make your payment</string>
@@ -79,6 +81,7 @@
     <string name="success_cash_step_2_suffix"> and provide the reference.</string>
     <string name="success_cash_step_3">Give the cashier the reference number and make your payment</string>
     <string name="success_cash_store_title">REFERENCE FOR IN-STORE PAYMENT</string>
+    <string name="success_detail_label">CONCEPT</string>
     <string name="success_email_sent">We sent your payment reference to %1$s</string>
     <string name="success_expires_at">You have until %1$s at %2$s</string>
     <string name="success_see_map">See map</string>
