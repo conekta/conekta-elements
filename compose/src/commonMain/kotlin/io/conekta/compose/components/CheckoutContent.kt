@@ -42,6 +42,7 @@ import io.conekta.elements.checkout.models.CheckoutError
 import io.conekta.elements.checkout.models.CheckoutMethodPolicy
 import io.conekta.elements.checkout.models.CheckoutOrderResult
 import io.conekta.elements.checkout.models.CheckoutPaymentMethod
+import io.conekta.elements.checkout.models.CheckoutPaymentMethods
 import io.conekta.elements.checkout.models.CheckoutResult
 import io.conekta.elements.models.Amount
 import io.conekta.elements.resources.CDNResources
@@ -108,6 +109,7 @@ internal fun CheckoutContent(
 
     var isSubmitting by remember { mutableStateOf(false) }
     var submitErrorToastMessage by remember { mutableStateOf<String?>(null) }
+    var orderResult by remember { mutableStateOf<CheckoutOrderResult?>(null) }
 
     val cardFields = remember { CardFieldsState() }
     val cardValidationMessages =
@@ -193,6 +195,133 @@ internal fun CheckoutContent(
         isLoading = false
     }
 
+    val currentOrderResult = orderResult
+    val isCashSuccess =
+        currentOrderResult != null &&
+            selectedPaymentMethod == CheckoutPaymentMethods.CASH
+    val isBankTransferSuccess =
+        currentOrderResult != null &&
+            selectedPaymentMethod == CheckoutPaymentMethods.BANK_TRANSFER
+
+    if (isCashSuccess && checkoutResult != null) {
+        CashSuccessContent(
+            orderResult = currentOrderResult!!,
+            checkoutResult = checkoutResult!!,
+            merchantName = config.merchantName,
+            currentLanguageTag = currentLanguageTag,
+            onLanguageSelected = onLanguageSelected,
+        )
+        return
+    }
+
+    if (isBankTransferSuccess && checkoutResult != null) {
+        BankTransferSuccessContent(
+            orderResult = currentOrderResult!!,
+            checkoutResult = checkoutResult!!,
+            merchantName = config.merchantName,
+            currentLanguageTag = currentLanguageTag,
+            onLanguageSelected = onLanguageSelected,
+        )
+        return
+    }
+
+    CheckoutMainContent(
+        checkoutResult = checkoutResult,
+        selectedPaymentMethod = selectedPaymentMethod,
+        onMethodSelected = {
+            selectedPaymentMethod = it
+            onPaymentMethodSelected(it)
+        },
+        isLoading = isLoading,
+        loadError = loadError,
+        cardFields = cardFields,
+        cardValidationMessages = cardValidationMessages,
+        currentLanguageTag = currentLanguageTag,
+        onLanguageSelected = onLanguageSelected,
+        submitErrorToastMessage = submitErrorToastMessage,
+        onDismissSubmitError = { submitErrorToastMessage = null },
+        onInfoClick = { showProtectionSheet = true },
+        onBackgroundTap = { focusManager.clearFocus() },
+        isSubmitting = isSubmitting,
+        payButtonText =
+            checkoutResult?.let {
+                "${stringResource(Res.string.checkout_button_pay)} $${Amount(it.amount.toInt()).toFixed(2)}"
+            } ?: stringResource(Res.string.checkout_button_pay),
+        onPayClick = {
+            val methodKey = selectedPaymentMethod ?: return@CheckoutMainContent
+            val input =
+                CheckoutPaymentMethodValidationInput(
+                    cardFields = cardFields,
+                    cardValidationMessages = cardValidationMessages,
+                )
+            val validator = CheckoutPaymentMethodValidators.forMethod(methodKey)
+            if (!validator.validateBeforeSubmit(input)) return@CheckoutMainContent
+            isSubmitting = true
+            coroutineScope.launch {
+                submitOrder(
+                    methodKey = methodKey,
+                    tokenizerService = tokenizerService,
+                    checkoutService = checkoutService,
+                    cardNumber = cardFields.cardNumber.text,
+                    expiryDate = cardFields.expiryDate.text,
+                    cvv = cardFields.cvv.text,
+                    cardholderName = cardFields.cardholderName.text,
+                    onOrderCreated = { result ->
+                        orderResult = result
+                        onOrderCreated?.invoke(result)
+                    },
+                    onError = onError,
+                    onSubmitError = { submitErrorToastMessage = it },
+                )
+                isSubmitting = false
+            }
+        },
+    )
+
+    if (showProtectionSheet) {
+        PaymentProtectionSheet(
+            merchantName = config.merchantName,
+            onDismiss = {
+                if (showProtectionSheet) {
+                    showProtectionSheet = false
+                }
+            },
+        )
+    }
+}
+
+@Composable
+private fun CheckoutMainContent(
+    checkoutResult: CheckoutResult?,
+    selectedPaymentMethod: String?,
+    onMethodSelected: (String) -> Unit,
+    isLoading: Boolean,
+    loadError: String?,
+    cardFields: CardFieldsState,
+    cardValidationMessages: ValidationMessages,
+    currentLanguageTag: String,
+    onLanguageSelected: (String) -> Unit,
+    submitErrorToastMessage: String?,
+    onDismissSubmitError: () -> Unit,
+    onInfoClick: () -> Unit,
+    onBackgroundTap: () -> Unit,
+    isSubmitting: Boolean,
+    payButtonText: String,
+    onPayClick: () -> Unit,
+) {
+    val isPayEnabled =
+        selectedPaymentMethod?.let { methodKey ->
+            CheckoutPaymentMethodValidators
+                .forMethod(methodKey)
+                .canSubmit(
+                    CheckoutPaymentMethodValidationInput(
+                        cardFields = cardFields,
+                        cardValidationMessages = cardValidationMessages,
+                    ),
+                ) &&
+                !isSubmitting
+        } ?: false
+
     Box(modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier =
@@ -201,7 +330,7 @@ internal fun CheckoutContent(
                     .background(CheckoutBg)
                     .verticalScroll(rememberScrollState())
                     .pointerInput(Unit) {
-                        detectTapGestures(onTap = { focusManager.clearFocus() })
+                        detectTapGestures(onTap = { onBackgroundTap() })
                     },
         ) {
             CheckoutTotalRow(
@@ -211,7 +340,7 @@ internal fun CheckoutContent(
                 discountLines = checkoutResult?.discountLines.orEmpty(),
                 shippingLines = checkoutResult?.shippingLines.orEmpty(),
             )
-            CheckoutHeader(onInfoClick = { showProtectionSheet = true })
+            CheckoutHeader(onInfoClick = onInfoClick)
 
             CheckoutMethodSectionTitle(
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 10.dp),
@@ -219,11 +348,9 @@ internal fun CheckoutContent(
 
             PaymentMethodsSection(
                 methods = CheckoutMethodPolicy.filterSupportedMethods(checkoutResult?.allowedPaymentMethods.orEmpty()),
+                allowedPaymentMethods = checkoutResult?.allowedPaymentMethods.orEmpty(),
                 selectedPaymentMethod = selectedPaymentMethod,
-                onMethodSelected = {
-                    selectedPaymentMethod = it
-                    onPaymentMethodSelected(it)
-                },
+                onMethodSelected = onMethodSelected,
                 isLoading = isLoading,
                 loadError = loadError,
                 cardFields = cardFields,
@@ -232,47 +359,9 @@ internal fun CheckoutContent(
             )
 
             ConektaButton(
-                text =
-                    checkoutResult?.let {
-                        "${stringResource(Res.string.checkout_button_pay)} $${Amount(it.amount.toInt()).toFixed(2)}"
-                    } ?: stringResource(Res.string.checkout_button_pay),
-                onClick = {
-                    val methodKey = selectedPaymentMethod ?: return@ConektaButton
-                    val input =
-                        CheckoutPaymentMethodValidationInput(
-                            cardFields = cardFields,
-                            cardValidationMessages = cardValidationMessages,
-                        )
-                    val validator = CheckoutPaymentMethodValidators.forMethod(methodKey)
-                    if (!validator.validateBeforeSubmit(input)) return@ConektaButton
-                    isSubmitting = true
-                    coroutineScope.launch {
-                        submitOrder(
-                            methodKey = methodKey,
-                            tokenizerService = tokenizerService,
-                            checkoutService = checkoutService,
-                            cardNumber = cardFields.cardNumber.text,
-                            expiryDate = cardFields.expiryDate.text,
-                            cvv = cardFields.cvv.text,
-                            cardholderName = cardFields.cardholderName.text,
-                            onOrderCreated = onOrderCreated,
-                            onError = onError,
-                            onSubmitError = { submitErrorToastMessage = it },
-                        )
-                        isSubmitting = false
-                    }
-                },
-                enabled =
-                    selectedPaymentMethod?.let { methodKey ->
-                        CheckoutPaymentMethodValidators
-                            .forMethod(methodKey)
-                            .canSubmit(
-                                CheckoutPaymentMethodValidationInput(
-                                    cardFields = cardFields,
-                                    cardValidationMessages = cardValidationMessages,
-                                ),
-                            ) && !isSubmitting
-                    } ?: false,
+                text = payButtonText,
+                onClick = onPayClick,
+                enabled = isPayEnabled,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
                 height = 56,
             )
@@ -286,24 +375,13 @@ internal fun CheckoutContent(
         submitErrorToastMessage?.let { errorMessage ->
             ConektaErrorToast(
                 message = errorMessage,
-                onDismiss = { submitErrorToastMessage = null },
+                onDismiss = onDismissSubmitError,
                 modifier =
                     Modifier
                         .align(Alignment.TopCenter)
                         .padding(horizontal = 16.dp, vertical = 12.dp),
             )
         }
-    }
-
-    if (showProtectionSheet) {
-        PaymentProtectionSheet(
-            merchantName = config.merchantName,
-            onDismiss = {
-                if (showProtectionSheet) {
-                    showProtectionSheet = false
-                }
-            },
-        )
     }
 }
 

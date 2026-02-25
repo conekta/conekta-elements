@@ -33,8 +33,7 @@ private object PassThroughPaymentMethodValidator : CheckoutPaymentMethodValidato
 }
 
 private object CardCheckoutPaymentMethodValidator : CheckoutPaymentMethodValidator {
-    override fun canSubmit(input: CheckoutPaymentMethodValidationInput): Boolean =
-        !validateCard(input).hasError
+    override fun canSubmit(input: CheckoutPaymentMethodValidationInput): Boolean = !validateCard(input).hasError
 
     override fun validateBeforeSubmit(input: CheckoutPaymentMethodValidationInput): Boolean {
         val result = validateCard(input)

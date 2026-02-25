@@ -2,6 +2,7 @@ package io.conekta.elements.tokenizer.api
 
 import io.conekta.elements.localization.normalizeConektaLanguageTag
 import io.conekta.elements.network.ConektaHttpClient
+import io.conekta.elements.network.HEADER_ACCEPT_CONEKTA_VERSION
 import io.conekta.elements.network.HEADER_CONEKTA_CLIENT_USER_AGENT
 import io.conekta.elements.network.sdkUserAgent
 import io.conekta.elements.tokenizer.crypto.CardEncryptor
@@ -58,14 +59,14 @@ class TokenizerApiService(
                 )
 
             // 2. POST to API
-            val url = "${config.baseUrl}tokens"
+            val url = "${config.baseUrl}/tokens"
             val response =
                 httpClient.post(url) {
                     contentType(ContentType.Application.Json)
                     headers {
                         set(HttpHeaders.Authorization, "Bearer ${config.publicKey}")
                         set(HttpHeaders.AcceptLanguage, normalizeConektaLanguageTag(languageTag))
-                        set(HttpHeaders.Accept, "application/vnd.conekta-v2.2.0+json")
+                        set(HttpHeaders.Accept, HEADER_ACCEPT_CONEKTA_VERSION)
                         set(HEADER_CONEKTA_CLIENT_USER_AGENT, sdkUserAgent)
                     }
                     setBody(requestBody)

@@ -9,6 +9,7 @@ struct ContentView: View {
     @State private var showingAlert = false
     @State private var alertTitle = ""
     @State private var alertMessage = ""
+    @State private var checkoutRequestId: String? = nil
 
     // Set CONEKTA_PUBLIC_KEY in Local.xcconfig (see README)
     private static let conektaPublicKey: String = {
@@ -18,13 +19,6 @@ struct ContentView: View {
         return key
     }()
 
-    private static let checkoutRequestId: String = {
-        guard let value = Bundle.main.infoDictionary?["ConektaCheckoutRequestId"] as? String, !value.isEmpty else {
-            return "0f3e251c-90b7-4846-9ecb-e48b447f25e4"
-        }
-        return value
-    }()
-
     private static let checkoutJwtToken: String = {
         guard let value = Bundle.main.infoDictionary?["ConektaJwtToken"] as? String, !value.isEmpty else {
             return "jwt_mock_123"
@@ -32,7 +26,8 @@ struct ContentView: View {
         return value
     }()
 
-    private static let checkoutBaseUrl = "https://services.stg.conekta.io/checkout-bff/v1/"
+    private static let checkoutBaseUrl = "https://services.stg.conekta.io"
+    private static let ordersUrl = "https://api.stg.conekta.io/orders"
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -70,24 +65,35 @@ struct ContentView: View {
             }
             .tag(0)
 
-            ConektaCheckoutView(
-                config: CheckoutConfig(
-                    checkoutRequestId: ContentView.checkoutRequestId,
-                    publicKey: ContentView.conektaPublicKey,
-                    jwtToken: ContentView.checkoutJwtToken,
-                    merchantName: "My Store",
-                    baseUrl: ContentView.checkoutBaseUrl
-                ),
-                onPaymentMethodSelected: { method in
-                    print("Payment method selected: \(method)")
-                },
-                onError: { error in
-                    print("Checkout error: \(error)")
-                },
-                onOrderCreated: { result in
-                    print("Order created: orderId=\(result.orderId)")
+            Group {
+                if let checkoutRequestId = checkoutRequestId {
+                    ConektaCheckoutView(
+                        config: CheckoutConfig(
+                            checkoutRequestId: checkoutRequestId,
+                            publicKey: ContentView.conektaPublicKey,
+                            jwtToken: ContentView.checkoutJwtToken,
+                            merchantName: "My Store",
+                            baseUrl: ContentView.checkoutBaseUrl
+                        ),
+                        onPaymentMethodSelected: { method in
+                            print("Payment method selected: \(method)")
+                        },
+                        onError: { error in
+                            print("Checkout error: \(error)")
+                        },
+                        onOrderCreated: { result in
+                            print("Order created: orderId=\(result.orderId)")
+                        }
+                    )
+                } else {
+                    VStack {
+                        ProgressView()
+                        Text("Creating order...")
+                            .padding(.top, 8)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-            )
+            }
             .safeAreaInset(edge: .bottom) {
                 Color.clear.frame(height: ContentView.tabBarContentInset)
             }
@@ -96,11 +102,73 @@ struct ContentView: View {
             }
             .tag(1)
         }
+        .task {
+            checkoutRequestId = await ContentView.fetchCheckoutRequestId()
+        }
         .alert(alertTitle, isPresented: $showingAlert) {
             Button("OK", role: .cancel) { }
         } message: {
             Text(alertMessage)
         }
+    }
+    private static func fetchCheckoutRequestId() async -> String? {
+        guard let url = URL(string: ordersUrl) else { return nil }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("Bearer \(conektaPublicKey)", forHTTPHeaderField: "Authorization")
+        request.setValue(
+            Locale.current.languageCode ?? "es",
+            forHTTPHeaderField: "Accept-Language"
+        )
+        request.setValue(NetworkHeadersKt.HEADER_ACCEPT_CONEKTA_VERSION, forHTTPHeaderField: "Accept")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let quantity = Int.random(in: 1...10)
+        let unitPrice = Int.random(in: 2000...5000)
+        let customerName = ["Ana García", "Carlos López", "María Martínez",
+                            "Juan Rodríguez", "Laura Sánchez", "Pedro Ramírez"].randomElement()!
+        let emailSuffix = String((0..<8).map { _ in "abcdefghijklmnopqrstuvwxyz0123456789".randomElement()! })
+        let email = "dev_\(emailSuffix)@conekta.com"
+        let phone = "55\(Int.random(in: 10000000...99999999))"
+        let productName = ["Box of Cohiba S1s", "Laptop Pro 15", "Wireless Headphones",
+                           "Coffee Maker", "Running Shoes", "Smart Watch"].randomElement()!
+
+        let body: [String: Any] = [
+            "currency": "MXN",
+            "customer_info": [
+                "name": customerName,
+                "email": email,
+                "phone": phone,
+                "corporate": false,
+                "object": "customer_info"
+            ],
+            "line_items": [
+                [
+                    "name": productName,
+                    "unit_price": unitPrice,
+                    "quantity": quantity
+                ]
+            ],
+            "checkout": [
+                "allowed_payment_methods": ["cash", "card", "bank_transfer", "bnpl", "pay_by_bank"],
+                "type": "Integration"
+            ]
+        ]
+
+        request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+
+        do {
+            let (data, _) = try await URLSession.shared.data(for: request)
+            if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+               let checkout = json["checkout"] as? [String: Any],
+               let checkoutId = checkout["id"] as? String {
+                return checkoutId
+            }
+        } catch {
+            print("Failed to fetch checkout request ID: \(error)")
+        }
+        return nil
     }
 }
 

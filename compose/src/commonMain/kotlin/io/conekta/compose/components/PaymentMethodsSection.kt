@@ -36,6 +36,7 @@ private val Border = colorFromHex(CDNResources.Colors.CHECKOUT_BORDER)
 @Composable
 internal fun PaymentMethodsSection(
     methods: List<String>,
+    allowedPaymentMethods: List<String>,
     selectedPaymentMethod: String?,
     onMethodSelected: (String) -> Unit,
     isLoading: Boolean,

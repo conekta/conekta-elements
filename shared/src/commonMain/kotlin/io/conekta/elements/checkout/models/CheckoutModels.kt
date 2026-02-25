@@ -115,6 +115,7 @@ data class CheckoutResult(
     val taxLines: List<CheckoutAmountLine> = emptyList(),
     val discountLines: List<CheckoutAmountLine> = emptyList(),
     val shippingLines: List<CheckoutAmountLine> = emptyList(),
+    val email: String = "",
 )
 
 @ObjCName("CheckoutLineItem")
@@ -135,11 +136,37 @@ data class CheckoutProvider(
     val id: String,
     val name: String,
     val paymentMethod: String,
+    val productType: String = "",
 )
 
 @ObjCName("CheckoutOrderResult")
 data class CheckoutOrderResult(
     val orderId: String,
+    val status: String = "",
+    val charges: List<CheckoutCharge> = emptyList(),
+)
+
+@ObjCName("CheckoutCharge")
+data class CheckoutCharge(
+    val amount: Long = 0,
+    val currency: String = CurrencyCodes.MXN,
+    val status: String = "",
+    val paymentMethod: CheckoutChargePaymentMethod? = null,
+)
+
+@ObjCName("CheckoutChargePaymentMethod")
+data class CheckoutChargePaymentMethod(
+    val type: String = "",
+    val reference: String = "",
+    val clabe: String = "",
+    val barcodeUrl: String = "",
+    val expiresAt: Long = 0,
+    val serviceName: String = "",
+    val storeName: String = "",
+    val provider: String = "",
+    val agreement: String = "",
+    val name: String = "",
+    val productType: String = "",
 )
 
 @ObjCName("CheckoutError")

@@ -3,6 +3,7 @@ package io.conekta.elements.checkout.api
 import io.conekta.elements.checkout.models.CheckoutConfig
 import io.conekta.elements.checkout.models.CheckoutError
 import io.conekta.elements.checkout.models.CheckoutPaymentMethods
+import io.conekta.elements.checkout.models.CurrencyCodes
 import io.conekta.elements.localization.ConektaLanguage
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
@@ -71,13 +72,13 @@ class CheckoutApiServiceTest {
                         {
                           "id":"0f3e251c-90b7-4846-9ecb-e48b447f25e4",
                           "amount":30000,
-                          "allowedPaymentMethods":["Card","Apple","cash","BankTransfer"],
+                          "allowedPaymentMethods":["Card","Apple","cash_in","bbva_cash_in","BankTransfer"],
                           "providers":[
-                            {"id":"647f8b322a0818004a414694","name":"datalogic","paymentMethod":"cash"},
+                            {"id":"647f8b322a0818004a414694","name":"farmacias_del_ahorro","paymentMethod":"cash"},
                             {"id":"66df25a6af1debf142e80026","name":"bbva","paymentMethod":"cash"}
                           ],
                           "orderTemplate":{
-                            "currency":"MXN",
+                            "currency":"${CurrencyCodes.MXN}",
                             "lineItems":[{"name":"Apple test 3","quantity":1,"unitPrice":30000}],
                             "taxLines":[{"description":"test","amount":2000}],
                             "discountLines":[],
@@ -95,12 +96,13 @@ class CheckoutApiServiceTest {
             assertEquals("0f3e251c-90b7-4846-9ecb-e48b447f25e4", checkout.orderId)
             assertEquals("0f3e251c-90b7-4846-9ecb-e48b447f25e4", checkout.checkoutId)
             assertEquals(30000L, checkout.amount)
-            assertEquals("MXN", checkout.currency)
+            assertEquals(CurrencyCodes.MXN, checkout.currency)
             assertEquals(
                 listOf(
                     CheckoutPaymentMethods.CARD,
                     "apple",
-                    "cash",
+                    "cash_in",
+                    "bbva_cash_in",
                     CheckoutPaymentMethods.BANK_TRANSFER,
                 ),
                 checkout.allowedPaymentMethods,
@@ -112,7 +114,7 @@ class CheckoutApiServiceTest {
             assertEquals("test", checkout.taxLines.first().description)
             assertEquals(2000L, checkout.taxLines.first().amount)
             assertEquals(2, checkout.providers.size)
-            assertEquals("datalogic", checkout.providers.first().name)
+            assertEquals("farmacias_del_ahorro", checkout.providers.first().name)
             assertEquals(CheckoutPaymentMethods.CASH, checkout.providers.first().paymentMethod)
         }
 
@@ -127,7 +129,7 @@ class CheckoutApiServiceTest {
                         {
                           "id":"ord_legacy",
                           "amount":12000,
-                          "currency":"MXN",
+                          "currency":"${CurrencyCodes.MXN}",
                           "line_items":{"data":[{"name":"Aretes Tres Círculos Numerales","quantity":1,"unit_price":10000}]},
                           "tax_lines":{"data":[{"description":"test","amount":2000}]},
                           "checkout":{
@@ -146,7 +148,7 @@ class CheckoutApiServiceTest {
             assertEquals("ord_legacy", checkout.orderId)
             assertEquals("chk_legacy", checkout.checkoutId)
             assertEquals(12000L, checkout.amount)
-            assertEquals("MXN", checkout.currency)
+            assertEquals(CurrencyCodes.MXN, checkout.currency)
             assertEquals(
                 listOf(
                     CheckoutPaymentMethods.CARD,
@@ -174,7 +176,7 @@ class CheckoutApiServiceTest {
                           "id":"0f3e251c-90b7-4846-9ecb-e48b447f25e4",
                           "amount":30000,
                           "allowedPaymentMethods":["Card"],
-                          "orderTemplate":{"currency":"MXN","lineItems":[],"taxLines":[],"discountLines":[],"shippingLines":[]}
+                          "orderTemplate":{"currency":"${CurrencyCodes.MXN}","lineItems":[],"taxLines":[],"discountLines":[],"shippingLines":[]}
                         }
                         """.trimIndent(),
                     onRequest = { url, authorization, jwt, acceptLanguage ->
@@ -190,7 +192,7 @@ class CheckoutApiServiceTest {
 
             assertTrue(result.isSuccess)
             assertEquals(
-                "https://test.conekta.com/checkout-requests/dc5baf10-0f2b-4378-9f74-afa6bb418198",
+                "https://test.conekta.com/checkout-bff/v1/checkout-requests/dc5baf10-0f2b-4378-9f74-afa6bb418198",
                 capturedUrl,
             )
             assertEquals("Bearer key_test_abc123", capturedAuthorization)
@@ -216,7 +218,7 @@ class CheckoutApiServiceTest {
                           "id":"0f3e251c-90b7-4846-9ecb-e48b447f25e4",
                           "amount":30000,
                           "allowedPaymentMethods":["Card"],
-                          "orderTemplate":{"currency":"MXN","lineItems":[],"taxLines":[],"discountLines":[],"shippingLines":[]}
+                          "orderTemplate":{"currency":"${CurrencyCodes.MXN}","lineItems":[],"taxLines":[],"discountLines":[],"shippingLines":[]}
                         }
                         """.trimIndent(),
                     onRequest = { _, _, _, acceptLanguage ->

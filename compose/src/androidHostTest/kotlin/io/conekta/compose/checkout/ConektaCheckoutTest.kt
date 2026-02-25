@@ -11,6 +11,7 @@ import io.conekta.elements.checkout.models.CheckoutConfig
 import io.conekta.elements.checkout.models.CheckoutError
 import io.conekta.elements.checkout.models.CheckoutPaymentMethods
 import io.conekta.elements.checkout.models.CheckoutResult
+import io.conekta.elements.checkout.models.CurrencyCodes
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -50,7 +51,7 @@ class ConektaCheckoutTest {
                                         orderId = "ord_2zb4KeLHjraBbRJgs",
                                         checkoutId = "dc5baf10-0f2b-4378-9f74-afa6bb418198",
                                         amount = 12000,
-                                        currency = "MXN",
+                                        currency = CurrencyCodes.MXN,
                                         allowedPaymentMethods =
                                             listOf(
                                                 CheckoutPaymentMethods.CARD,

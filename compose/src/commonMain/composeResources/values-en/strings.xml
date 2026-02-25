@@ -3,34 +3,33 @@
     <string name="button_processing">Processing…</string>
 
     <string name="card_information_title">Card information</string>
+    <string name="checkout_bank_transfer_reference_message">We will send a payment reference with all the instructions to your email so you can complete your purchase.</string>
     <string name="checkout_button_pay">Pay</string>
+    <string name="checkout_cash_points_message">You can pay in more than 14 thousand points</string>
+    <string name="checkout_cash_provider_list_more">Waldos, Eleczion, Farmacias San Francisco de Asis, FarmaTodo, Farmacias de Descuento Unión, Kiosko, Farmacias Bazar, Woolworth&#39;s, Del Sol, Yepas, Alsúper.</string>
+    <string name="checkout_cash_provider_more_link">and 20+</string>
+    <string name="checkout_cash_reference_message">We will send a payment reference with all the instructions to your email so you can complete your purchase.</string>
+    <string name="checkout_cash_see_map">See map</string>
+    <string name="checkout_discount_label">Discounts</string>
     <string name="checkout_empty_methods">No payment methods are available</string>
     <string name="checkout_error_loading">Could not load checkout</string>
+    <string name="checkout_error_toast_title">Error message</string>
     <string name="checkout_footer_help">Help</string>
     <string name="checkout_footer_locale">EN</string>
     <string name="checkout_footer_privacy">Privacy</string>
     <string name="checkout_loading">Loading checkout…</string>
-    <string name="checkout_error_toast_title">Error message</string>
     <string name="checkout_method_bank_transfer">Transfer</string>
     <string name="checkout_method_card">Card</string>
     <string name="checkout_method_cash">Conekta Cash</string>
     <string name="checkout_method_title">Payment method</string>
-    <string name="checkout_cash_provider_more_link">and 20+</string>
-    <string name="checkout_cash_provider_list_more">Waldos, Eleczion, Farmacias San Francisco de Asis, FarmaTodo, Farmacias de Descuento Unión, Kiosko, Farmacias Bazar, Woolworth&#39;s, Del Sol, Yepas, Alsúper.</string>
-    <string name="checkout_cash_points_message">You can pay in more than 14 thousand points</string>
-    <string name="checkout_cash_see_map">See map</string>
-    <string name="checkout_cash_reference_message">We will send a payment reference with all the instructions to your email so you can complete your purchase.</string>
-    <string name="checkout_bank_transfer_reference_message">We will send a payment reference with all the instructions to your email so you can complete your purchase.</string>
     <string name="checkout_quantity_label">Quantity:</string>
+    <string name="checkout_shipping_label">Shipping</string>
     <string name="checkout_subtotal_label">Subtotal</string>
     <string name="checkout_tax_label">Taxes</string>
-    <string name="checkout_shipping_label">Shipping</string>
-    <string name="checkout_discount_label">Discounts</string>
     <string name="checkout_total_title">Total</string>
     <string name="checkout_validation_checkout_request_id_required">checkoutRequestId is required</string>
     <string name="checkout_validation_jwt_token_required">jwtToken is required</string>
     <string name="checkout_validation_public_key_required">publicKey is required</string>
-    <string name="tokenizer_validation_public_key_required">publicKey is required</string>
 
     <string name="conekta_description">Conekta is the portal that %1$s uses to process their online payments securely and reliably.</string>
 
@@ -59,6 +58,32 @@
     <string name="placeholder_cardholder_name_checkout">Name on card</string>
     <string name="placeholder_cvv">CVV</string>
     <string name="placeholder_expiry">MM/YY</string>
+
+    <string name="success_bank_transfer_clabe_copied">CLABE copied</string>
+    <string name="success_bank_transfer_clabe_format">CLABE: %1$s</string>
+    <string name="success_bank_transfer_copy_number">Copy number</string>
+    <string name="success_bank_transfer_reference_title">PAYMENT REFERENCE FOR</string>
+    <string name="success_cash_bbva_step_1">Go to any BBVA branch and find a Practicaja</string>
+    <string name="success_cash_bbva_step_2">Select "Pay Service" and then "Cash Payment"</string>
+    <string name="success_cash_bbva_step_3">Enter the agreement number, reference, and make your payment</string>
+    <string name="success_cash_bbva_title">REFERENCE FOR PAYMENT AT BBVA ATMs</string>
+    <string name="success_cash_commission_none">(No commission)</string>
+    <string name="success_cash_commission_note">(+ store commission between $7 and $13 MXN)</string>
+    <string name="success_cash_convention_label">Agreement:</string>
+    <string name="success_cash_expires_at">You have until %1$s at %2$s</string>
+    <string name="success_cash_must_pay">You must pay:</string>
+    <string name="success_cash_reference_label">Reference:</string>
+    <string name="success_cash_step_1">Go to one of our Cash Payment Points.</string>
+    <string name="success_cash_step_2_bold">Conekta</string>
+    <string name="success_cash_step_2_prefix">Tell the cashier you want to make a payment to </string>
+    <string name="success_cash_step_2_suffix"> and provide the reference.</string>
+    <string name="success_cash_step_3">Give the cashier the reference number and make your payment</string>
+    <string name="success_cash_store_title">REFERENCE FOR IN-STORE PAYMENT</string>
+    <string name="success_email_sent">We sent your payment reference to %1$s</string>
+    <string name="success_expires_at">You have until %1$s at %2$s</string>
+    <string name="success_see_map">See map</string>
+
+    <string name="tokenizer_validation_public_key_required">publicKey is required</string>
 
     <string name="validation_card_min_length">The minimum number of characters is 15</string>
     <string name="validation_cvv_min_length">The minimum number of characters is 3</string>

@@ -22,11 +22,15 @@ object CDNResources {
         const val CARD = "$PAYMENT_METHOD_ICONS_PATH/card.svg"
         const val BANK_TRANSFER = "$PAYMENT_METHOD_ICONS_PATH/bankTransfer.svg"
         const val CASH = "$PAYMENT_METHOD_ICONS_PATH/cash.svg"
-        const val BBVA = "$ICONS_PATH/bbva.svg"
-        const val SEVEN_ELEVEN = "$ICONS_PATH/logo-seven-eleven.svg"
-        const val FARMACIA_DEL_AHORRO = "$ICONS_PATH/logo-farmacia-del-ahorro.svg"
-        const val CIRCLE_K = "$ICONS_PATH/logo-circlek.svg"
-        const val EXTRA = "$ICONS_PATH/logo-extra.svg"
+        const val BBVA = "$ICONS_PATH/small/bbva.svg"
+        const val SEVEN_ELEVEN = "$ICONS_PATH/small/logo-seven-eleven.svg"
+        const val FARMACIA_DEL_AHORRO = "$ICONS_PATH/small/logo-farmacia-del-ahorro.svg"
+        const val CIRCLE_K = "$ICONS_PATH/small/logo-circlek.svg"
+        const val EXTRA = "$ICONS_PATH/small/logo-extra.svg"
+        const val WALMART = "$ICONS_PATH/logo-walmart.svg"
+        const val BODEGA_AURRERA = "$ICONS_PATH/logo-bodega-aurrera.svg"
+        const val SAMS_CLUB = "$ICONS_PATH/logo-sams-club.svg"
+        const val KIOSKO = "$ICONS_PATH/logo-kiosko.svg"
     }
 
     object Colors {

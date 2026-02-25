@@ -1,5 +1,6 @@
 package io.conekta.elements.checkout.api
 
+import io.conekta.elements.checkout.models.CurrencyCodes
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -21,18 +22,24 @@ data class CheckoutRequestResponseDto(
     val amount: Long,
     val status: String? = null,
     @SerialName("allowedPaymentMethods") val allowedPaymentMethods: List<String> = emptyList(),
-    @SerialName("orderTemplate") val orderTemplate: CheckoutOrderTemplateDto? = null,
+    @SerialName("orderTemplate") val orderTemplate: CheckoutOrderTemplateDto = CheckoutOrderTemplateDto(),
     val providers: List<CheckoutProviderDto> = emptyList(),
     @SerialName("startsAt") val startsAt: Long? = null,
 )
 
 @Serializable
 data class CheckoutOrderTemplateDto(
-    val currency: String = "MXN",
+    val currency: String = CurrencyCodes.MXN,
     @SerialName("lineItems") val lineItems: List<CheckoutLineItemTemplateDto> = emptyList(),
     @SerialName("taxLines") val taxLines: List<CheckoutAmountLineTemplateDto> = emptyList(),
     @SerialName("discountLines") val discountLines: List<CheckoutAmountLineTemplateDto> = emptyList(),
     @SerialName("shippingLines") val shippingLines: List<CheckoutAmountLineTemplateDto> = emptyList(),
+    @SerialName("customerInfo") val customerInfo: CheckoutCustomerInfoDto? = null,
+)
+
+@Serializable
+data class CheckoutCustomerInfoDto(
+    val email: String = "",
 )
 
 @Serializable
@@ -53,6 +60,7 @@ data class CheckoutProviderDto(
     val id: String = "",
     val name: String = "",
     @SerialName("paymentMethod") val paymentMethod: String = "",
+    @SerialName("product_type") val productType: String = "",
 )
 
 @Serializable
@@ -102,4 +110,29 @@ data class CreateOrderRequestDto(
 @Serializable
 data class CreateOrderResponseDto(
     val id: String,
+    val status: String = "",
+    val charges: List<CreateOrderChargeDto> = emptyList(),
+)
+
+@Serializable
+data class CreateOrderChargeDto(
+    val amount: Long = 0,
+    val currency: String = CurrencyCodes.MXN,
+    val status: String = "",
+    @SerialName("payment_method") val paymentMethod: CreateOrderChargePaymentMethodDto? = null,
+)
+
+@Serializable
+data class CreateOrderChargePaymentMethodDto(
+    val type: String? = null,
+    val reference: String? = null,
+    val clabe: String? = null,
+    @SerialName("barcodeUrl") val barcodeUrl: String? = null,
+    @SerialName("expiresAt") val expiresAt: Long = 0,
+    @SerialName("service_name") val serviceName: String? = null,
+    @SerialName("store_name") val storeName: String? = null,
+    val provider: String? = null,
+    val agreement: String? = null,
+    val name: String? = null,
+    @SerialName("product_type") val productType: String? = null,
 )

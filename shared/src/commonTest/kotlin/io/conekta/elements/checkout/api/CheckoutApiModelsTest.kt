@@ -1,6 +1,7 @@
 package io.conekta.elements.checkout.api
 
 import io.conekta.elements.checkout.models.CheckoutPaymentMethods
+import io.conekta.elements.checkout.models.CurrencyCodes
 import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -16,13 +17,13 @@ class CheckoutApiModelsTest {
             {
               "id":"0f3e251c-90b7-4846-9ecb-e48b447f25e4",
               "amount":30000,
-              "allowedPaymentMethods":["Card","Apple"],
+              "allowedPaymentMethods":["Card","Apple","cash_in","bbva_cash_in"],
               "providers":[
-                {"id":"647f8b322a0818004a414694","name":"datalogic","paymentMethod":"cash"},
+                {"id":"647f8b322a0818004a414694","name":"farmacias_del_ahorro","paymentMethod":"cash"},
                 {"id":"66df25a6af1debf142e80026","name":"bbva","paymentMethod":"cash"}
               ],
               "orderTemplate":{
-                "currency":"MXN",
+                "currency":"${CurrencyCodes.MXN}",
                 "lineItems":[
                   {"name":"Apple test 3","quantity":1,"unitPrice":30000}
                 ],
@@ -37,24 +38,24 @@ class CheckoutApiModelsTest {
 
         assertEquals("0f3e251c-90b7-4846-9ecb-e48b447f25e4", dto.id)
         assertEquals(30000L, dto.amount)
-        assertEquals(listOf("Card", "Apple"), dto.allowedPaymentMethods)
+        assertEquals(listOf("Card", "Apple", "cash_in", "bbva_cash_in"), dto.allowedPaymentMethods)
         assertEquals(2, dto.providers.size)
-        assertEquals("datalogic", dto.providers.first().name)
-        assertEquals("MXN", dto.orderTemplate?.currency)
-        assertEquals(1, dto.orderTemplate?.lineItems?.size)
+        assertEquals("farmacias_del_ahorro", dto.providers.first().name)
+        assertEquals(CurrencyCodes.MXN, dto.orderTemplate.currency)
+        assertEquals(1, dto.orderTemplate.lineItems.size)
         assertEquals(
             "Apple test 3",
             dto.orderTemplate
-                ?.lineItems
-                ?.first()
-                ?.name,
+                .lineItems
+                .first()
+                .name,
         )
         assertEquals(
             30000L,
             dto.orderTemplate
-                ?.lineItems
-                ?.first()
-                ?.unitPrice,
+                .lineItems
+                .first()
+                .unitPrice,
         )
     }
 
@@ -65,7 +66,7 @@ class CheckoutApiModelsTest {
             {
               "id":"ord_123",
               "amount":12000,
-              "currency":"MXN",
+              "currency":"${CurrencyCodes.MXN}",
               "line_items": {
                 "data": [
                   { "name": "Aretes", "quantity": 1, "unit_price": 10000 }
@@ -87,7 +88,7 @@ class CheckoutApiModelsTest {
 
         assertEquals("ord_123", dto.id)
         assertEquals(12000L, dto.amount)
-        assertEquals("MXN", dto.currency)
+        assertEquals(CurrencyCodes.MXN, dto.currency)
         assertEquals("chk_123", dto.checkout.id)
         assertEquals(
             listOf(
@@ -143,7 +144,7 @@ class CheckoutApiModelsTest {
             {
               "id":"ord_123",
               "amount":12000,
-              "currency":"MXN",
+              "currency":"${CurrencyCodes.MXN}",
               "extra":"value",
               "checkout":{
                 "id":"chk_123",
