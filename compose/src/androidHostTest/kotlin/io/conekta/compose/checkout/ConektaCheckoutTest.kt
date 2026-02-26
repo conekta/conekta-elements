@@ -2,16 +2,19 @@ package io.conekta.compose.checkout
 
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.runComposeUiTest
 import io.conekta.compose.initComposeResourcesContext
+import io.conekta.compose.generated.resources.Res
+import io.conekta.compose.generated.resources.checkout_method_card
+import io.conekta.compose.generated.resources.placeholder_cardholder_name_checkout
 import io.conekta.elements.checkout.api.CheckoutApiService
 import io.conekta.elements.checkout.models.CheckoutConfig
 import io.conekta.elements.checkout.models.CheckoutError
 import io.conekta.elements.checkout.models.CheckoutPaymentMethods
 import io.conekta.elements.checkout.models.CheckoutResult
 import io.conekta.elements.checkout.models.CurrencyCodes
+import org.jetbrains.compose.resources.stringResource
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -29,6 +32,8 @@ class ConektaCheckoutTest {
         runComposeUiTest {
             var selectedMethod = ""
             var capturedError: CheckoutError? = null
+            var cardMethodLabel = ""
+            var cardholderPlaceholder = ""
 
             val config =
                 CheckoutConfig(
@@ -39,6 +44,8 @@ class ConektaCheckoutTest {
                 )
 
             setContent {
+                cardMethodLabel = stringResource(Res.string.checkout_method_card)
+                cardholderPlaceholder = stringResource(Res.string.placeholder_cardholder_name_checkout)
                 ConektaCheckout(
                     config = config,
                     onPaymentMethodSelected = { selectedMethod = it },
@@ -70,17 +77,12 @@ class ConektaCheckoutTest {
 
             waitForIdle()
 
-            onNode(hasText("Tarjeta") or hasText("Card")).assertIsDisplayed()
+            onNodeWithText(cardMethodLabel).assertIsDisplayed()
             onNodeWithText("pay_by_bank").assertDoesNotExist()
             onNodeWithText("bnpl").assertDoesNotExist()
             onNodeWithText("apple").assertDoesNotExist()
 
-            onNode(
-                hasText("Name as it appears on card") or
-                    hasText("Name on card") or
-                    hasText("Nombre como aparece en la tarjeta") or
-                    hasText("Nombre del titular de tarjeta"),
-            ).assertExists()
+            onNodeWithText(cardholderPlaceholder).assertExists()
             onNodeWithText("0000 0000 0000 0000").assertExists()
             assertEquals(CheckoutPaymentMethods.CARD, selectedMethod)
             assertEquals(null, capturedError)

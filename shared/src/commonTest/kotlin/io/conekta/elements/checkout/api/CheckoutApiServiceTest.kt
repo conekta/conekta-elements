@@ -5,6 +5,7 @@ import io.conekta.elements.checkout.models.CheckoutError
 import io.conekta.elements.checkout.models.CheckoutPaymentMethods
 import io.conekta.elements.checkout.models.CurrencyCodes
 import io.conekta.elements.localization.ConektaLanguage
+import io.conekta.elements.testfixtures.CheckoutApiFixtures
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
@@ -32,7 +33,7 @@ class CheckoutApiServiceTest {
             checkoutRequestId = "dc5baf10-0f2b-4378-9f74-afa6bb418198",
             publicKey = "key_test_abc123",
             jwtToken = "jwt_test_token",
-            baseUrl = "https://test.conekta.com/",
+            baseUrl = "https://test.conekta.com",
         )
 
     private fun createMockClient(
@@ -68,24 +69,11 @@ class CheckoutApiServiceTest {
                 createMockClient(
                     statusCode = HttpStatusCode.OK,
                     responseBody =
-                        """
-                        {
-                          "id":"0f3e251c-90b7-4846-9ecb-e48b447f25e4",
-                          "amount":30000,
-                          "allowedPaymentMethods":["Card","Apple","cash_in","bbva_cash_in","BankTransfer"],
-                          "providers":[
-                            {"id":"647f8b322a0818004a414694","name":"farmacias_del_ahorro","paymentMethod":"cash"},
-                            {"id":"66df25a6af1debf142e80026","name":"bbva","paymentMethod":"cash"}
-                          ],
-                          "orderTemplate":{
-                            "currency":"${CurrencyCodes.MXN}",
-                            "lineItems":[{"name":"Apple test 3","quantity":1,"unitPrice":30000}],
-                            "taxLines":[{"description":"test","amount":2000}],
-                            "discountLines":[],
-                            "shippingLines":[]
-                          }
-                        }
-                        """.trimIndent(),
+                        CheckoutApiFixtures.checkoutRequestPayload(
+                            allowedPaymentMethods =
+                                listOf("Card", "Apple", "cash_in", "bbva_cash_in", "BankTransfer"),
+                            includeProviders = true,
+                        ),
                 )
 
             val service = CheckoutApiService(config = testConfig, httpClient = mockClient)
@@ -93,9 +81,9 @@ class CheckoutApiServiceTest {
 
             assertTrue(result.isSuccess)
             val checkout = result.getOrThrow()
-            assertEquals("0f3e251c-90b7-4846-9ecb-e48b447f25e4", checkout.orderId)
-            assertEquals("0f3e251c-90b7-4846-9ecb-e48b447f25e4", checkout.checkoutId)
-            assertEquals(30000L, checkout.amount)
+            assertEquals(CheckoutApiFixtures.CHECKOUT_ID, checkout.orderId)
+            assertEquals(CheckoutApiFixtures.CHECKOUT_ID, checkout.checkoutId)
+            assertEquals(30000, checkout.amount)
             assertEquals(CurrencyCodes.MXN, checkout.currency)
             assertEquals(
                 listOf(
@@ -124,20 +112,7 @@ class CheckoutApiServiceTest {
             val mockClient =
                 createMockClient(
                     statusCode = HttpStatusCode.OK,
-                    responseBody =
-                        """
-                        {
-                          "id":"ord_legacy",
-                          "amount":12000,
-                          "currency":"${CurrencyCodes.MXN}",
-                          "line_items":{"data":[{"name":"Aretes Tres Círculos Numerales","quantity":1,"unit_price":10000}]},
-                          "tax_lines":{"data":[{"description":"test","amount":2000}]},
-                          "checkout":{
-                            "id":"chk_legacy",
-                            "allowed_payment_methods":["card","cash","bank_transfer"]
-                          }
-                        }
-                        """.trimIndent(),
+                    responseBody = CheckoutApiFixtures.legacyCheckoutOrderPayload(),
                 )
 
             val service = CheckoutApiService(config = testConfig, httpClient = mockClient)
@@ -147,7 +122,7 @@ class CheckoutApiServiceTest {
             val checkout = result.getOrThrow()
             assertEquals("ord_legacy", checkout.orderId)
             assertEquals("chk_legacy", checkout.checkoutId)
-            assertEquals(12000L, checkout.amount)
+            assertEquals(12000, checkout.amount)
             assertEquals(CurrencyCodes.MXN, checkout.currency)
             assertEquals(
                 listOf(
@@ -170,15 +145,7 @@ class CheckoutApiServiceTest {
             val mockClient =
                 createMockClient(
                     statusCode = HttpStatusCode.OK,
-                    responseBody =
-                        """
-                        {
-                          "id":"0f3e251c-90b7-4846-9ecb-e48b447f25e4",
-                          "amount":30000,
-                          "allowedPaymentMethods":["Card"],
-                          "orderTemplate":{"currency":"${CurrencyCodes.MXN}","lineItems":[],"taxLines":[],"discountLines":[],"shippingLines":[]}
-                        }
-                        """.trimIndent(),
+                    responseBody = CheckoutApiFixtures.checkoutRequestPayload(allowedPaymentMethods = listOf("Card")),
                     onRequest = { url, authorization, jwt, acceptLanguage ->
                         capturedUrl = url
                         capturedAuthorization = authorization
@@ -192,7 +159,7 @@ class CheckoutApiServiceTest {
 
             assertTrue(result.isSuccess)
             assertEquals(
-                "https://test.conekta.com/checkout-bff/v1/checkout-requests/dc5baf10-0f2b-4378-9f74-afa6bb418198",
+                "https://test.conekta.com/checkout-bff/v1/checkout-requests/${CheckoutApiFixtures.CHECKOUT_REQUEST_ID}",
                 capturedUrl,
             )
             assertEquals("Bearer key_test_abc123", capturedAuthorization)
@@ -212,15 +179,7 @@ class CheckoutApiServiceTest {
             val mockClient =
                 createMockClient(
                     statusCode = HttpStatusCode.OK,
-                    responseBody =
-                        """
-                        {
-                          "id":"0f3e251c-90b7-4846-9ecb-e48b447f25e4",
-                          "amount":30000,
-                          "allowedPaymentMethods":["Card"],
-                          "orderTemplate":{"currency":"${CurrencyCodes.MXN}","lineItems":[],"taxLines":[],"discountLines":[],"shippingLines":[]}
-                        }
-                        """.trimIndent(),
+                    responseBody = CheckoutApiFixtures.checkoutRequestPayload(allowedPaymentMethods = listOf("Card")),
                     onRequest = { _, _, _, acceptLanguage ->
                         capturedAcceptLanguage = acceptLanguage
                     },
@@ -240,14 +199,11 @@ class CheckoutApiServiceTest {
                 createMockClient(
                     statusCode = HttpStatusCode.UnprocessableEntity,
                     responseBody =
-                        """
-                        {
-                          "object":"error",
-                          "type":"invalid_request_error",
-                          "message":"Request is invalid",
-                          "message_to_purchaser":"No fue posible procesar"
-                        }
-                        """.trimIndent(),
+                        CheckoutApiFixtures.apiErrorPayload(
+                            type = "invalid_request_error",
+                            message = "Request is invalid",
+                            messageToPurchaser = "No fue posible procesar",
+                        ),
                 )
 
             val service = CheckoutApiService(config = testConfig, httpClient = mockClient)
@@ -258,7 +214,29 @@ class CheckoutApiServiceTest {
             assertIs<CheckoutApiException>(exception)
             val apiError = assertIs<CheckoutError.ApiError>(exception.checkoutError)
             assertEquals("invalid_request_error", apiError.code)
-            assertEquals("No fue posible procesar", apiError.message)
+            assertEquals("Request is invalid", apiError.message)
+        }
+
+    @Test
+    fun fetchCheckoutApiErrorPrefersNestedDetailsMessage() =
+        runTest {
+            val nestedDetailMessage =
+                "Invalid purchase due to a card issued outside of Mexico. Please try with another card or payment method."
+            val mockClient =
+                createMockClient(
+                    statusCode = HttpStatusCode.BadRequest,
+                    responseBody = CheckoutApiFixtures.nestedDetailsErrorPayload(nestedDetailMessage),
+                )
+
+            val service = CheckoutApiService(config = testConfig, httpClient = mockClient)
+            val result = service.fetchCheckout()
+
+            assertTrue(result.isFailure)
+            val exception = result.exceptionOrNull()
+            assertIs<CheckoutApiException>(exception)
+            val apiError = assertIs<CheckoutError.ApiError>(exception.checkoutError)
+            assertEquals("parameter_validation_error", apiError.code)
+            assertEquals(nestedDetailMessage, apiError.message)
         }
 
     @Test
@@ -393,7 +371,7 @@ class CheckoutApiServiceTest {
             assertEquals("jwt_test_token", captured.jwtToken)
 
             val bodyJson = Json.decodeFromString<JsonObject>(captured.body)
-            assertEquals("dc5baf10-0f2b-4378-9f74-afa6bb418198", bodyJson["checkoutRequestId"]?.jsonPrimitive?.content)
+            assertEquals(CheckoutApiFixtures.CHECKOUT_REQUEST_ID, bodyJson["checkoutRequestId"]?.jsonPrimitive?.content)
             assertEquals("Cash", bodyJson["paymentMethod"]?.jsonPrimitive?.content)
             assertTrue(bodyJson["tokenId"] is JsonNull || bodyJson["tokenId"] == null)
         }
@@ -405,14 +383,11 @@ class CheckoutApiServiceTest {
                 createPostMockClient(
                     statusCode = HttpStatusCode.UnprocessableEntity,
                     responseBody =
-                        """
-                        {
-                          "object":"error",
-                          "type":"invalid_request_error",
-                          "message":"Invalid payment method",
-                          "message_to_purchaser":"No fue posible procesar el pago"
-                        }
-                        """.trimIndent(),
+                        CheckoutApiFixtures.apiErrorPayload(
+                            type = "invalid_request_error",
+                            message = "Invalid payment method",
+                            messageToPurchaser = "No fue posible procesar el pago",
+                        ),
                 )
 
             val service = CheckoutApiService(config = testConfig, httpClient = mockClient)
@@ -423,7 +398,7 @@ class CheckoutApiServiceTest {
             assertIs<CheckoutApiException>(exception)
             val apiError = assertIs<CheckoutError.ApiError>(exception.checkoutError)
             assertEquals("invalid_request_error", apiError.code)
-            assertEquals("No fue posible procesar el pago", apiError.message)
+            assertEquals("Invalid payment method", apiError.message)
         }
 
     @Test

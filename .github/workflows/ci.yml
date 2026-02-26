@@ -27,6 +27,9 @@ jobs:
       - name: iOS shared tests
         run: make ios-test
 
+      - name: iOS compose locale test
+        run: ./gradlew :compose:iosSimulatorArm64Test --tests "io.conekta.compose.localization.ConektaLocaleIosTest"
+
       - name: verify ios resources
         run: make verify-ios-resources
 

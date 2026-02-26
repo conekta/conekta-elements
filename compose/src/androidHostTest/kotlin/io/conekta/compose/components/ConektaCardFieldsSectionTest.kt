@@ -12,7 +12,12 @@ import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.runComposeUiTest
 import androidx.compose.ui.text.input.TextFieldValue
 import io.conekta.compose.initComposeResourcesContext
+import io.conekta.compose.components.card.ConektaCardFieldsSection
+import io.conekta.compose.generated.resources.Res
+import io.conekta.compose.generated.resources.placeholder_cardholder_name
+import io.conekta.compose.generated.resources.placeholder_expiry
 import io.conekta.compose.theme.ConektaTheme
+import org.jetbrains.compose.resources.stringResource
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,7 +32,11 @@ class ConektaCardFieldsSectionTest {
     @Test
     fun cardFieldsSectionRendersCoreFields() =
         runComposeUiTest {
+            var cardholderPlaceholder = ""
+            var expiryPlaceholder = ""
             setContent {
+                cardholderPlaceholder = stringResource(Res.string.placeholder_cardholder_name)
+                expiryPlaceholder = stringResource(Res.string.placeholder_expiry)
                 ConektaTheme {
                     ConektaCardFieldsSection(
                         cardholderName = TextFieldValue(""),
@@ -42,9 +51,9 @@ class ConektaCardFieldsSectionTest {
                 }
             }
 
-            onNode(hasText("Name as it appears on card") or hasText("Nombre como aparece en la tarjeta")).assertExists()
+            onNodeWithText(cardholderPlaceholder).assertExists()
             onNodeWithText("0000 0000 0000 0000").assertExists()
-            onNode(hasText("MM/YY") or hasText("MM/AA")).assertExists()
+            onNodeWithText(expiryPlaceholder).assertExists()
             onNode(hasText("CVV", substring = true) and hasSetTextAction()).assertExists()
         }
 

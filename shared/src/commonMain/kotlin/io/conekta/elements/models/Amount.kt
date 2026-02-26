@@ -32,7 +32,9 @@ class Amount(
      * @param decimals Number of decimal places to display
      * @return Formatted string. Example: toFixed(2) -> "260.70"
      */
-    fun toFixed(decimals: Int): String = apiFormat().toFixed(decimals)
+    fun apiFormatToFixed(decimals: Int): String = apiFormat().toFixed(decimals)
+
+    fun toFixed(decimals: Int): String = apiFormatToFixed(decimals)
 
     override fun toString() = value.toString()
 

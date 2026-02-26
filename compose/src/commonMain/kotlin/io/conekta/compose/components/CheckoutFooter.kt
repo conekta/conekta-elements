@@ -41,11 +41,6 @@ import io.conekta.compose.utils.colorFromHex
 import io.conekta.elements.resources.CDNResources
 import org.jetbrains.compose.resources.stringResource
 
-private val CheckoutBg = colorFromHex(CDNResources.Colors.CHECKOUT_BACKGROUND)
-private val Border = colorFromHex(CDNResources.Colors.CHECKOUT_BORDER)
-private val LocaleMenuBg = Color(0xFF2A2A2A)
-private val LocaleMenuFg = Color.White
-
 @Composable
 fun CheckoutFooter(
     modifier: Modifier = Modifier,
@@ -56,7 +51,11 @@ fun CheckoutFooter(
     val fontFamily = LocalConektaFontFamily.current
     var languageMenuExpanded by remember { mutableStateOf(false) }
     Row(
-        modifier = modifier.fillMaxWidth().background(CheckoutBg).padding(horizontal = 16.dp, vertical = 16.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .background(colorFromHex(CDNResources.Colors.CHECKOUT_BACKGROUND))
+                .padding(horizontal = 16.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
     ) {
@@ -99,14 +98,14 @@ fun CheckoutFooter(
             DropdownMenu(
                 expanded = languageMenuExpanded,
                 onDismissRequest = { languageMenuExpanded = false },
-                containerColor = LocaleMenuBg,
+                containerColor = Color(0xFF2A2A2A),
             ) {
                 listOf("es" to "ES", "en" to "EN").forEach { (tag, label) ->
                     DropdownMenuItem(
                         text = {
                             Text(
                                 text = label,
-                                style = TextStyle(fontFamily = fontFamily, fontSize = 14.sp, color = LocaleMenuFg),
+                                style = TextStyle(fontFamily = fontFamily, fontSize = 14.sp, color = Color.White),
                             )
                         },
                         onClick = {
@@ -118,7 +117,7 @@ fun CheckoutFooter(
                                 Icon(
                                     imageVector = Icons.Outlined.Check,
                                     contentDescription = null,
-                                    tint = LocaleMenuFg,
+                                    tint = Color.White,
                                     modifier = Modifier.size(16.dp),
                                 )
                             }
@@ -152,6 +151,6 @@ private fun FooterLink(
 @Composable
 private fun FooterSeparator() {
     Spacer(modifier = Modifier.width(16.dp))
-    Box(modifier = Modifier.height(18.dp).width(1.dp).background(Border))
+    Box(modifier = Modifier.height(18.dp).width(1.dp).background(colorFromHex(CDNResources.Colors.CHECKOUT_BORDER)))
     Spacer(modifier = Modifier.width(16.dp))
 }

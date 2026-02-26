@@ -1,4 +1,4 @@
-package io.conekta.compose.components
+package io.conekta.compose.components.cash
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import io.conekta.compose.components.SuccessEmailToast
 import io.conekta.elements.checkout.models.CheckoutOrderResult
 import io.conekta.elements.checkout.models.CheckoutResult
 import io.conekta.elements.checkout.models.ProductTypes

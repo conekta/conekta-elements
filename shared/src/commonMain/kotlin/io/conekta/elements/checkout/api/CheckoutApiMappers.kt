@@ -35,7 +35,7 @@ internal fun CreateOrderResponseDto.toDomain(): CheckoutOrderResult =
 
 private fun CreateOrderChargeDto.toDomain(): CheckoutCharge =
     CheckoutCharge(
-        amount = amount,
+        amount = amount.toInt(),
         currency = currency,
         status = status,
         paymentMethod = paymentMethod?.toDomain(),
@@ -61,7 +61,7 @@ internal fun CheckoutRequestResponseDto.toDomain(): CheckoutResult =
         orderId = id,
         checkoutId = id,
         name = name,
-        amount = amount,
+        amount = amount.toInt(),
         currency = orderTemplate.currency,
         allowedPaymentMethods = allowedPaymentMethods.map(::normalizePaymentMethodValue),
         providers =
@@ -110,7 +110,7 @@ internal fun CheckoutOrderResponseDto.toDomain(): CheckoutResult =
         orderId = id,
         checkoutId = checkout.id,
         name = "",
-        amount = amount,
+        amount = amount.toInt(),
         currency = currency,
         allowedPaymentMethods = checkout.allowedPaymentMethods.map(::normalizePaymentMethodValue),
         providers = emptyList(),

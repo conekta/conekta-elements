@@ -52,10 +52,6 @@ object CDNResources {
         const val SUCCESS_LINK_BLUE = "#090E94"
         const val SUCCESS_STEP_NUMBER_BG = "#E2E8F0"
         const val SUCCESS_COPY_BUTTON_BG = "#E5EDFF"
-        const val SUCCESS_TOAST_BG = "#D8FDCF"
-        const val SUCCESS_TOAST_BORDER = "#9FE870"
-        const val SUCCESS_TOAST_TEXT = "#163300"
-        const val SUCCESS_TOAST_ICON = "#51A81B"
     }
 
     object Links {

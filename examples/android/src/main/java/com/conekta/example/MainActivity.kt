@@ -183,6 +183,7 @@ private fun CheckoutExample() {
                         is CheckoutError.NetworkError -> error.message
                         is CheckoutError.ApiError -> "${error.code}: ${error.message}"
                     }
+                    Log.e(TAG, "Checkout error raw: $error")
                     Log.e(TAG, "Checkout error: $message")
                 },
                 onOrderCreated = { result: CheckoutOrderResult ->
@@ -227,7 +228,6 @@ private suspend fun fetchCheckoutRequestId(publicKey: String): String =
             "Coffee Maker", "Running Shoes", "Smart Watch",
         ).random()
         val body = JSONObject().apply {
-            put("three_ds_mode", "strict")
             put("currency", CurrencyCodes.MXN)
             put(
                 "customer_info",
@@ -235,7 +235,6 @@ private suspend fun fetchCheckoutRequestId(publicKey: String): String =
                     put("name", customerName)
                     put("email", email)
                     put("phone", phone)
-                    put("object", "customer_info")
                 },
             )
             put("line_items", org.json.JSONArray().apply {

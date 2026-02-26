@@ -1,4 +1,4 @@
-package io.conekta.compose.components
+package io.conekta.compose.components.banktransfer
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -13,7 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -23,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.conekta.compose.components.PaySummaryExpirationRow
 import io.conekta.compose.generated.resources.Res
 import io.conekta.compose.generated.resources.success_bank_transfer_clabe_format
 import io.conekta.compose.generated.resources.success_bank_transfer_copy_number
@@ -30,10 +30,6 @@ import io.conekta.compose.generated.resources.success_bank_transfer_reference_ti
 import io.conekta.compose.theme.ConektaColors
 import io.conekta.compose.theme.LocalConektaFontFamily
 import org.jetbrains.compose.resources.stringResource
-
-private val CardBorderColor = Color(0xFFD8D8E8)
-private val CopyButtonBg = Color(0xFFE5EDFF)
-private val CopyButtonText = Color(0xFF2C4CF5)
 
 @Composable
 internal fun BankTransferSuccessReferenceCard(
@@ -43,6 +39,7 @@ internal fun BankTransferSuccessReferenceCard(
     onCopyClick: () -> Unit,
 ) {
     val fontFamily = LocalConektaFontFamily.current
+    @Suppress("DEPRECATION")
     val clipboardManager = LocalClipboardManager.current
     val hapticFeedback = LocalHapticFeedback.current
 
@@ -50,7 +47,7 @@ internal fun BankTransferSuccessReferenceCard(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
         color = ConektaColors.Surface,
         shape = RoundedCornerShape(8.dp),
-        border = BorderStroke(1.dp, CardBorderColor),
+        border = BorderStroke(1.dp, ConektaColors.Neutral5),
     ) {
         Column(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 32.dp),
@@ -80,7 +77,7 @@ internal fun BankTransferSuccessReferenceCard(
                         lineHeight = 40.sp,
                         fontWeight = FontWeight.Bold,
                         letterSpacing = (-0.64).sp,
-                        color = Color(0xFF212247),
+                        color = ConektaColors.SuccessTextPrimary,
                     ),
                 textAlign = TextAlign.Center,
             )
@@ -97,7 +94,7 @@ internal fun BankTransferSuccessReferenceCard(
                         fontSize = 18.sp,
                         lineHeight = 24.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF212247),
+                        color = ConektaColors.SuccessTextPrimary,
                     ),
                 textAlign = TextAlign.Center,
             )
@@ -113,7 +110,7 @@ internal fun BankTransferSuccessReferenceCard(
                                 onCopyClick()
                             }
                         },
-                color = CopyButtonBg,
+                color = ConektaColors.SuccessCopyButtonBackground,
                 shape = RoundedCornerShape(8.dp),
             ) {
                 Text(
@@ -125,7 +122,7 @@ internal fun BankTransferSuccessReferenceCard(
                             fontSize = 14.sp,
                             lineHeight = 14.sp,
                             fontWeight = FontWeight.Normal,
-                            color = CopyButtonText,
+                            color = ConektaColors.SuccessAccentBlue,
                         ),
                 )
             }

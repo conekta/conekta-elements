@@ -1,10 +1,13 @@
-package io.conekta.compose.components
+package io.conekta.compose.components.card
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import io.conekta.compose.components.CheckoutMethodContentHorizontalPadding
+import io.conekta.compose.components.CheckoutMethodRow
+import io.conekta.compose.components.CheckoutSelectedMethodContainer
 import io.conekta.compose.generated.resources.Res
 import io.conekta.compose.generated.resources.checkout_method_card
 import io.conekta.elements.resources.CDNResources

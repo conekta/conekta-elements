@@ -1,6 +1,6 @@
 package io.conekta.compose.components
 
-import io.conekta.compose.checkout.CardFieldsState
+import io.conekta.compose.components.card.CardFieldsState
 import io.conekta.elements.checkout.models.CheckoutPaymentMethods
 import io.conekta.elements.tokenizer.validators.ValidationMessages
 import io.conekta.elements.tokenizer.validators.validateForm

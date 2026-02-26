@@ -1,4 +1,4 @@
-package io.conekta.compose.components
+package io.conekta.compose.components.cash
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.conekta.compose.components.PaySummaryExpirationRow
 import io.conekta.compose.generated.resources.Res
 import io.conekta.compose.generated.resources.success_cash_must_pay
 import io.conekta.compose.theme.ConektaColors
@@ -66,7 +67,7 @@ internal fun CashSuccessPaySummaryCard(
             )
 
             Text(
-                text = "$${Amount(checkoutResult.amount.toInt()).toFixed(2)} ${checkoutResult.currency}",
+                text = "$${Amount(checkoutResult.amount).apiFormatToFixed(2)} ${checkoutResult.currency}",
                 style =
                     TextStyle(
                         fontFamily = fontFamily,

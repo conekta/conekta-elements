@@ -1,7 +1,11 @@
-package io.conekta.compose.components
+package io.conekta.compose.components.banktransfer
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
+import io.conekta.compose.components.CheckoutEmailReferenceRow
+import io.conekta.compose.components.CheckoutMethodContent
+import io.conekta.compose.components.CheckoutMethodRow
+import io.conekta.compose.components.CheckoutSelectedMethodContainer
 import io.conekta.compose.generated.resources.Res
 import io.conekta.compose.generated.resources.checkout_bank_transfer_reference_message
 import io.conekta.compose.generated.resources.checkout_method_bank_transfer

@@ -1,4 +1,4 @@
-package io.conekta.compose.components
+package io.conekta.compose.components.card
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,21 +22,17 @@ import io.conekta.compose.generated.resources.success_card_purchase_completed
 import io.conekta.compose.generated.resources.success_card_title
 import io.conekta.compose.theme.ConektaColors
 import io.conekta.compose.theme.LocalConektaFontFamily
-import io.conekta.compose.utils.colorFromHex
 import io.conekta.elements.checkout.models.CheckoutResult
 import io.conekta.elements.models.Amount
 import io.conekta.elements.resources.CDNResources
 import org.jetbrains.compose.resources.stringResource
-
-private val CardBorderColor = colorFromHex(CDNResources.Colors.CHECKOUT_BORDER)
-private val SuccessBodyText = colorFromHex(CDNResources.Colors.SUCCESS_TEXT_SECONDARY)
 
 @Composable
 internal fun CardSuccessContent(
     checkoutResult: CheckoutResult,
     merchantName: String,
 ) {
-    val amountText = "$${Amount(checkoutResult.amount.toInt()).toFixed(2)}"
+    val amountText = "$${Amount(checkoutResult.amount).apiFormatToFixed(2)}"
 
     CardSuccessMessageCard(
         merchantName = merchantName,
@@ -55,7 +51,7 @@ private fun CardSuccessMessageCard(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
         color = ConektaColors.Surface,
         shape = RoundedCornerShape(8.dp),
-        border = androidx.compose.foundation.BorderStroke(1.dp, CardBorderColor),
+        border = androidx.compose.foundation.BorderStroke(1.dp, ConektaColors.Neutral5),
     ) {
         Column(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 32.dp),
@@ -88,7 +84,7 @@ private fun CardSuccessMessageCard(
                         fontFamily = fontFamily,
                         fontSize = 14.sp,
                         lineHeight = 22.sp,
-                        color = SuccessBodyText,
+                        color = ConektaColors.Neutral8,
                     ),
             )
         }

@@ -17,7 +17,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import io.conekta.compose.checkout.CardFieldsState
+import io.conekta.compose.components.banktransfer.CheckoutBankTransferMethodItem
+import io.conekta.compose.components.banktransfer.CheckoutBankTransferMethodSection
+import io.conekta.compose.components.card.CardFieldsState
+import io.conekta.compose.components.card.CheckoutCardMethodItem
+import io.conekta.compose.components.card.CheckoutCardMethodSection
+import io.conekta.compose.components.cash.CheckoutCashMethodItem
+import io.conekta.compose.components.cash.CheckoutCashMethodSection
 import io.conekta.compose.generated.resources.Res
 import io.conekta.compose.generated.resources.checkout_error_loading
 import io.conekta.compose.generated.resources.checkout_loading
@@ -30,8 +36,6 @@ import io.conekta.elements.resources.CDNResources
 import io.conekta.elements.tokenizer.validators.ValidationMessages
 import io.conekta.elements.tokenizer.validators.validateForm
 import org.jetbrains.compose.resources.stringResource
-
-private val Border = colorFromHex(CDNResources.Colors.CHECKOUT_BORDER)
 
 @Composable
 internal fun PaymentMethodsSection(
@@ -192,7 +196,7 @@ internal fun PaymentMethodsSection(
 
                         val isDividerAdjacentToSelection = index == selectedIndex || index + 1 == selectedIndex
                         if (index < methods.lastIndex && !isDividerAdjacentToSelection) {
-                            HorizontalDivider(color = Border)
+                            HorizontalDivider(color = colorFromHex(CDNResources.Colors.CHECKOUT_BORDER))
                         }
                     }
                 }

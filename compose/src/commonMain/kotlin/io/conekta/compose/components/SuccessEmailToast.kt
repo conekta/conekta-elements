@@ -16,19 +16,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.conekta.compose.generated.resources.Res
 import io.conekta.compose.generated.resources.success_email_sent
+import io.conekta.compose.theme.ConektaColors
 import io.conekta.compose.theme.LocalConektaFontFamily
 import org.jetbrains.compose.resources.stringResource
-
-private val SuccessToastBg = Color(0xFFD8FDCF)
-private val SuccessToastBorder = Color(0xFF9FE870)
-private val SuccessToastText = Color(0xFF163300)
-private val SuccessToastIcon = Color(0xFF51A81B)
 
 @Composable
 internal fun SuccessEmailToast(
@@ -39,11 +34,11 @@ internal fun SuccessEmailToast(
 
     Surface(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 8.dp),
-        color = SuccessToastBg,
+        color = ConektaColors.SuccessToastBackground,
         shape =
             androidx.compose.foundation.shape
                 .RoundedCornerShape(8.dp),
-        border = BorderStroke(1.dp, SuccessToastBorder),
+        border = BorderStroke(1.dp, ConektaColors.SuccessToastBorder),
         shadowElevation = 6.dp,
     ) {
         Row(
@@ -54,7 +49,7 @@ internal fun SuccessEmailToast(
             Icon(
                 imageVector = Icons.Outlined.CheckCircle,
                 contentDescription = null,
-                tint = SuccessToastIcon,
+                tint = ConektaColors.SuccessToastIcon,
                 modifier = Modifier.size(32.dp),
             )
 
@@ -65,7 +60,7 @@ internal fun SuccessEmailToast(
                         fontFamily = fontFamily,
                         fontSize = 16.sp,
                         lineHeight = 24.sp,
-                        color = SuccessToastText,
+                        color = ConektaColors.SuccessToastText,
                     ),
                 modifier = Modifier.weight(1f),
             )
@@ -73,7 +68,7 @@ internal fun SuccessEmailToast(
             Icon(
                 imageVector = Icons.Outlined.Close,
                 contentDescription = null,
-                tint = SuccessToastIcon,
+                tint = ConektaColors.SuccessToastIcon,
                 modifier =
                     Modifier
                         .size(24.dp)

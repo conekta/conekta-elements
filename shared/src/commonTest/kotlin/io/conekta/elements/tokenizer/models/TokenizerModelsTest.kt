@@ -89,7 +89,7 @@ class TokenizerConfigTest {
     @Test
     fun `TokenizerConfig has default baseUrl pointing to production`() {
         val config = TokenizerConfig(publicKey = "key_test_123")
-        assertEquals("https://api.conekta.io/", config.baseUrl)
+        assertEquals("https://api.conekta.io", config.baseUrl)
     }
 
     @Test
@@ -125,7 +125,7 @@ class TokenizerConfigTest {
         assertEquals("key_test_123", config.publicKey)
         assertEquals("Demo Store", config.merchantName)
         assertTrue(config.collectCardholderName)
-        assertEquals("https://api.conekta.io/", config.baseUrl)
+        assertEquals("https://api.conekta.io", config.baseUrl)
         assertTrue(config.rsaPublicKey.startsWith("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjet2"))
     }
 
@@ -135,7 +135,7 @@ class TokenizerConfigTest {
         assertEquals("key_test_123", config.publicKey)
         assertEquals("Custom Store", config.merchantName)
         assertFalse(config.collectCardholderName)
-        assertEquals("https://api.conekta.io/", config.baseUrl)
+        assertEquals("https://api.conekta.io", config.baseUrl)
         assertTrue(config.rsaPublicKey.startsWith("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjet2"))
     }
 

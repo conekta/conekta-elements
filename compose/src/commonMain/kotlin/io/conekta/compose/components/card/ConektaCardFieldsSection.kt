@@ -1,4 +1,4 @@
-package io.conekta.compose.components
+package io.conekta.compose.components.card
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,6 +14,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import io.conekta.compose.components.CardBrandIconsRow
+import io.conekta.compose.components.ConektaTextField
+import io.conekta.compose.components.CvvIcon
 import io.conekta.compose.generated.resources.Res
 import io.conekta.compose.generated.resources.label_card_number
 import io.conekta.compose.generated.resources.label_cardholder_name

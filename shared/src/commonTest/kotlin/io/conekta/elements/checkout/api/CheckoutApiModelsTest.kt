@@ -2,6 +2,7 @@ package io.conekta.elements.checkout.api
 
 import io.conekta.elements.checkout.models.CheckoutPaymentMethods
 import io.conekta.elements.checkout.models.CurrencyCodes
+import io.conekta.elements.testfixtures.CheckoutApiFixtures
 import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -13,30 +14,15 @@ class CheckoutApiModelsTest {
     @Test
     fun checkoutRequestResponseDtoDeserializesRequiredFields() {
         val payload =
-            """
-            {
-              "id":"0f3e251c-90b7-4846-9ecb-e48b447f25e4",
-              "amount":30000,
-              "allowedPaymentMethods":["Card","Apple","cash_in","bbva_cash_in"],
-              "providers":[
-                {"id":"647f8b322a0818004a414694","name":"farmacias_del_ahorro","paymentMethod":"cash"},
-                {"id":"66df25a6af1debf142e80026","name":"bbva","paymentMethod":"cash"}
-              ],
-              "orderTemplate":{
-                "currency":"${CurrencyCodes.MXN}",
-                "lineItems":[
-                  {"name":"Apple test 3","quantity":1,"unitPrice":30000}
-                ],
-                "taxLines":[],
-                "discountLines":[],
-                "shippingLines":[]
-              }
-            }
-            """.trimIndent()
+            CheckoutApiFixtures.checkoutRequestPayload(
+                allowedPaymentMethods = listOf("Card", "Apple", "cash_in", "bbva_cash_in"),
+                includeProviders = true,
+            )
 
         val dto = json.decodeFromString(CheckoutRequestResponseDto.serializer(), payload)
 
-        assertEquals("0f3e251c-90b7-4846-9ecb-e48b447f25e4", dto.id)
+        assertEquals(CheckoutApiFixtures.CHECKOUT_ID, dto.id)
+        assertEquals(CheckoutApiFixtures.CHECKOUT_NAME, dto.name)
         assertEquals(30000L, dto.amount)
         assertEquals(listOf("Card", "Apple", "cash_in", "bbva_cash_in"), dto.allowedPaymentMethods)
         assertEquals(2, dto.providers.size)

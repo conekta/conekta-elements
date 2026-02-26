@@ -13,8 +13,6 @@ import io.conekta.compose.utils.colorFromHex
 import io.conekta.elements.resources.CDNResources
 import org.jetbrains.compose.resources.stringResource
 
-private val OnSurface = colorFromHex(CDNResources.Colors.CHECKOUT_ON_SURFACE)
-
 @Composable
 internal fun CheckoutMethodSectionTitle(modifier: Modifier = Modifier) {
     val fontFamily = LocalConektaFontFamily.current
@@ -26,7 +24,7 @@ internal fun CheckoutMethodSectionTitle(modifier: Modifier = Modifier) {
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
                 lineHeight = 12.sp,
-                color = OnSurface,
+                color = colorFromHex(CDNResources.Colors.CHECKOUT_ON_SURFACE),
             ),
         modifier = modifier,
     )

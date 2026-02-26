@@ -108,7 +108,7 @@ data class CheckoutResult(
     val orderId: String,
     val checkoutId: String,
     val name: String = "",
-    val amount: Long,
+    val amount: Int,
     val currency: String,
     val allowedPaymentMethods: List<String>,
     val providers: List<CheckoutProvider> = emptyList(),
@@ -163,7 +163,7 @@ data class CheckoutRedirectToUrl(
 
 @ObjCName("CheckoutCharge")
 data class CheckoutCharge(
-    val amount: Long = 0,
+    val amount: Int = 0,
     val currency: String = CurrencyCodes.MXN,
     val status: String = "",
     val paymentMethod: CheckoutChargePaymentMethod? = null,

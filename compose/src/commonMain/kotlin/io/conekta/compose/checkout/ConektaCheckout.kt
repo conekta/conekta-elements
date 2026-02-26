@@ -9,7 +9,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.TextFieldValue
 import io.conekta.compose.components.CheckoutContent
 import io.conekta.compose.localization.ProvideLanguage
 import io.conekta.compose.localization.normalizeLanguageTag
@@ -22,23 +21,7 @@ import io.conekta.elements.checkout.models.CheckoutError
 import io.conekta.elements.checkout.models.CheckoutOrderResult
 import io.conekta.elements.resources.CDNResources
 
-internal class CardFieldsState {
-    var cardholderName by mutableStateOf(TextFieldValue(""))
-    var cardNumber by mutableStateOf(TextFieldValue(""))
-    var expiryDate by mutableStateOf(TextFieldValue(""))
-    var cvv by mutableStateOf(TextFieldValue(""))
-    var cardholderNameError by mutableStateOf(false)
-    var cardNumberError by mutableStateOf(false)
-    var expiryDateError by mutableStateOf(false)
-    var cvvError by mutableStateOf(false)
-    var cardholderNameErrorMsg by mutableStateOf<String?>(null)
-    var cardNumberErrorMsg by mutableStateOf<String?>(null)
-    var expiryDateErrorMsg by mutableStateOf<String?>(null)
-    var cvvErrorMsg by mutableStateOf<String?>(null)
-}
-
 private const val AUTO_LANGUAGE_TAG = "auto"
-private val CheckoutBg = colorFromHex(CDNResources.Colors.CHECKOUT_BACKGROUND)
 
 @Composable
 fun ConektaCheckout(
@@ -67,7 +50,7 @@ fun ConektaCheckout(
             key(currentLanguageTag) {
                 Surface(
                     modifier = modifier.fillMaxWidth(),
-                    color = CheckoutBg,
+                    color = colorFromHex(CDNResources.Colors.CHECKOUT_BACKGROUND),
                 ) {
                     val localizedConfig = config.copy(languageTag = currentLanguageTag)
                     CheckoutContent(

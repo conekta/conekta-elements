@@ -26,6 +26,7 @@ open class CheckoutApiService(
     private val httpClient: HttpClient = ConektaHttpClient.create(),
 ) {
     private val json = ConektaHttpClient.json
+    private val errorMapper = CheckoutApiErrorMapper(json)
 
     open suspend fun fetchCheckout(): Result<CheckoutResult> =
         try {
@@ -50,7 +51,7 @@ open class CheckoutApiService(
         } catch (e: Exception) {
             Result.failure(
                 CheckoutApiException(
-                    CheckoutError.NetworkError(e.asNetworkErrorMessage("Unknown network error")),
+                    errorMapper.mapExceptionToNetworkError(e),
                 ),
             )
         }
@@ -98,7 +99,7 @@ open class CheckoutApiService(
         } catch (e: Exception) {
             Result.failure(
                 CheckoutApiException(
-                    CheckoutError.NetworkError(e.asNetworkErrorMessage("Unknown network error")),
+                    errorMapper.mapExceptionToNetworkError(e),
                 ),
             )
         }
@@ -126,34 +127,7 @@ open class CheckoutApiService(
     private fun buildHttpErrorResult(
         statusCode: Int,
         errorBody: String,
-    ): Result<Nothing> {
-        val errorResponse =
-            try {
-                json.decodeFromString(CheckoutErrorResponseDto.serializer(), errorBody)
-            } catch (_: Exception) {
-                null
-            }
-
-        return if (errorResponse != null) {
-            Result.failure(
-                CheckoutApiException(
-                    CheckoutError.ApiError(
-                        code = errorResponse.type,
-                        message =
-                            errorResponse.messageToPurchaser.ifEmpty {
-                                errorResponse.message.ifEmpty { errorBody }
-                            },
-                    ),
-                ),
-            )
-        } else {
-            Result.failure(
-                CheckoutApiException(
-                    CheckoutError.NetworkError("HTTP $statusCode: $errorBody"),
-                ),
-            )
-        }
-    }
+    ): Result<Nothing> = errorMapper.buildHttpErrorResult(statusCode = statusCode, errorBody = errorBody)
 
     private fun <T> decodeOrNull(
         serializer: kotlinx.serialization.KSerializer<T>,
@@ -173,18 +147,6 @@ open class CheckoutApiService(
             HttpHeaders.Accept to HEADER_ACCEPT_CONEKTA_VERSION,
             HEADER_CONEKTA_CLIENT_USER_AGENT to sdkUserAgent,
         )
-
-    private fun Throwable.asNetworkErrorMessage(defaultMessage: String): String {
-        val type = this::class.simpleName ?: "Exception"
-        val directMessage = message?.trim().orEmpty()
-        val causeMessage = cause?.message?.trim().orEmpty()
-
-        return when {
-            directMessage.isNotEmpty() -> "$type: $directMessage"
-            causeMessage.isNotEmpty() -> "$type (cause: $causeMessage)"
-            else -> "$type: $defaultMessage"
-        }
-    }
 }
 
 class CheckoutApiException(

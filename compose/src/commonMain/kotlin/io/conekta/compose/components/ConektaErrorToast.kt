@@ -1,28 +1,30 @@
 package io.conekta.compose.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.conekta.compose.generated.resources.Res
 import io.conekta.compose.generated.resources.checkout_error_toast_title
+import io.conekta.compose.theme.ConektaColors
 import io.conekta.compose.theme.LocalConektaFontFamily
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.stringResource
@@ -39,9 +41,9 @@ internal fun ConektaErrorToast(
         onDismiss()
     }
 
-    val titleColor = Color(0xFFFF9DAA)
-    val bodyColor = Color(0xFFFFC5CD)
-    val backgroundColor = Color(0xFF5A2B34)
+    val titleColor = ConektaColors.ErrorToastTitle
+    val bodyColor = ConektaColors.ErrorToastBody
+    val backgroundColor = ConektaColors.ErrorToastBackground
 
     Surface(
         modifier = modifier.fillMaxWidth(),
@@ -52,9 +54,13 @@ internal fun ConektaErrorToast(
         Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp)) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Row(
+                    modifier = Modifier.weight(1f),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
                     Icon(
                         imageVector = Icons.Outlined.ErrorOutline,
                         contentDescription = null,
@@ -72,13 +78,16 @@ internal fun ConektaErrorToast(
                             ),
                     )
                 }
-                IconButton(onClick = onDismiss) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = null,
-                        tint = titleColor,
-                    )
-                }
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = null,
+                    tint = titleColor,
+                    modifier =
+                        Modifier
+                            .padding(top = 2.dp, end = 2.dp)
+                            .size(18.dp)
+                            .clickable(onClick = onDismiss),
+                )
             }
             Text(
                 text = message,

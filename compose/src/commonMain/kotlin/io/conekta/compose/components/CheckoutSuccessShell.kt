@@ -18,8 +18,6 @@ import io.conekta.elements.checkout.models.CheckoutResult
 import io.conekta.elements.models.Amount
 import io.conekta.elements.resources.CDNResources
 
-private val CheckoutBg = colorFromHex(CDNResources.Colors.CHECKOUT_BACKGROUND)
-
 @Composable
 internal fun CheckoutSuccessShell(
     checkoutResult: CheckoutResult,
@@ -35,11 +33,11 @@ internal fun CheckoutSuccessShell(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .background(CheckoutBg)
+                    .background(colorFromHex(CDNResources.Colors.CHECKOUT_BACKGROUND))
                     .verticalScroll(rememberScrollState()),
         ) {
             CheckoutTotalRow(
-                amountText = "$${Amount(checkoutResult.amount.toInt()).toFixed(2)}",
+                amountText = "$${Amount(checkoutResult.amount).apiFormatToFixed(2)}",
                 lineItems = checkoutResult.lineItems,
                 taxLines = checkoutResult.taxLines,
                 discountLines = checkoutResult.discountLines,

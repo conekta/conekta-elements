@@ -1,5 +1,6 @@
 package io.conekta.elements.tokenizer.api
 
+import io.conekta.elements.testfixtures.TokenizerApiFixtures
 import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -26,7 +27,14 @@ class TokenizerApiModelsTest {
 
     @Test
     fun cardDataDtoDeserializesFromSnakeCase() {
-        val jsonStr = """{"cvc":"456","exp_month":"01","exp_year":"28","name":"Jane","number":"5555555555554444"}"""
+        val jsonStr =
+            TokenizerApiFixtures.cardDataPayload(
+                cvc = "456",
+                expMonth = "01",
+                expYear = "28",
+                name = "Jane",
+                number = "5555555555554444",
+            )
         val dto = json.decodeFromString(CardDataDto.serializer(), jsonStr)
         assertEquals("456", dto.cvc)
         assertEquals("01", dto.expMonth)
@@ -47,7 +55,7 @@ class TokenizerApiModelsTest {
 
     @Test
     fun tokenResponseDtoDeserialization() {
-        val jsonStr = """{"id":"tok_abc123","livemode":false,"used":false,"object":"token"}"""
+        val jsonStr = TokenizerApiFixtures.tokenResponsePayload(id = "tok_abc123")
         val dto = json.decodeFromString(TokenResponseDto.serializer(), jsonStr)
         assertEquals("tok_abc123", dto.id)
         assertFalse(dto.livemode)
@@ -57,19 +65,19 @@ class TokenizerApiModelsTest {
 
     @Test
     fun tokenResponseDtoIgnoresUnknownKeys() {
-        val jsonStr = """{"id":"tok_xyz","livemode":true,"used":true,"object":"token","extra_field":"ignored"}"""
+        val jsonStr = """${TokenizerApiFixtures.tokenResponsePayload(id = "tok_xyz", livemode = true, used = true).dropLast(1)},"extra_field":"ignored"}"""
         val dto = json.decodeFromString(TokenResponseDto.serializer(), jsonStr)
         assertEquals("tok_xyz", dto.id)
     }
 
     @Test
     fun tokenErrorResponseDtoDeserialization() {
-        val jsonStr = """{
-            "object":"error",
-            "type":"invalid_request_error",
-            "message":"card number is invalid",
-            "message_to_purchaser":"The card could not be processed"
-        }"""
+        val jsonStr =
+            TokenizerApiFixtures.tokenErrorPayload(
+                type = "invalid_request_error",
+                message = "card number is invalid",
+                messageToPurchaser = "The card could not be processed",
+            )
         val dto = json.decodeFromString(TokenErrorResponseDto.serializer(), jsonStr)
         assertEquals("error", dto.objectType)
         assertEquals("invalid_request_error", dto.type)

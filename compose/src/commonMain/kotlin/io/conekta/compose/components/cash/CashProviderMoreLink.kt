@@ -1,4 +1,4 @@
-package io.conekta.compose.components
+package io.conekta.compose.components.cash
 
 import androidx.compose.foundation.clickable
 import androidx.compose.material3.Text

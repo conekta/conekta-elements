@@ -1,4 +1,4 @@
-package io.conekta.compose.components
+package io.conekta.compose.components.banktransfer
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +13,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import io.conekta.compose.components.CopyToast
+import io.conekta.compose.components.SuccessEmailToast
 import io.conekta.compose.generated.resources.Res
 import io.conekta.compose.generated.resources.success_bank_transfer_clabe_copied
 import io.conekta.elements.checkout.models.CheckoutOrderResult
@@ -40,7 +42,7 @@ internal fun BankTransferSuccessContent(
             .firstOrNull()
             ?.paymentMethod
             ?.expiresAt ?: 0L
-    val amountText = "$${Amount(checkoutResult.amount.toInt()).toFixed(2)}"
+    val amountText = "$${Amount(checkoutResult.amount).apiFormatToFixed(2)}"
 
     LaunchedEffect(showCopiedToast) {
         if (showCopiedToast) {

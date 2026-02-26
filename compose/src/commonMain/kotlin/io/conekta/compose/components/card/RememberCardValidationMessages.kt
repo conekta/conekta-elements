@@ -1,4 +1,4 @@
-package io.conekta.compose.components
+package io.conekta.compose.components.card
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember

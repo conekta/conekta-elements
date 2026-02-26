@@ -32,10 +32,10 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.conekta.compose.components.ConektaButton
-import io.conekta.compose.components.ConektaCardFieldsSection
 import io.conekta.compose.components.ConektaLogoImage
 import io.conekta.compose.components.InfoOutlinedIcon
 import io.conekta.compose.components.PaymentProtectionSheet
+import io.conekta.compose.components.card.ConektaCardFieldsSection
 import io.conekta.compose.generated.resources.Res
 import io.conekta.compose.generated.resources.button_continue
 import io.conekta.compose.generated.resources.button_processing

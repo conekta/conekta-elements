@@ -1,4 +1,4 @@
-package io.conekta.compose.components
+package io.conekta.compose.components.cash
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue

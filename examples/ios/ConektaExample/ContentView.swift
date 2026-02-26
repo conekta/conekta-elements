@@ -94,7 +94,15 @@ struct ContentView: View {
                             print("Payment method selected: \(method)")
                         },
                         onError: { error in
-                            print("Checkout error: \(error)")
+                            if let apiError = error as? CheckoutError.CheckoutApiError {
+                                print("Checkout error api: code=\(apiError.code), message=\(apiError.message)")
+                            } else if let networkError = error as? CheckoutError.CheckoutNetworkError {
+                                print("Checkout error network: \(networkError.message)")
+                            } else if let validationError = error as? CheckoutError.CheckoutValidationError {
+                                print("Checkout error validation: \(validationError.message)")
+                            } else {
+                                print("Checkout error: \(error)")
+                            }
                         },
                         onOrderCreated: { result in
                             print("Order created: orderId=\(result.orderId)")
@@ -160,13 +168,13 @@ struct ContentView: View {
                            "Coffee Maker", "Running Shoes", "Smart Watch"].randomElement()!
 
         let body: [String: Any] = [
+            "three_ds_mode": "strict",
             "currency": "MXN",
             "customer_info": [
                 "name": customerName,
                 "email": email,
                 "phone": phone,
-                "corporate": false,
-                "object": "customer_info"
+                "corporate": false
             ],
             "line_items": [
                 [

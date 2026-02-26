@@ -1,6 +1,7 @@
 package io.conekta.elements.tokenizer.api
 
 import io.conekta.elements.localization.ConektaLanguage
+import io.conekta.elements.testfixtures.TokenizerApiFixtures
 import io.conekta.elements.tokenizer.crypto.CardEncryptor
 import io.conekta.elements.tokenizer.models.TokenizerConfig
 import io.conekta.elements.tokenizer.models.TokenizerError
@@ -25,7 +26,7 @@ class TokenizerApiServiceTest {
         TokenizerConfig(
             publicKey = "key_test_abc123",
             merchantName = "Test Store",
-            baseUrl = "https://test.conekta.com/",
+            baseUrl = "https://test.conekta.com",
             rsaPublicKey = "test_rsa_key",
         )
 
@@ -61,7 +62,7 @@ class TokenizerApiServiceTest {
             val mockClient =
                 createMockClient(
                     statusCode = HttpStatusCode.OK,
-                    responseBody = """{"id":"tok_lang","livemode":false,"used":false,"object":"token"}""",
+                    responseBody = TokenizerApiFixtures.tokenResponsePayload(id = "tok_lang"),
                     onRequest = { acceptLanguage -> capturedAcceptLanguage = acceptLanguage },
                 )
 
@@ -95,8 +96,7 @@ class TokenizerApiServiceTest {
             val mockClient =
                 createMockClient(
                     statusCode = HttpStatusCode.OK,
-                    responseBody =
-                        """{"id":"tok_test_xyz789","livemode":false,"used":false,"object":"token"}""",
+                    responseBody = TokenizerApiFixtures.tokenResponsePayload(id = "tok_test_xyz789"),
                 )
 
             val service =
@@ -128,12 +128,11 @@ class TokenizerApiServiceTest {
                 createMockClient(
                     statusCode = HttpStatusCode.UnprocessableEntity,
                     responseBody =
-                        """{
-                        "object":"error",
-                        "type":"invalid_request_error",
-                        "message":"card number is invalid",
-                        "message_to_purchaser":"The card could not be processed"
-                    }""",
+                        TokenizerApiFixtures.tokenErrorPayload(
+                            type = "invalid_request_error",
+                            message = "card number is invalid",
+                            messageToPurchaser = "The card could not be processed",
+                        ),
                 )
 
             val service =
@@ -198,7 +197,10 @@ class TokenizerApiServiceTest {
                 createMockClient(
                     statusCode = HttpStatusCode.Created,
                     responseBody =
-                        """{"id":"tok_created_123","livemode":true,"used":false,"object":"token"}""",
+                        TokenizerApiFixtures.tokenResponsePayload(
+                            id = "tok_created_123",
+                            livemode = true,
+                        ),
                 )
 
             val service =
@@ -228,8 +230,7 @@ class TokenizerApiServiceTest {
             val mockClient =
                 createMockClient(
                     statusCode = HttpStatusCode.OK,
-                    responseBody =
-                        """{"id":"tok_fmt","livemode":false,"used":false,"object":"token"}""",
+                    responseBody = TokenizerApiFixtures.tokenResponsePayload(id = "tok_fmt"),
                 )
 
             val service =
@@ -259,12 +260,11 @@ class TokenizerApiServiceTest {
                 createMockClient(
                     statusCode = HttpStatusCode.BadRequest,
                     responseBody =
-                        """{
-                        "object":"error",
-                        "type":"parameter_validation_error",
-                        "message":"The card number is not valid",
-                        "message_to_purchaser":""
-                    }""",
+                        TokenizerApiFixtures.tokenErrorPayload(
+                            type = "parameter_validation_error",
+                            message = "The card number is not valid",
+                            messageToPurchaser = "",
+                        ),
                 )
 
             val service =
@@ -306,8 +306,7 @@ class TokenizerApiServiceTest {
             val mockClient =
                 createMockClient(
                     statusCode = HttpStatusCode.OK,
-                    responseBody =
-                        """{"id":"tok_cap","livemode":false,"used":false,"object":"token"}""",
+                    responseBody = TokenizerApiFixtures.tokenResponsePayload(id = "tok_cap"),
                 )
 
             val service =
@@ -348,8 +347,7 @@ class TokenizerApiServiceTest {
                         addHandler { request ->
                             capturedUrl = request.url.toString()
                             respond(
-                                content =
-                                    """{"id":"tok_url","livemode":false,"used":false,"object":"token"}""",
+                                content = TokenizerApiFixtures.tokenResponsePayload(id = "tok_url"),
                                 status = HttpStatusCode.OK,
                                 headers =
                                     headersOf(
@@ -397,8 +395,7 @@ class TokenizerApiServiceTest {
                             capturedAcceptHeader = request.headers["Accept"] ?: ""
                             capturedUserAgentHeader = request.headers["Conekta-Client-User-Agent"] ?: ""
                             respond(
-                                content =
-                                    """{"id":"tok_auth","livemode":false,"used":false,"object":"token"}""",
+                                content = TokenizerApiFixtures.tokenResponsePayload(id = "tok_auth"),
                                 status = HttpStatusCode.OK,
                                 headers =
                                     headersOf(
@@ -449,8 +446,7 @@ class TokenizerApiServiceTest {
             val mockClient =
                 createMockClient(
                     statusCode = HttpStatusCode.OK,
-                    responseBody =
-                        """{"id":"tok_never","livemode":false,"used":false,"object":"token"}""",
+                    responseBody = TokenizerApiFixtures.tokenResponsePayload(id = "tok_never"),
                 )
 
             val service =
@@ -482,8 +478,7 @@ class TokenizerApiServiceTest {
             val mockClient =
                 createMockClient(
                     statusCode = HttpStatusCode.OK,
-                    responseBody =
-                        """{"id":"tok_amex","livemode":false,"used":false,"object":"token"}""",
+                    responseBody = TokenizerApiFixtures.tokenResponsePayload(id = "tok_amex"),
                 )
 
             val service =

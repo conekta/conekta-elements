@@ -1,4 +1,4 @@
-package io.conekta.compose.components
+package io.conekta.compose.components.cash
 
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +22,11 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
+import io.conekta.compose.components.CheckoutEmailReferenceRow
+import io.conekta.compose.components.CheckoutMethodContent
+import io.conekta.compose.components.CheckoutMethodRow
+import io.conekta.compose.components.CheckoutSelectedMethodContainer
+import io.conekta.compose.components.checkoutMethodBodyTextStyle
 import io.conekta.compose.generated.resources.Res
 import io.conekta.compose.generated.resources.checkout_cash_points_message
 import io.conekta.compose.generated.resources.checkout_cash_provider_list_more

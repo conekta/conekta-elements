@@ -18,11 +18,7 @@ import io.conekta.compose.generated.resources.Res
 import io.conekta.compose.generated.resources.success_detail_label
 import io.conekta.compose.theme.ConektaColors
 import io.conekta.compose.theme.LocalConektaFontFamily
-import io.conekta.compose.utils.colorFromHex
-import io.conekta.elements.resources.CDNResources
 import org.jetbrains.compose.resources.stringResource
-
-private val DetailCardBorderColor = colorFromHex(CDNResources.Colors.CHECKOUT_BORDER)
 
 @Composable
 internal fun SuccessDetailCard(
@@ -34,7 +30,7 @@ internal fun SuccessDetailCard(
         modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
         color = ConektaColors.Surface,
         shape = RoundedCornerShape(8.dp),
-        border = BorderStroke(1.dp, DetailCardBorderColor),
+        border = BorderStroke(1.dp, ConektaColors.Neutral5),
     ) {
         Column(
             modifier = Modifier.fillMaxWidth().padding(24.dp),

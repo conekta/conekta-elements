@@ -11,7 +11,9 @@ import platform.Foundation.languageCode
 private const val APPLE_LANGUAGES_KEY = "AppleLanguages"
 private val LocalAppLocale = staticCompositionLocalOf { defaultLocale() }
 
-private fun defaultLocale(): String = normalizeLanguageTag(NSLocale.currentLocale.languageCode)
+internal fun resolvedDeviceLanguageTag(languageCode: String?): String = normalizeLanguageTag(languageCode)
+
+private fun defaultLocale(): String = resolvedDeviceLanguageTag(NSLocale.currentLocale.languageCode)
 
 @Composable
 internal actual fun rememberDeviceLanguageTag(): String = normalizeLanguageTag(LocalAppLocale.current)

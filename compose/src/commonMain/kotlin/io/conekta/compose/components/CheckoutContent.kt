@@ -20,7 +20,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
-import io.conekta.compose.checkout.CardFieldsState
+import io.conekta.compose.components.banktransfer.BankTransferSuccessContent
+import io.conekta.compose.components.card.CardFieldsState
+import io.conekta.compose.components.card.CardSuccessContent
+import io.conekta.compose.components.card.rememberCardValidationMessages
+import io.conekta.compose.components.cash.CashSuccessContent
 import io.conekta.compose.generated.resources.Res
 import io.conekta.compose.generated.resources.checkout_button_pay
 import io.conekta.compose.generated.resources.checkout_empty_methods
@@ -46,8 +50,6 @@ import io.conekta.elements.tokenizer.models.TokenizerConfig
 import io.conekta.elements.tokenizer.validators.ValidationMessages
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
-
-private val CheckoutBg = colorFromHex(CDNResources.Colors.CHECKOUT_BACKGROUND)
 
 @Composable
 internal fun CheckoutContent(
@@ -227,7 +229,7 @@ internal fun CheckoutContent(
         isSubmitting = isSubmitting,
         payButtonText =
             checkoutResult?.let {
-                "${stringResource(Res.string.checkout_button_pay)} $${Amount(it.amount.toInt()).toFixed(2)}"
+                "${stringResource(Res.string.checkout_button_pay)} $${Amount(it.amount).apiFormatToFixed(2)}"
             } ?: stringResource(Res.string.checkout_button_pay),
         onPayClick = {
             val methodKey = selectedPaymentMethod ?: return@CheckoutMainContent
@@ -309,14 +311,14 @@ private fun CheckoutMainContent(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .background(CheckoutBg)
+                    .background(colorFromHex(CDNResources.Colors.CHECKOUT_BACKGROUND))
                     .verticalScroll(rememberScrollState())
                     .pointerInput(Unit) {
                         detectTapGestures(onTap = { onBackgroundTap() })
                     },
         ) {
             CheckoutTotalRow(
-                amountText = "$${Amount((checkoutResult?.amount ?: 0).toInt()).toFixed(2)}",
+                amountText = "$${Amount(checkoutResult?.amount ?: 0).apiFormatToFixed(2)}",
                 lineItems = checkoutResult?.lineItems.orEmpty(),
                 taxLines = checkoutResult?.taxLines.orEmpty(),
                 discountLines = checkoutResult?.discountLines.orEmpty(),
