@@ -5,6 +5,39 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class CardInputFormattersTest {
+    @Test
+    fun `extractTokenizationData strips card and expiry separators`() {
+        val data =
+            CardInputFormatters.extractTokenizationData(
+                cardNumber = "4242 4242-4242 4242",
+                expiryDate = "12/26",
+                cvv = "12a3",
+                cardholderName = "Jane Doe",
+            )
+
+        assertEquals("4242424242424242", data.cardNumber)
+        assertEquals("12", data.expMonth)
+        assertEquals("26", data.expYear)
+        assertEquals("123", data.cvv)
+        assertEquals("Jane Doe", data.cardholderName)
+    }
+
+    @Test
+    fun `extractTokenizationData handles incomplete expiry`() {
+        val data =
+            CardInputFormatters.extractTokenizationData(
+                cardNumber = "4242",
+                expiryDate = "3",
+                cvv = "",
+                cardholderName = "",
+            )
+
+        assertEquals("4242", data.cardNumber)
+        assertEquals("3", data.expMonth)
+        assertEquals("", data.expYear)
+        assertEquals("", data.cvv)
+    }
+
     // formatCardNumber
 
     @Test
