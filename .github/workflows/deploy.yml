@@ -52,7 +52,7 @@ jobs:
           ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_PASSWORD }}
 
   deploy-webapp:
-    runs-on: aws-runner-set
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
@@ -101,9 +101,6 @@ jobs:
           cache: npm
           registry-url: 'https://npm.pkg.github.com'
 
-      - name: Install make
-        if: steps.validate.outputs.skip == 'false'
-        run: sudo apt-get update && sudo apt-get install -y make
 
       - name: Build shared JS
         if: steps.validate.outputs.skip == 'false'

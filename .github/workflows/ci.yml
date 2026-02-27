@@ -31,7 +31,7 @@ jobs:
         run: make verify-ios-resources
 
   build_kmp:
-    runs-on: aws-runner-set
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
 
@@ -66,9 +66,6 @@ jobs:
 
       - uses: android-actions/setup-android@v3
 
-      - name: Install make
-        run: sudo apt-get update && sudo apt-get install -y make
-
       - name: Build KMP
         run: make build-ci
 
@@ -102,7 +99,7 @@ jobs:
         run: make publish-local
 
   build_js:
-    runs-on: aws-runner-set
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
         with:
@@ -123,10 +120,6 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: npm
-
-      - name: Install make
-        run: sudo apt-get update && sudo apt-get install -y make
-
       - name: Prepare (JS Build)
         run: make js-build-ci
 
@@ -164,7 +157,7 @@ jobs:
           skip: "@(renovate/**|dependabot/**)"
 
   sonarcloud:
-    runs-on: aws-runner-set
+    runs-on: ubuntu-latest
     needs: [build_kmp, build_js]
     if: always() && (needs.build_kmp.result == 'success' && needs.build_js.result == 'success')
     permissions:
