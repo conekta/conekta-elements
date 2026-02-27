@@ -291,6 +291,77 @@ class TokenizerApiServiceTest {
         }
 
     @Test
+    fun tokenizeApiErrorFallsBackToDetailsMessageWhenTopLevelMessagesAreEmpty() =
+        runTest {
+            val detailsMessage = "Please include your access key in your request."
+            val mockClient =
+                createMockClient(
+                    statusCode = HttpStatusCode.Unauthorized,
+                    responseBody =
+                        TokenizerApiFixtures.tokenErrorDetailsPayload(
+                            type = "authentication_error",
+                            detailsMessage = detailsMessage,
+                        ),
+                )
+
+            val service =
+                TokenizerApiService(
+                    config = testConfig,
+                    httpClient = mockClient,
+                    cryptoService = fakeEncryptor,
+                )
+
+            val result =
+                service.tokenize(
+                    cardNumber = "4242424242424242",
+                    expMonth = "12",
+                    expYear = "26",
+                    cvc = "123",
+                    cardholderName = "Test",
+                )
+
+            assertTrue(result.isFailure)
+            val exception = result.exceptionOrNull()
+            assertIs<TokenizerApiException>(exception)
+            val apiError = exception.tokenizerError as TokenizerError.ApiError
+            assertEquals("authentication_error", apiError.code)
+            assertEquals(detailsMessage, apiError.message)
+        }
+
+    @Test
+    fun tokenizeApiErrorFallsBackToUnknownMessageWhenAllErrorMessagesAreMissing() =
+        runTest {
+            val mockClient =
+                createMockClient(
+                    statusCode = HttpStatusCode.BadRequest,
+                    responseBody = """{"object":"error","type":"invalid_request_error"}""",
+                )
+
+            val service =
+                TokenizerApiService(
+                    config = testConfig,
+                    httpClient = mockClient,
+                    cryptoService = fakeEncryptor,
+                )
+
+            val result =
+                service.tokenize(
+                    cardNumber = "4242424242424242",
+                    expMonth = "12",
+                    expYear = "26",
+                    cvc = "123",
+                    cardholderName = "Test",
+                )
+
+            assertTrue(result.isFailure)
+            val exception = result.exceptionOrNull()
+            assertIs<TokenizerApiException>(exception)
+            val apiError = exception.tokenizerError as TokenizerError.ApiError
+            assertEquals("invalid_request_error", apiError.code)
+            assertEquals("Unknown API error", apiError.message)
+        }
+
+    @Test
     fun tokenizePassesEachFieldToEncryptor() =
         runTest {
             val capturedPlaintexts = mutableListOf<String>()

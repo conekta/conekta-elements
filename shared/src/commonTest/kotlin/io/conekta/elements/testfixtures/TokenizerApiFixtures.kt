@@ -23,6 +23,27 @@ object TokenizerApiFixtures {
         }
         """.trimIndent()
 
+    fun tokenErrorDetailsPayload(
+        type: String,
+        detailsMessage: String,
+        objectType: String = "error",
+        logId: String = "507f1f77bcf86cd799439011",
+    ): String =
+        """
+        {
+          "details":[
+            {
+              "message":"$detailsMessage",
+              "param":null,
+              "code":"conekta.errors.authentication.missing_key"
+            }
+          ],
+          "log_id":"$logId",
+          "object":"$objectType",
+          "type":"$type"
+        }
+        """.trimIndent()
+
     fun cardDataPayload(
         cvc: String,
         expMonth: String,
