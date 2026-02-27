@@ -56,10 +56,21 @@ class MainActivity : ComponentActivity() {
 }
 
 private const val JWT_TOKEN = "jwt_mock_123"
-private const val TOKENIZER_BASE_URL = "https://api.stg.conekta.io"
-private const val CHECKOUT_BASE_URL = "https://services.stg.conekta.io"
 private const val TAG = "ConektaExample"
-private const val ORDERS_URL = "https://api.stg.conekta.io/orders"
+
+private fun requireApiBaseUrl(): String =
+    BuildConfig.CONEKTA_API_BASE_URL.takeIf { it.isNotBlank() }
+        ?: error(
+            "CONEKTA_API_BASE_URL is missing. Set it in examples/android/local.properties " +
+                "or export CONEKTA_API_BASE_URL before building.",
+        )
+
+private fun requireCheckoutBaseUrl(): String =
+    BuildConfig.CONEKTA_CHECKOUT_BASE_URL.takeIf { it.isNotBlank() }
+        ?: error(
+            "CONEKTA_CHECKOUT_BASE_URL is missing. Set it in examples/android/local.properties " +
+                "or export CONEKTA_CHECKOUT_BASE_URL before building.",
+        )
 
 private enum class ExampleTab(
     val label: String,
@@ -95,12 +106,13 @@ private fun ExampleTabs() {
 private fun TokenizerExample() {
     val publicKey = requireConektaPublicKey()
     val tokenizerRsaPublicKey = requireTokenizerRsaPublicKey()
+    val apiBaseUrl = requireApiBaseUrl()
     val context = LocalContext.current
     val appContext = context.applicationContext
     ConektaTokenizer(
         config =
             TokenizerConfig(
-                baseUrl = TOKENIZER_BASE_URL,
+                baseUrl = apiBaseUrl,
                 publicKey = publicKey,
                 merchantName = "My Store",
                 rsaPublicKey = tokenizerRsaPublicKey,
@@ -140,12 +152,14 @@ private fun TokenizerExample() {
 private fun CheckoutExample() {
     val publicKey = requireConektaPublicKey()
     val tokenizerRsaPublicKey = requireTokenizerRsaPublicKey()
+    val apiBaseUrl = requireApiBaseUrl()
+    val checkoutBaseUrl = requireCheckoutBaseUrl()
     var checkoutRequestId by remember { mutableStateOf<String?>(null) }
     var fetchError by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(Unit) {
         try {
-            checkoutRequestId = fetchCheckoutRequestId(publicKey)
+            checkoutRequestId = fetchCheckoutRequestId(publicKey, apiBaseUrl)
         } catch (e: Exception) {
             Log.e(TAG, "Failed to fetch checkout request ID", e)
             fetchError = e.message ?: "Unknown error"
@@ -170,8 +184,8 @@ private fun CheckoutExample() {
                     publicKey = publicKey,
                     jwtToken = JWT_TOKEN,
                     merchantName = "My Store",
-                    baseUrl = CHECKOUT_BASE_URL,
-                    tokenizerBaseUrl = TOKENIZER_BASE_URL,
+                    baseUrl = checkoutBaseUrl,
+                    tokenizerBaseUrl = apiBaseUrl,
                     tokenizerRsaPublicKey = tokenizerRsaPublicKey,
                 ),
                 onPaymentMethodSelected = { method ->
@@ -203,9 +217,10 @@ private fun CheckoutExample() {
 }
 
 @Suppress("LongMethod")
-private suspend fun fetchCheckoutRequestId(publicKey: String): String =
+private suspend fun fetchCheckoutRequestId(publicKey: String, apiBaseUrl: String): String =
     withContext(Dispatchers.IO) {
-        val connection = (URL(ORDERS_URL).openConnection() as HttpURLConnection).apply {
+        val ordersUrl = "$apiBaseUrl/orders"
+        val connection = (URL(ordersUrl).openConnection() as HttpURLConnection).apply {
             requestMethod = "POST"
             setRequestProperty("Authorization", "Bearer $publicKey")
             setRequestProperty("Accept-Language", Locale.getDefault().language)

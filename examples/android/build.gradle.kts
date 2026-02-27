@@ -24,6 +24,16 @@ val conektaTokenizerRsaPublicKey =
         ?: System.getenv("CONEKTA_TOKENIZER_RSA_PUBLIC_KEY")
         ?: ""
 
+val conektaApiBaseUrl =
+    localProperties.getProperty("CONEKTA_API_BASE_URL")
+        ?: System.getenv("CONEKTA_API_BASE_URL")
+        ?: ""
+
+val conektaCheckoutBaseUrl =
+    localProperties.getProperty("CONEKTA_CHECKOUT_BASE_URL")
+        ?: System.getenv("CONEKTA_CHECKOUT_BASE_URL")
+        ?: ""
+
 android {
     namespace = "com.conekta.example"
     compileSdk = 36
@@ -36,6 +46,8 @@ android {
         versionName = "1.0"
         buildConfigField("String", "CONEKTA_PUBLIC_KEY", "\"$conektaPublicKey\"")
         buildConfigField("String", "CONEKTA_TOKENIZER_RSA_PUBLIC_KEY", "\"$conektaTokenizerRsaPublicKey\"")
+        buildConfigField("String", "CONEKTA_API_BASE_URL", "\"$conektaApiBaseUrl\"")
+        buildConfigField("String", "CONEKTA_CHECKOUT_BASE_URL", "\"$conektaCheckoutBaseUrl\"")
     }
 
     buildFeatures {

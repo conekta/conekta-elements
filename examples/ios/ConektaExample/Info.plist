@@ -50,5 +50,9 @@
 	<string>$(CONEKTA_JWT_TOKEN)</string>
 	<key>ConektaTokenizerRsaPublicKey</key>
 	<string>$(CONEKTA_TOKENIZER_RSA_PUBLIC_KEY)</string>
+	<key>ConektaApiBaseUrl</key>
+	<string>$(CONEKTA_API_BASE_URL)</string>
+	<key>ConektaCheckoutBaseUrl</key>
+	<string>$(CONEKTA_CHECKOUT_BASE_URL)</string>
 </dict>
 </plist>

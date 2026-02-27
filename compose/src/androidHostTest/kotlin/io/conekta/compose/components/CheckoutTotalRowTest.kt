@@ -46,7 +46,10 @@ class CheckoutTotalRowTest {
                 ConektaTheme {
                     CheckoutTotalRow(
                         amountText = "\$120.00",
-                        lineItems = listOf(CheckoutLineItem(name = "Producto de prueba", quantity = 1, unitPrice = 12000)),
+                        lineItems =
+                            listOf(
+                                CheckoutLineItem(name = "Producto de prueba", quantity = 1, unitPrice = 12000),
+                            ),
                     )
                 }
             }

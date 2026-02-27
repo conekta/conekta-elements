@@ -6,8 +6,7 @@ object TokenizerApiFixtures {
         livemode: Boolean = false,
         used: Boolean = false,
         objectType: String = "token",
-    ): String =
-        """{"id":"$id","livemode":$livemode,"used":$used,"object":"$objectType"}"""
+    ): String = """{"id":"$id","livemode":$livemode,"used":$used,"object":"$objectType"}"""
 
     fun tokenErrorPayload(
         type: String,

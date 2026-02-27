@@ -39,6 +39,7 @@ internal fun BankTransferSuccessReferenceCard(
     onCopyClick: () -> Unit,
 ) {
     val fontFamily = LocalConektaFontFamily.current
+
     @Suppress("DEPRECATION")
     val clipboardManager = LocalClipboardManager.current
     val hapticFeedback = LocalHapticFeedback.current

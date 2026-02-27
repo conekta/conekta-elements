@@ -36,9 +36,21 @@ struct ContentView: View {
         return value
     }()
 
-    private static let checkoutBaseUrl = "https://services.stg.conekta.io"
-    private static let tokenizerBaseUrl = "https://api.stg.conekta.io"
-    private static let ordersUrl = "https://api.stg.conekta.io/orders"
+    private static let apiBaseUrl: String = {
+        guard let value = Bundle.main.infoDictionary?["ConektaApiBaseUrl"] as? String, !value.isEmpty else {
+            fatalError("CONEKTA_API_BASE_URL not set in Local.xcconfig")
+        }
+        return value
+    }()
+
+    private static let checkoutBaseUrl: String = {
+        guard let value = Bundle.main.infoDictionary?["ConektaCheckoutBaseUrl"] as? String, !value.isEmpty else {
+            fatalError("CONEKTA_CHECKOUT_BASE_URL not set in Local.xcconfig")
+        }
+        return value
+    }()
+
+    private static let ordersUrl: String = { "\(apiBaseUrl)/orders" }()
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -47,7 +59,7 @@ struct ContentView: View {
                     publicKey: ContentView.conektaPublicKey,
                     merchantName: "My Store",
                     collectCardholderName: true,
-                    baseUrl: ContentView.tokenizerBaseUrl,
+                    baseUrl: ContentView.apiBaseUrl,
                     rsaPublicKey: ContentView.tokenizerRsaPublicKey
                 ),
                 onSuccess: { tokenResult in
@@ -87,7 +99,7 @@ struct ContentView: View {
                             jwtToken: ContentView.checkoutJwtToken,
                             merchantName: "My Store",
                             baseUrl: ContentView.checkoutBaseUrl,
-                            tokenizerBaseUrl: ContentView.tokenizerBaseUrl,
+                            tokenizerBaseUrl: ContentView.apiBaseUrl,
                             tokenizerRsaPublicKey: ContentView.tokenizerRsaPublicKey
                         ),
                         onPaymentMethodSelected: { method in

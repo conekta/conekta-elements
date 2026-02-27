@@ -28,5 +28,4 @@ class SuccessEmailToastTest {
 
             onNodeWithText("test@conekta.com", substring = true).assertIsDisplayed()
         }
-
 }

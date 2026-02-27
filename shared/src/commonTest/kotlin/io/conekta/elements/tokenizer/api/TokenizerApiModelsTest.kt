@@ -65,7 +65,11 @@ class TokenizerApiModelsTest {
 
     @Test
     fun tokenResponseDtoIgnoresUnknownKeys() {
-        val jsonStr = """${TokenizerApiFixtures.tokenResponsePayload(id = "tok_xyz", livemode = true, used = true).dropLast(1)},"extra_field":"ignored"}"""
+        val jsonStr = """${TokenizerApiFixtures.tokenResponsePayload(
+            id = "tok_xyz",
+            livemode = true,
+            used = true,
+        ).dropLast(1)},"extra_field":"ignored"}"""
         val dto = json.decodeFromString(TokenResponseDto.serializer(), jsonStr)
         assertEquals("tok_xyz", dto.id)
     }

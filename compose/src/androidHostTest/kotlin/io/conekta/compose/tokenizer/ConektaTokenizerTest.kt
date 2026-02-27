@@ -10,8 +10,8 @@ import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.runComposeUiTest
 import io.conekta.compose.generated.resources.Res
 import io.conekta.compose.generated.resources.button_continue
-import io.conekta.compose.initComposeResourcesContext
 import io.conekta.compose.generated.resources.placeholder_cardholder_name
+import io.conekta.compose.initComposeResourcesContext
 import io.conekta.elements.tokenizer.models.TokenizerConfig
 import io.conekta.elements.tokenizer.models.TokenizerError
 import org.jetbrains.compose.resources.stringResource

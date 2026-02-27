@@ -11,11 +11,11 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.runComposeUiTest
 import androidx.compose.ui.text.input.TextFieldValue
-import io.conekta.compose.initComposeResourcesContext
 import io.conekta.compose.components.card.ConektaCardFieldsSection
 import io.conekta.compose.generated.resources.Res
 import io.conekta.compose.generated.resources.placeholder_cardholder_name
 import io.conekta.compose.generated.resources.placeholder_expiry
+import io.conekta.compose.initComposeResourcesContext
 import io.conekta.compose.theme.ConektaTheme
 import org.jetbrains.compose.resources.stringResource
 import org.junit.Before

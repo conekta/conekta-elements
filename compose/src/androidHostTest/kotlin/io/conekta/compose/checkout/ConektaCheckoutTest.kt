@@ -4,10 +4,10 @@ import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.runComposeUiTest
-import io.conekta.compose.initComposeResourcesContext
 import io.conekta.compose.generated.resources.Res
 import io.conekta.compose.generated.resources.checkout_method_card
 import io.conekta.compose.generated.resources.placeholder_cardholder_name_checkout
+import io.conekta.compose.initComposeResourcesContext
 import io.conekta.elements.checkout.api.CheckoutApiService
 import io.conekta.elements.checkout.models.CheckoutConfig
 import io.conekta.elements.checkout.models.CheckoutError
