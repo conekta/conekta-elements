@@ -50,29 +50,30 @@ class ConektaTokenizerTest {
     private fun tokenizerServiceFactory(
         statusCode: HttpStatusCode,
         responseBody: String,
-    ): (TokenizerConfig, String) -> TokenizerApiService = { config, languageTag ->
-        val httpClient =
-            HttpClient(MockEngine) {
-                install(ContentNegotiation) {
-                    json(Json { ignoreUnknownKeys = true })
-                }
-                engine {
-                    addHandler {
-                        respond(
-                            content = responseBody,
-                            status = statusCode,
-                            headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
-                        )
+    ): (TokenizerConfig, String) -> TokenizerApiService =
+        { config, languageTag ->
+            val httpClient =
+                HttpClient(MockEngine) {
+                    install(ContentNegotiation) {
+                        json(Json { ignoreUnknownKeys = true })
+                    }
+                    engine {
+                        addHandler {
+                            respond(
+                                content = responseBody,
+                                status = statusCode,
+                                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+                            )
+                        }
                     }
                 }
-            }
-        TokenizerApiService(
-            config = config,
-            languageTag = languageTag,
-            httpClient = httpClient,
-            cryptoService = CardEncryptor { plaintext, _ -> plaintext },
-        )
-    }
+            TokenizerApiService(
+                config = config,
+                languageTag = languageTag,
+                httpClient = httpClient,
+                cryptoService = CardEncryptor { plaintext, _ -> plaintext },
+            )
+        }
 
     @OptIn(ExperimentalTestApi::class)
     private fun androidx.compose.ui.test.ComposeUiTest.fillValidCardFields(
