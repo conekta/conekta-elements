@@ -85,6 +85,6 @@ android-example:
 	@$$ANDROID_HOME/platform-tools/adb shell am start -n com.conekta.example/.MainActivity
 
 # Starts emulator and runs the example app in one step
-android-emulator: android-emulator
+android-run-example: android-emulator
 	@sleep 5
 	$(MAKE) android-example

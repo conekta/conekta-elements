@@ -11,6 +11,10 @@ import org.languagetool.Languages
 import java.io.File
 
 abstract class ValidateStringsSpellingTask : DefaultTask() {
+    private val indexedPlaceholderRegex = Regex("""%\d+\$[sdf]""")
+    private val simplePlaceholderRegex = Regex("""%[sdf]""")
+    private val camelCaseTokenRegex = Regex("""\b[a-z]+(?:[A-Z][a-z0-9]+)+\b""")
+
     @get:InputFiles
     abstract var stringsFiles: ConfigurableFileTree
 
@@ -45,14 +49,17 @@ abstract class ValidateStringsSpellingTask : DefaultTask() {
                 val stringMatch = Regex("""<string\s+name="([^"]+)"[^>]*>([^<]+)</string>""").find(line)
                 if (stringMatch != null) {
                     val stringName = stringMatch.groupValues[1]
+                    val rawText = stringMatch.groupValues[2]
+                    val hasFormatPlaceholders =
+                        indexedPlaceholderRegex.containsMatchIn(rawText) || simplePlaceholderRegex.containsMatchIn(rawText)
                     val text =
-                        stringMatch.groupValues[2]
+                        rawText
                             .replace("&amp;", "&")
                             .replace("&lt;", "<")
                             .replace("&gt;", ">")
                             .replace("&quot;", "\"")
-                            .replace("%s", "PLACEHOLDER")
-                            .replace("%d", "NUMBER")
+                            .replace("&#39;", "'")
+                            .trim()
 
                     // Skip validation for certain strings
                     if (text.matches(Regex("^[A-Z/]+$")) ||
@@ -61,7 +68,27 @@ abstract class ValidateStringsSpellingTask : DefaultTask() {
                         // Brand names
                         text.contains("Mastercard") ||
                         text.contains("American Express") ||
-                        text.contains("Visa")
+                        text.contains("Visa") ||
+                        // Strings with format placeholders are valid and noisy for grammar rules
+                        hasFormatPlaceholders ||
+                        // Fragments intended to be concatenated with other strings
+                        stringName.endsWith("_prefix") ||
+                        stringName.endsWith("_suffix") ||
+                        stringName.endsWith("_more_link") ||
+                        // Provider lists contain many proper nouns and brand names
+                        stringName.endsWith("_provider_list_more") ||
+                        // Proper nouns/brands frequently flagged by generic dictionary
+                        text.contains("BBVA") ||
+                        text.contains("CLABE") ||
+                        text.contains("Eleczion") ||
+                        text.contains("FarmaTodo") ||
+                        text.contains("Practicaja") ||
+                        text.contains("Waldos") ||
+                        text.contains("Woolworth") ||
+                        text.contains("Yepas") ||
+                        text.contains("Alsúper") ||
+                        // Validation messages can include technical identifiers (camelCase)
+                        camelCaseTokenRegex.containsMatchIn(text)
                     ) {
                         return@forEachIndexed
                     }
