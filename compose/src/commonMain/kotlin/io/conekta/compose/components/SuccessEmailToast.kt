@@ -73,11 +73,7 @@ internal fun SuccessEmailToast(
                     Modifier
                         .size(24.dp)
                         .then(
-                            if (onDismiss != null) {
-                                Modifier.clickable(onClick = onDismiss)
-                            } else {
-                                Modifier
-                            },
+                            if (onDismiss != null) Modifier.clickable(onClick = onDismiss) else Modifier,
                         ),
             )
         }

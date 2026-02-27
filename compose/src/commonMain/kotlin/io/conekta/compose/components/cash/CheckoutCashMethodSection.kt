@@ -39,6 +39,11 @@ import io.conekta.elements.checkout.models.resolveCheckoutCashProvidersUiData
 import io.conekta.elements.resources.CDNResources
 import org.jetbrains.compose.resources.stringResource
 
+internal fun shouldCenterSingleCashProviderLogo(
+    logoCount: Int,
+    showMoreLink: Boolean,
+): Boolean = logoCount == 1 && !showMoreLink
+
 @Composable
 fun CheckoutCashMethodSection(
     onSelect: () -> Unit,
@@ -127,12 +132,17 @@ private fun CheckoutCashProvidersRow(
     showMoreLink: Boolean,
     onMoreClick: () -> Unit,
 ) {
+    val shouldCenterSingleLogo =
+        shouldCenterSingleCashProviderLogo(
+            logoCount = logoUrls.size,
+            showMoreLink = showMoreLink,
+        )
     Row(
         modifier =
             Modifier
                 .fillMaxWidth()
                 .horizontalScroll(rememberScrollState()),
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalArrangement = if (shouldCenterSingleLogo) Arrangement.Center else Arrangement.spacedBy(10.dp),
     ) {
         logoUrls.forEach { url ->
             CashProviderLogoImage(

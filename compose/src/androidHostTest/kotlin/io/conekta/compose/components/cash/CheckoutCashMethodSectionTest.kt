@@ -17,6 +17,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @RunWith(RobolectricTestRunner::class)
@@ -72,4 +73,34 @@ class CheckoutCashMethodSectionTest {
 
             onNodeWithText("Waldos", substring = true).assertIsDisplayed()
         }
+
+    @Test
+    fun shouldCenterSingleCashProviderLogoWhenOnlyOneLogoAndNoMoreLink() {
+        assertTrue(
+            shouldCenterSingleCashProviderLogo(
+                logoCount = 1,
+                showMoreLink = false,
+            ),
+        )
+    }
+
+    @Test
+    fun shouldNotCenterSingleCashProviderLogoWhenMoreLinkIsVisible() {
+        assertFalse(
+            shouldCenterSingleCashProviderLogo(
+                logoCount = 1,
+                showMoreLink = true,
+            ),
+        )
+    }
+
+    @Test
+    fun shouldNotCenterSingleCashProviderLogoWhenThereAreMultipleLogos() {
+        assertFalse(
+            shouldCenterSingleCashProviderLogo(
+                logoCount = 2,
+                showMoreLink = false,
+            ),
+        )
+    }
 }

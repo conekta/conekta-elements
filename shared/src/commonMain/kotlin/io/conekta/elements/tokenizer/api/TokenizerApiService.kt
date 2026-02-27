@@ -95,8 +95,12 @@ class TokenizerApiService(
                     val apiMessage =
                         errorResponse.messageToPurchaser
                             .ifEmpty { errorResponse.message }
-                            .ifEmpty { errorResponse.details.firstOrNull()?.message.orEmpty() }
-                            .ifEmpty { "Unknown API error" }
+                            .ifEmpty {
+                                errorResponse.details
+                                    .firstOrNull()
+                                    ?.message
+                                    .orEmpty()
+                            }.ifEmpty { "Unknown API error" }
                     Result.failure(
                         TokenizerApiException(
                             TokenizerError.ApiError(

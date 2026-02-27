@@ -72,6 +72,13 @@ android-emulator:
 	@if $$ANDROID_HOME/platform-tools/adb devices | grep -q "emulator"; then \
 		echo "Emulator already running, skipping launch."; \
 	else \
+		AVD_CONFIG="$$HOME/.android/avd/$(AVD).avd/config.ini"; \
+		if [ -f "$$AVD_CONFIG" ]; then \
+			awk 'BEGIN{set=0} /^hw\.keyboard=/{if(!set){print "hw.keyboard=yes"; set=1}; next} {print} END{if(!set) print "hw.keyboard=yes"}' "$$AVD_CONFIG" > "$$AVD_CONFIG.tmp" && mv "$$AVD_CONFIG.tmp" "$$AVD_CONFIG"; \
+			echo "Enabled physical keyboard for $(AVD)."; \
+		else \
+			echo "Warning: AVD config not found at $$AVD_CONFIG"; \
+		fi; \
 		echo "Starting emulator: $(AVD)"; \
 		$$ANDROID_HOME/emulator/emulator -avd $(AVD) -no-snapshot-save & \
 	fi
