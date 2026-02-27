@@ -206,10 +206,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           PROJECT_KEY=$(grep '^sonar.projectKey=' sonar-project.properties | cut -d'=' -f2)
-          SONAR_URL="${{ secrets.SONAR_HOST_URL }}dashboard?id=${PROJECT_KEY}&pullRequest=${{ github.event.pull_request.number }}"
-          PR_NUMBER="${{ github.event.pull_request.number }}"
-
-          gh pr comment "$PR_NUMBER" \
+          SONAR_URL="${{ secrets.SONAR_HOST_URL }}/dashboard?id=${PROJECT_KEY}&pullRequest=${{ github.event.pull_request.number }}"
+          gh pr comment "${{ github.event.pull_request.number }}" \
             --edit-last \
             --create-if-none \
             --body "**SonarQube Analysis:** [View Dashboard]($SONAR_URL)"

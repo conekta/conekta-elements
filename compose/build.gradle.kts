@@ -117,6 +117,10 @@ kotlin {
                 implementation(libs.core)
                 implementation(libs.junit)
                 implementation(libs.compose.ui.test.junit4)
+                implementation(libs.ktor.client.mock)
+                implementation(libs.ktor.client.content.negotiation)
+                implementation(libs.ktor.serialization.json)
+                implementation(libs.kotlinx.serialization.json)
             }
         }
 

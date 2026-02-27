@@ -96,6 +96,13 @@ fun ConektaTokenizer(
     onSuccess: (TokenResult) -> Unit,
     onError: (TokenizerError) -> Unit,
     modifier: Modifier = Modifier,
+    tokenizerApiServiceFactory: (TokenizerConfig, String) -> TokenizerApiService =
+        { tokenizerConfig, languageTag ->
+            TokenizerApiService(
+                config = tokenizerConfig,
+                languageTag = languageTag,
+            )
+        },
 ) {
     ConektaTheme {
         Surface(
@@ -106,6 +113,7 @@ fun ConektaTokenizer(
                 config = config,
                 onSuccess = onSuccess,
                 onError = onError,
+                tokenizerApiServiceFactory = tokenizerApiServiceFactory,
             )
         }
     }
@@ -116,6 +124,7 @@ private fun TokenizerContent(
     config: TokenizerConfig,
     onSuccess: (TokenResult) -> Unit,
     onError: (TokenizerError) -> Unit,
+    tokenizerApiServiceFactory: (TokenizerConfig, String) -> TokenizerApiService,
 ) {
     val fontFamily = LocalConektaFontFamily.current
     val focusManager = LocalFocusManager.current
@@ -123,10 +132,7 @@ private fun TokenizerContent(
     val deviceLanguageTag = normalizeLanguageTag(rememberDeviceLanguageTag())
     val tokenizerApiService =
         remember(config, deviceLanguageTag) {
-            TokenizerApiService(
-                config = config,
-                languageTag = deviceLanguageTag,
-            )
+            tokenizerApiServiceFactory(config, deviceLanguageTag)
         }
     var cardholderName by remember { mutableStateOf(TextFieldValue("")) }
     var cardNumber by remember { mutableStateOf(TextFieldValue("")) }
