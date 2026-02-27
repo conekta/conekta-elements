@@ -5,6 +5,7 @@ import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class TokenizerApiModelsTest {
@@ -97,6 +98,33 @@ class TokenizerApiModelsTest {
         assertEquals("", dto.type)
         assertEquals("", dto.message)
         assertEquals("", dto.messageToPurchaser)
+        assertTrue(dto.details.isEmpty())
+    }
+
+    @Test
+    fun tokenErrorResponseDtoDeserializesDetailsField() {
+        val jsonStr =
+            TokenizerApiFixtures.tokenErrorDetailsPayload(
+                type = "authentication_error",
+                detailsMessage = "Missing private key",
+            )
+
+        val dto = json.decodeFromString(TokenErrorResponseDto.serializer(), jsonStr)
+
+        assertEquals("error", dto.objectType)
+        assertEquals("authentication_error", dto.type)
+        assertEquals(1, dto.details.size)
+        assertEquals("Missing private key", dto.details.first().message)
+        assertNull(dto.details.first().param)
+        assertEquals("conekta.errors.authentication.missing_key", dto.details.first().code)
+    }
+
+    @Test
+    fun tokenErrorDetailDtoDefaultValues() {
+        val dto = json.decodeFromString(TokenErrorDetailDto.serializer(), "{}")
+        assertEquals("", dto.message)
+        assertNull(dto.param)
+        assertEquals("", dto.code)
     }
 
     // --- Coverage for serialization default-value branches ---

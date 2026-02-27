@@ -211,5 +211,5 @@ jobs:
 
           gh pr comment "$PR_NUMBER" \
             --edit-last \
-            --create-if-empty \
+            --create-if-none \
             --body "**SonarQube Analysis:** [View Dashboard]($SONAR_URL)"

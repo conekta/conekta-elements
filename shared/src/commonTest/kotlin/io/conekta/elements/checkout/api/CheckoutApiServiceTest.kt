@@ -28,9 +28,10 @@ import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 class CheckoutApiServiceTest {
+    private val testCheckoutRequestId = CheckoutApiFixtures.randomUuid()
     private val testConfig =
         CheckoutConfig(
-            checkoutRequestId = "dc5baf10-0f2b-4378-9f74-afa6bb418198",
+            checkoutRequestId = testCheckoutRequestId,
             publicKey = "key_test_abc123",
             jwtToken = "jwt_test_token",
             baseUrl = "https://test.conekta.com",
@@ -65,6 +66,7 @@ class CheckoutApiServiceTest {
     @Test
     fun fetchCheckoutSuccessReturnsCheckoutResult() =
         runTest {
+            val expectedCheckoutId = CheckoutApiFixtures.randomUuid()
             val mockClient =
                 createMockClient(
                     statusCode = HttpStatusCode.OK,
@@ -73,6 +75,7 @@ class CheckoutApiServiceTest {
                             allowedPaymentMethods =
                                 listOf("Card", "Apple", "cash_in", "bbva_cash_in", "BankTransfer"),
                             includeProviders = true,
+                            id = expectedCheckoutId,
                         ),
                 )
 
@@ -81,8 +84,8 @@ class CheckoutApiServiceTest {
 
             assertTrue(result.isSuccess)
             val checkout = result.getOrThrow()
-            assertEquals(CheckoutApiFixtures.CHECKOUT_ID, checkout.orderId)
-            assertEquals(CheckoutApiFixtures.CHECKOUT_ID, checkout.checkoutId)
+            assertEquals(expectedCheckoutId, checkout.orderId)
+            assertEquals(expectedCheckoutId, checkout.checkoutId)
             assertEquals(30000, checkout.amount)
             assertEquals(CurrencyCodes.MXN, checkout.currency)
             assertEquals(
@@ -159,7 +162,7 @@ class CheckoutApiServiceTest {
 
             assertTrue(result.isSuccess)
             assertEquals(
-                "https://test.conekta.com/checkout-bff/v1/checkout-requests/${CheckoutApiFixtures.CHECKOUT_REQUEST_ID}",
+                "https://test.conekta.com/checkout-bff/v1/checkout-requests/$testCheckoutRequestId",
                 capturedUrl,
             )
             assertEquals("Bearer key_test_abc123", capturedAuthorization)
@@ -371,7 +374,7 @@ class CheckoutApiServiceTest {
             assertEquals("jwt_test_token", captured.jwtToken)
 
             val bodyJson = Json.decodeFromString<JsonObject>(captured.body)
-            assertEquals(CheckoutApiFixtures.CHECKOUT_REQUEST_ID, bodyJson["checkoutRequestId"]?.jsonPrimitive?.content)
+            assertEquals(testCheckoutRequestId, bodyJson["checkoutRequestId"]?.jsonPrimitive?.content)
             assertEquals("Cash", bodyJson["paymentMethod"]?.jsonPrimitive?.content)
             assertTrue(bodyJson["tokenId"] is JsonNull || bodyJson["tokenId"] == null)
         }
