@@ -262,8 +262,8 @@ tasks.register<VerifyComposeResourcesSyncTask>("verifyComposeResourcesSync") {
 
     builtResourcesDir = layout.buildDirectory.dir("processedResources/iosArm64/main/composeResources")
     spmResourcesDir =
-        layout.buildDirectory.dir(
-            "XCFrameworks/release/composeKit.xcframework/ios-arm64/composeKit.framework/composeResources",
+        rootProject.layout.projectDirectory.dir(
+            "Sources/ComposeResources/compose-resources/composeResources",
         )
 }
 
