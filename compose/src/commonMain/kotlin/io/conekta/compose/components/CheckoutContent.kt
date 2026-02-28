@@ -5,7 +5,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalFocusManager
 import io.conekta.compose.components.banktransfer.BankTransferSuccessContent
@@ -33,7 +32,6 @@ import io.conekta.elements.checkout.models.CheckoutResult
 import io.conekta.elements.models.Amount
 import io.conekta.elements.tokenizer.api.TokenizerApiService
 import io.conekta.elements.tokenizer.models.TokenizerConfig
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -63,10 +61,10 @@ internal fun CheckoutContent(
     var isSubmitting by remember { mutableStateOf(false) }
     var submitErrorToastMessage by remember { mutableStateOf<String?>(null) }
     var orderResult by remember { mutableStateOf<CheckoutOrderResult?>(null) }
+    var pendingSubmitRequest by remember { mutableStateOf<PendingSubmitRequest?>(null) }
 
     val cardFields = remember { CardFieldsState() }
     val cardValidationMessages = rememberCardValidationMessages()
-    val scope = rememberCoroutineScope()
 
     LaunchedEffect(config) {
         val validationError =
@@ -132,6 +130,24 @@ internal fun CheckoutContent(
             }
 
         isLoading = false
+    }
+
+    LaunchedEffect(pendingSubmitRequest) {
+        val request = pendingSubmitRequest ?: return@LaunchedEffect
+        submitOrder(
+            methodKey = request.methodKey,
+            tokenizerService = createTokenizerService(config),
+            checkoutService = checkoutService,
+            cardInput = request.cardInput,
+            onOrderCreated = { result ->
+                orderResult = result
+                onOrderCreated?.invoke(result)
+            },
+            onError = onError,
+            onSubmitError = { submitErrorToastMessage = it },
+        )
+        isSubmitting = false
+        pendingSubmitRequest = null
     }
 
     val currentOrderResult = orderResult
@@ -205,11 +221,9 @@ internal fun CheckoutContent(
             val validator = CheckoutPaymentMethodValidators.forMethod(methodKey)
             if (!validator.validateBeforeSubmit(input)) return@CheckoutMainContent
             isSubmitting = true
-            scope.launch {
-                submitOrder(
+            pendingSubmitRequest =
+                PendingSubmitRequest(
                     methodKey = methodKey,
-                    tokenizerService = createTokenizerService(config),
-                    checkoutService = checkoutService,
                     cardInput =
                         CardPaymentInput(
                             cardNumber = cardFields.cardNumber.text,
@@ -217,15 +231,7 @@ internal fun CheckoutContent(
                             cvv = cardFields.cvv.text,
                             cardholderName = cardFields.cardholderName.text,
                         ),
-                    onOrderCreated = { result ->
-                        orderResult = result
-                        onOrderCreated?.invoke(result)
-                    },
-                    onError = onError,
-                    onSubmitError = { submitErrorToastMessage = it },
                 )
-                isSubmitting = false
-            }
         },
     )
 
@@ -298,3 +304,8 @@ private suspend fun submitOrder(
         onSubmitError(error.message)
     }
 }
+
+private data class PendingSubmitRequest(
+    val methodKey: String,
+    val cardInput: CardPaymentInput,
+)

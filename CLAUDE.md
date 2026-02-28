@@ -79,6 +79,12 @@ make compose-test   # Compose module tests + coverage
 - Extract nested conditional blocks into focused private methods when logic grows beyond simple rendering.
 - Avoid inline `if/else` assignments when selecting simple values; prefer guard clauses, `when`, or Kotlin helpers (`takeIf`/`takeUnless` + Elvis).
 
+### Unused Local Variables Policy
+
+- Do not keep local variables that are only pass-through aliases or are never referenced.
+- Prefer inlining simple one-off expressions directly at call/return sites when it improves clarity.
+- If a temporary variable is needed for readability, ensure it is meaningfully reused.
+
 ## Publishing
 
 Published to Maven Central.
