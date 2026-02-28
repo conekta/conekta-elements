@@ -290,7 +290,7 @@ conekta-elements/
 │       │       └── assets/            # CDN URLs for card brand images
 │       ├── androidMain/    # JCE crypto implementation
 │       ├── iosMain/        # CommonCrypto/Security implementation
-│       ├── jsMain/         # crypto-js + jsencrypt implementation
+│       ├── jsMain/         # jsencrypt implementation
 │       └── commonTest/     # Shared tests
 ├── compose/                # Compose Multiplatform UI module (Android, iOS)
 │   └── src/

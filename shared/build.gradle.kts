@@ -77,8 +77,7 @@ kotlin {
 
         jsMain.dependencies {
             implementation(libs.ktor.client.js)
-            implementation(npm("crypto-js", "4.2.0"))
-            implementation(npm("jsencrypt", "3.3.2"))
+            implementation(npm("jsencrypt", libs.versions.jsencrypt.get()))
         }
 
         commonTest.dependencies {

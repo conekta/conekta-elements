@@ -84,8 +84,8 @@ internal class CheckoutApiErrorMapper(
                 return null
             }
 
-        val detailMessage = extractDetailMessage(rootObject["details"])
-        val resolvedMessage = detailMessage ?: rootObject.stringValue("message") ?: return null
+        val resolvedMessage =
+            extractDetailMessage(rootObject["details"]) ?: rootObject.stringValue("message") ?: return null
 
         val code =
             rootObject.stringValue("status")

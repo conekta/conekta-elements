@@ -66,6 +66,18 @@ make compose-test   # Compose module tests + coverage
 - If a new reusable semantic color is needed for Compose, add it to `ConektaColors`.
 - If a new cross-platform token is required by multiple modules, add it to `CDNResources.Colors`.
 
+### JS NPM Dependency Version Policy
+
+- For Kotlin/JS `npm(...)` dependencies in Gradle scripts, do not hardcode versions inline.
+- Declare versions in `gradle/libs.versions.toml` under `[versions]`.
+- Reference them from build scripts (e.g. `npm("jsencrypt", libs.versions.jsencrypt.get())`).
+
+### Guard Clause Policy
+
+- Prefer guard clauses (early returns) to reduce nesting and improve readability.
+- Handle exceptional or terminal states first (`loading`, `error`, invalid input) and return early.
+- Extract nested conditional blocks into focused private methods when logic grows beyond simple rendering.
+
 ## Publishing
 
 Published to Maven Central.

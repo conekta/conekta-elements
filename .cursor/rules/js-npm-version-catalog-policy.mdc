@@ -1,0 +1,8 @@
+---
+description: Keep Kotlin/JS npm versions in version catalog
+alwaysApply: true
+---
+
+- Do not hardcode npm dependency versions inline in Gradle Kotlin DSL files.
+- For Kotlin/JS dependencies declared as `npm("package", version)`, store `version` in `gradle/libs.versions.toml` under `[versions]`.
+- Reference catalog versions from Gradle scripts (example: `npm("jsencrypt", libs.versions.jsencrypt.get())`).
