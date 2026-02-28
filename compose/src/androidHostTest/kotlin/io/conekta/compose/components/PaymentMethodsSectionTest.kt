@@ -49,7 +49,6 @@ class PaymentMethodsSectionTest {
                 ConektaTheme {
                     PaymentMethodsSection(
                         methods = emptyList(),
-                        allowedPaymentMethods = emptyList(),
                         selectedPaymentMethod = null,
                         onMethodSelected = {},
                         isLoading = true,
@@ -74,7 +73,6 @@ class PaymentMethodsSectionTest {
                 ConektaTheme {
                     PaymentMethodsSection(
                         methods = emptyList(),
-                        allowedPaymentMethods = emptyList(),
                         selectedPaymentMethod = null,
                         onMethodSelected = {},
                         isLoading = false,
@@ -98,7 +96,6 @@ class PaymentMethodsSectionTest {
                 ConektaTheme {
                     PaymentMethodsSection(
                         methods = listOf(CheckoutPaymentMethods.CARD),
-                        allowedPaymentMethods = listOf(CheckoutPaymentMethods.CARD),
                         selectedPaymentMethod = CheckoutPaymentMethods.CARD,
                         onMethodSelected = {},
                         isLoading = false,
@@ -140,7 +137,6 @@ class PaymentMethodsSectionTest {
                 ConektaTheme {
                     PaymentMethodsSection(
                         methods = listOf(CheckoutPaymentMethods.CARD),
-                        allowedPaymentMethods = listOf(CheckoutPaymentMethods.CARD),
                         selectedPaymentMethod = null,
                         onMethodSelected = {},
                         isLoading = false,
@@ -166,11 +162,6 @@ class PaymentMethodsSectionTest {
                 ConektaTheme {
                     PaymentMethodsSection(
                         methods = listOf(CheckoutPaymentMethods.CASH, CheckoutPaymentMethods.BANK_TRANSFER),
-                        allowedPaymentMethods =
-                            listOf(
-                                CheckoutPaymentMethods.CASH,
-                                CheckoutPaymentMethods.BANK_TRANSFER,
-                            ),
                         selectedPaymentMethod = CheckoutPaymentMethods.CASH,
                         onMethodSelected = {},
                         isLoading = false,
@@ -197,11 +188,6 @@ class PaymentMethodsSectionTest {
                 ConektaTheme {
                     PaymentMethodsSection(
                         methods = listOf(CheckoutPaymentMethods.CASH, CheckoutPaymentMethods.BANK_TRANSFER),
-                        allowedPaymentMethods =
-                            listOf(
-                                CheckoutPaymentMethods.CASH,
-                                CheckoutPaymentMethods.BANK_TRANSFER,
-                            ),
                         selectedPaymentMethod = CheckoutPaymentMethods.BANK_TRANSFER,
                         onMethodSelected = {},
                         isLoading = false,

@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import io.conekta.compose.components.banktransfer.BankTransferSuccessContent
 import io.conekta.compose.components.card.CardFieldsState
@@ -62,7 +63,7 @@ internal fun CheckoutContent(
     checkoutApiServiceFactory: (CheckoutConfig) -> CheckoutApiService,
 ) {
     val focusManager = LocalFocusManager.current
-    val coroutineScope = rememberCoroutineScope()
+    val submitOrderScope = rememberCoroutineScope()
     val checkoutService = remember(config) { checkoutApiServiceFactory(config) }
     val tokenizerService =
         remember(config.publicKey, config.languageTag, config.tokenizerBaseUrl, config.tokenizerRsaPublicKey) {
@@ -241,7 +242,7 @@ internal fun CheckoutContent(
             val validator = CheckoutPaymentMethodValidators.forMethod(methodKey)
             if (!validator.validateBeforeSubmit(input)) return@CheckoutMainContent
             isSubmitting = true
-            coroutineScope.launch {
+            submitOrderScope.launch {
                 submitOrder(
                     methodKey = methodKey,
                     tokenizerService = tokenizerService,
@@ -332,7 +333,6 @@ private fun CheckoutMainContent(
 
             PaymentMethodsSection(
                 methods = CheckoutMethodPolicy.filterSupportedMethods(checkoutResult?.allowedPaymentMethods.orEmpty()),
-                allowedPaymentMethods = checkoutResult?.allowedPaymentMethods.orEmpty(),
                 selectedPaymentMethod = selectedPaymentMethod,
                 onMethodSelected = onMethodSelected,
                 isLoading = isLoading,
@@ -346,7 +346,10 @@ private fun CheckoutMainContent(
                 text = payButtonText,
                 onClick = onPayClick,
                 enabled = isPayEnabled,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
+                modifier =
+                    Modifier
+                        .padding(horizontal = 16.dp, vertical = 16.dp)
+                        .testTag("checkout_pay_button"),
                 height = 56,
             )
 
