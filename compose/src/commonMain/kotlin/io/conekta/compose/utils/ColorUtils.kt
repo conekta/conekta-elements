@@ -16,12 +16,7 @@ internal fun colorFromHex(hex: String): Color {
                 }
             }
 
-    val argb =
-        when (normalized.length) {
-            6 -> "FF$normalized"
-            8 -> normalized
-            else -> error("Unsupported color hex: $hex")
-        }
+    val argb = if (normalized.length == 6) "FF$normalized" else normalized
 
     return Color(argb.toUInt(16).toInt())
 }

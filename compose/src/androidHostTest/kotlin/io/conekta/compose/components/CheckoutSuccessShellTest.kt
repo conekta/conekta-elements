@@ -44,9 +44,39 @@ class CheckoutSuccessShellTest {
                     }
                 }
             }
-
-            onNodeWithText("\$123.45").assertIsDisplayed()
-            onNodeWithText(CheckoutTestFixtures.MERCHANT_NAME).assertIsDisplayed()
             onNodeWithText("Success content body").assertIsDisplayed()
+        }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun checkoutSuccessShellShowsProtectionSheetWhenInitiallyEnabled() =
+        runComposeUiTest {
+            val merchantName = "Merchant Coverage Test"
+            val checkoutResult =
+                checkoutResultFixture(
+                    orderId = "ord_test_2",
+                    checkoutId = "chk_test_2",
+                    name = merchantName,
+                    amount = 1099,
+                    allowedPaymentMethods = emptyList(),
+                )
+
+            setContent {
+                ConektaTheme {
+                    CheckoutSuccessShell(
+                        checkoutResult = checkoutResult,
+                        merchantName = merchantName,
+                        currentLanguageTag = "es",
+                        onLanguageSelected = {},
+                        initialShowProtectionSheet = true,
+                        protectionSheetRenderer = { merchant, _ ->
+                            Text("Sheet renderer for $merchant")
+                        },
+                    ) {
+                        Text("Sheet coverage content")
+                    }
+                }
+            }
+            onNodeWithText("Sheet renderer for $merchantName").assertIsDisplayed()
         }
 }

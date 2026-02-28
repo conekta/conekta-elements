@@ -1,5 +1,7 @@
 package io.conekta.elements.tokenizer.validators
 
+import io.conekta.elements.utils.currentMonth
+import io.conekta.elements.utils.currentTwoDigitYear
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -117,6 +119,29 @@ class CardValidatorsTest {
     @Test
     fun `isValidExpiryDate returns false for 1 digit year`() {
         assertFalse(isValidExpiryDate("12", "6"))
+    }
+
+    @Test
+    fun `isValidExpiryDate returns false for year lower than current two digit year`() {
+        val currentYear = currentTwoDigitYear()
+        val pastYear = (currentYear + 99) % 100
+        val pastYearText = pastYear.toString().padStart(2, '0')
+
+        assertFalse(isValidExpiryDate("12", pastYearText))
+    }
+
+    @Test
+    fun `isValidExpiryDate returns false for date before current month`() {
+        val currentMonth = currentMonth()
+        val currentYear = currentTwoDigitYear()
+        val pastMonth = ((currentMonth + 10) % 12) + 1
+        val yearOffset = (13 - currentMonth) / 12
+        val pastYear = (currentYear - yearOffset + 100) % 100
+
+        val pastMonthText = pastMonth.toString().padStart(2, '0')
+        val pastYearText = pastYear.toString().padStart(2, '0')
+
+        assertFalse(isValidExpiryDate(pastMonthText, pastYearText))
     }
 
     // isValidCvv tests

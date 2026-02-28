@@ -8,9 +8,13 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.runComposeUiTest
 import io.conekta.compose.generated.resources.Res
+import io.conekta.compose.generated.resources.checkout_discount_label
 import io.conekta.compose.generated.resources.checkout_quantity_label
+import io.conekta.compose.generated.resources.checkout_shipping_label
+import io.conekta.compose.generated.resources.checkout_tax_label
 import io.conekta.compose.initComposeResourcesContext
 import io.conekta.compose.theme.ConektaTheme
+import io.conekta.elements.checkout.models.CheckoutAmountLine
 import io.conekta.elements.checkout.models.CheckoutLineItem
 import org.jetbrains.compose.resources.stringResource
 import org.junit.Before
@@ -57,5 +61,38 @@ class CheckoutTotalRowTest {
             onNode(hasText("Total") and hasClickAction()).performClick()
 
             onNodeWithText(quantityLabel).assertIsDisplayed()
+        }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun checkoutTotalRowShowsTaxShippingAndDiscountLinesWithFallbackLabels() =
+        runComposeUiTest {
+            var taxLabel = ""
+            var shippingLabel = ""
+            var discountLabel = ""
+
+            setContent {
+                taxLabel = stringResource(Res.string.checkout_tax_label)
+                shippingLabel = stringResource(Res.string.checkout_shipping_label)
+                discountLabel = stringResource(Res.string.checkout_discount_label)
+                ConektaTheme {
+                    CheckoutTotalRow(
+                        amountText = "\$100.00",
+                        lineItems = listOf(CheckoutLineItem(name = "Producto", quantity = 1, unitPrice = 10000)),
+                        taxLines = listOf(CheckoutAmountLine(description = "", amount = 111)),
+                        shippingLines = listOf(CheckoutAmountLine(description = "", amount = 222)),
+                        discountLines = listOf(CheckoutAmountLine(description = "", amount = 333)),
+                    )
+                }
+            }
+
+            onNode(hasText("Total") and hasClickAction()).performClick()
+
+            onNodeWithText(taxLabel).assertIsDisplayed()
+            onNodeWithText("\$1.11").assertIsDisplayed()
+            onNodeWithText(shippingLabel).assertIsDisplayed()
+            onNodeWithText("\$2.22").assertIsDisplayed()
+            onNodeWithText(discountLabel).assertIsDisplayed()
+            onNodeWithText("-\$3.33").assertIsDisplayed()
         }
 }

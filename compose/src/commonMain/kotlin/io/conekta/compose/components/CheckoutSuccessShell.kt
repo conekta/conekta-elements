@@ -24,9 +24,11 @@ internal fun CheckoutSuccessShell(
     merchantName: String,
     currentLanguageTag: String,
     onLanguageSelected: (String) -> Unit,
+    initialShowProtectionSheet: Boolean = false,
+    protectionSheetRenderer: @Composable ((merchantName: String, onDismiss: () -> Unit) -> Unit)? = null,
     content: @Composable BoxScope.() -> Unit,
 ) {
-    var showProtectionSheet by remember { mutableStateOf(false) }
+    var showProtectionSheet by remember { mutableStateOf(initialShowProtectionSheet) }
 
     Box {
         Column(
@@ -57,9 +59,14 @@ internal fun CheckoutSuccessShell(
     }
 
     if (showProtectionSheet) {
-        PaymentProtectionSheet(
-            merchantName = merchantName,
-            onDismiss = { showProtectionSheet = false },
-        )
+        val renderProtectionSheet =
+            protectionSheetRenderer
+                ?: { merchant, onDismiss ->
+                    PaymentProtectionSheet(
+                        merchantName = merchant,
+                        onDismiss = onDismiss,
+                    )
+                }
+        renderProtectionSheet(merchantName, { showProtectionSheet = false })
     }
 }
