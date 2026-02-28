@@ -6,10 +6,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import coil3.compose.AsyncImage
+import io.conekta.compose.utils.colorFromHex
+import io.conekta.elements.resources.CDNResources
 
 @Composable
 internal fun CashProviderLogoImage(
@@ -24,7 +25,7 @@ internal fun CashProviderLogoImage(
         contentDescription = null,
         modifier = modifier,
         contentScale = contentScale,
-        error = ColorPainter(Color(0xFFE2E8F0)),
+        error = ColorPainter(colorFromHex(CDNResources.Colors.SUCCESS_STEP_NUMBER_BG)),
         onError = { state ->
             println(
                 "CashProviderLogoImage load failed: url=$model throwable=${state.result.throwable}",

@@ -4,30 +4,31 @@ import androidx.compose.foundation.clickable
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.sp
 import io.conekta.compose.generated.resources.Res
-import io.conekta.compose.generated.resources.checkout_cash_provider_more_link
-import io.conekta.compose.theme.ConektaColors
+import io.conekta.compose.generated.resources.success_see_map
 import io.conekta.compose.theme.LocalConektaFontFamily
+import io.conekta.compose.utils.colorFromHex
+import io.conekta.elements.resources.CDNResources
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-internal fun CashProviderMoreLink(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
+internal fun CashInSeeMapLink() {
     val fontFamily = LocalConektaFontFamily.current
+    val uriHandler = LocalUriHandler.current
+
     Text(
-        text = stringResource(Res.string.checkout_cash_provider_more_link),
+        text = stringResource(Res.string.success_see_map),
         style =
             TextStyle(
                 fontFamily = fontFamily,
                 fontSize = 14.sp,
-                color = ConektaColors.SuccessTextPrimary,
+                color = colorFromHex(CDNResources.Colors.SUCCESS_LINK_BLUE),
                 textDecoration = TextDecoration.Underline,
             ),
-        modifier = modifier.clickable(onClick = onClick),
+        modifier = Modifier.clickable { uriHandler.openUri(CDNResources.Links.CASH_MAP) },
     )
 }

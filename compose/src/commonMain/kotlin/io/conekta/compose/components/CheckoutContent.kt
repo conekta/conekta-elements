@@ -247,10 +247,13 @@ internal fun CheckoutContent(
                     methodKey = methodKey,
                     tokenizerService = tokenizerService,
                     checkoutService = checkoutService,
-                    cardNumber = cardFields.cardNumber.text,
-                    expiryDate = cardFields.expiryDate.text,
-                    cvv = cardFields.cvv.text,
-                    cardholderName = cardFields.cardholderName.text,
+                    cardInput =
+                        CardPaymentInput(
+                            cardNumber = cardFields.cardNumber.text,
+                            expiryDate = cardFields.expiryDate.text,
+                            cvv = cardFields.cvv.text,
+                            cardholderName = cardFields.cardholderName.text,
+                        ),
                     onOrderCreated = { result ->
                         orderResult = result
                         onOrderCreated?.invoke(result)
@@ -376,10 +379,7 @@ private suspend fun submitOrder(
     methodKey: String,
     tokenizerService: TokenizerApiService,
     checkoutService: CheckoutApiService,
-    cardNumber: String,
-    expiryDate: String,
-    cvv: String,
-    cardholderName: String,
+    cardInput: CardPaymentInput,
     onOrderCreated: ((CheckoutOrderResult) -> Unit)?,
     onError: (CheckoutError) -> Unit,
     onSubmitError: (String) -> Unit,
@@ -389,10 +389,10 @@ private suspend fun submitOrder(
             CheckoutPaymentMethod.from(
                 methodKey = methodKey,
                 tokenizerService = tokenizerService,
-                cardNumber = cardNumber,
-                expiryDate = expiryDate,
-                cvv = cvv,
-                cardholderName = cardholderName,
+                cardNumber = cardInput.cardNumber,
+                expiryDate = cardInput.expiryDate,
+                cvv = cardInput.cvv,
+                cardholderName = cardInput.cardholderName,
             )
         val tokenId = method.resolveTokenId()
 

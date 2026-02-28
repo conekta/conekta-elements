@@ -12,7 +12,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -23,13 +22,12 @@ import io.conekta.compose.generated.resources.Res
 import io.conekta.compose.generated.resources.success_cash_must_pay
 import io.conekta.compose.theme.ConektaColors
 import io.conekta.compose.theme.LocalConektaFontFamily
+import io.conekta.compose.utils.colorFromHex
 import io.conekta.elements.checkout.models.CheckoutOrderResult
 import io.conekta.elements.checkout.models.CheckoutResult
 import io.conekta.elements.models.Amount
+import io.conekta.elements.resources.CDNResources
 import org.jetbrains.compose.resources.stringResource
-
-private val PaySummaryCardBg = Color(0xFFF7F8FD)
-private val PaySummaryTextColor = Color(0xFF212247)
 
 @Composable
 internal fun CashSuccessPaySummaryCard(
@@ -45,7 +43,7 @@ internal fun CashSuccessPaySummaryCard(
 
     Surface(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-        color = PaySummaryCardBg,
+        color = colorFromHex(CDNResources.Colors.CHECKOUT_BACKGROUND),
         shape = RoundedCornerShape(8.dp),
     ) {
         Column(
@@ -61,7 +59,7 @@ internal fun CashSuccessPaySummaryCard(
                         fontSize = 14.sp,
                         lineHeight = 16.sp,
                         fontWeight = FontWeight.Normal,
-                        color = PaySummaryTextColor,
+                        color = ConektaColors.SuccessTextPrimary,
                     ),
                 textAlign = TextAlign.Center,
             )

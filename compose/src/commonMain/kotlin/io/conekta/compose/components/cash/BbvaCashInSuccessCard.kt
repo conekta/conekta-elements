@@ -3,7 +3,6 @@ package io.conekta.compose.components.cash
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -14,7 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -33,17 +31,12 @@ import io.conekta.compose.generated.resources.success_cash_bbva_title
 import io.conekta.compose.generated.resources.success_cash_commission_none
 import io.conekta.compose.generated.resources.success_cash_convention_label
 import io.conekta.compose.generated.resources.success_cash_reference_label
+import io.conekta.compose.theme.ConektaColors
 import io.conekta.compose.theme.LocalConektaFontFamily
+import io.conekta.compose.utils.colorFromHex
 import io.conekta.elements.checkout.models.CheckoutChargePaymentMethod
 import io.conekta.elements.resources.CDNResources
 import org.jetbrains.compose.resources.stringResource
-
-private val BbvaCardBg = Color(0xFFFDFEFF)
-private val BbvaCardBorder = Color(0xFFD8D8E8)
-private val BbvaTitleColor = Color(0xFF585987)
-private val BbvaTextPrimary = Color(0xFF212247)
-private val BbvaTextSecondary = Color(0xFF8D8FBA)
-private val BbvaTextBody = Color(0xFF585987)
 
 @Composable
 internal fun BbvaCashInSuccessCard(paymentMethod: CheckoutChargePaymentMethod) {
@@ -51,9 +44,9 @@ internal fun BbvaCashInSuccessCard(paymentMethod: CheckoutChargePaymentMethod) {
 
     Surface(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-        color = BbvaCardBg,
+        color = colorFromHex(CDNResources.Colors.SUCCESS_SURFACE),
         shape = RoundedCornerShape(8.dp),
-        border = BorderStroke(1.dp, BbvaCardBorder),
+        border = BorderStroke(1.dp, ConektaColors.Neutral5),
     ) {
         Column(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 32.dp),
@@ -67,7 +60,7 @@ internal fun BbvaCashInSuccessCard(paymentMethod: CheckoutChargePaymentMethod) {
                         fontFamily = fontFamily,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = BbvaTitleColor,
+                        color = ConektaColors.Neutral8,
                         letterSpacing = 0.7.sp,
                     ),
                 textAlign = TextAlign.Center,
@@ -87,7 +80,7 @@ internal fun BbvaCashInSuccessCard(paymentMethod: CheckoutChargePaymentMethod) {
                         fontFamily = fontFamily,
                         fontSize = 14.sp,
                         lineHeight = 22.sp,
-                        color = BbvaTextPrimary,
+                        color = ConektaColors.SuccessTextPrimary,
                     ),
                 textAlign = TextAlign.Center,
             )
@@ -117,7 +110,7 @@ private fun BbvaReferenceText(
                             fontFamily = fontFamily,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
-                            color = BbvaTextSecondary,
+                            color = ConektaColors.Neutral7,
                         ),
                     ) {
                         append(stringResource(Res.string.success_cash_convention_label))
@@ -128,7 +121,7 @@ private fun BbvaReferenceText(
                             fontFamily = fontFamily,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
-                            color = BbvaTextPrimary,
+                            color = ConektaColors.SuccessTextPrimary,
                         ),
                     ) {
                         append(agreement)
@@ -144,7 +137,7 @@ private fun BbvaReferenceText(
                         fontFamily = fontFamily,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
-                        color = BbvaTextSecondary,
+                        color = ConektaColors.Neutral7,
                     ),
                 ) {
                     append(stringResource(Res.string.success_cash_reference_label))
@@ -155,7 +148,7 @@ private fun BbvaReferenceText(
                         fontFamily = fontFamily,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
-                        color = BbvaTextPrimary,
+                        color = ConektaColors.SuccessTextPrimary,
                     ),
                 ) {
                     append(reference)
@@ -177,43 +170,5 @@ private fun BbvaCashInSteps(modifier: Modifier = Modifier) {
         BbvaStepRow(number = "1", text = stringResource(Res.string.success_cash_bbva_step_1))
         BbvaStepRow(number = "2", text = stringResource(Res.string.success_cash_bbva_step_2))
         BbvaStepRow(number = "3", text = stringResource(Res.string.success_cash_bbva_step_3))
-    }
-}
-
-@Composable
-private fun BbvaStepRow(
-    number: String,
-    text: String,
-) {
-    val fontFamily = LocalConektaFontFamily.current
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.Top,
-    ) {
-        Text(
-            text = "$number.",
-            style =
-                TextStyle(
-                    fontFamily = fontFamily,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    lineHeight = 22.sp,
-                    color = BbvaTextBody,
-                ),
-            modifier = Modifier.width(16.dp),
-            textAlign = TextAlign.Center,
-        )
-        Text(
-            text = text,
-            style =
-                TextStyle(
-                    fontFamily = fontFamily,
-                    fontSize = 14.sp,
-                    lineHeight = 22.sp,
-                    color = BbvaTextBody,
-                ),
-            modifier = Modifier.weight(1f),
-        )
     }
 }

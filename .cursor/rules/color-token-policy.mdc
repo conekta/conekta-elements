@@ -1,0 +1,12 @@
+---
+description: Use shared color tokens, avoid hardcoded colors
+globs:
+  - "compose/src/commonMain/kotlin/**/*.kt"
+alwaysApply: true
+---
+
+- Do not hardcode colors in Compose feature components (avoid `Color(0x...)` in UI files).
+- Use `ConektaColors` for semantic Compose colors.
+- Use `CDNResources.Colors` + `colorFromHex(...)` for shared/CDN-defined tokens.
+- When introducing a new semantic UI color, add it to `compose/theme/ConektaColors.kt`.
+- When introducing a new cross-module token, add it to `shared/.../CDNResources.Colors`.

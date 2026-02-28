@@ -26,7 +26,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
@@ -49,6 +48,8 @@ fun CheckoutFooter(
 ) {
     val uriHandler = LocalUriHandler.current
     val fontFamily = LocalConektaFontFamily.current
+    val dropdownMenuColor = colorFromHex(CDNResources.Colors.CHECKOUT_INK)
+    val dropdownMenuContentColor = colorFromHex(CDNResources.Colors.WHITE)
     var languageMenuExpanded by remember { mutableStateOf(false) }
     Row(
         modifier =
@@ -98,14 +99,19 @@ fun CheckoutFooter(
             DropdownMenu(
                 expanded = languageMenuExpanded,
                 onDismissRequest = { languageMenuExpanded = false },
-                containerColor = Color(0xFF2A2A2A),
+                containerColor = dropdownMenuColor,
             ) {
                 listOf("es" to "ES", "en" to "EN").forEach { (tag, label) ->
                     DropdownMenuItem(
                         text = {
                             Text(
                                 text = label,
-                                style = TextStyle(fontFamily = fontFamily, fontSize = 14.sp, color = Color.White),
+                                style =
+                                    TextStyle(
+                                        fontFamily = fontFamily,
+                                        fontSize = 14.sp,
+                                        color = dropdownMenuContentColor,
+                                    ),
                             )
                         },
                         onClick = {
@@ -117,7 +123,7 @@ fun CheckoutFooter(
                                 Icon(
                                     imageVector = Icons.Outlined.Check,
                                     contentDescription = null,
-                                    tint = Color.White,
+                                    tint = dropdownMenuContentColor,
                                     modifier = Modifier.size(16.dp),
                                 )
                             }

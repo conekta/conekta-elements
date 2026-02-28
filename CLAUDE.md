@@ -58,6 +58,14 @@ make compose-test   # Compose module tests + coverage
 - Prefer deterministic fixture data unless the test explicitly validates runtime randomness.
 - Tests must not contain `if`/`else` branches; use deterministic setup and explicit test cases instead.
 
+### Color Token Policy
+
+- Do not hardcode colors in Compose components (avoid `Color(0x...)` in feature UI files).
+- For Compose UI semantic colors, use `ConektaColors` from `compose/theme/ConektaColors.kt`.
+- For shared/cross-module or CDN-defined palette values, use `CDNResources.Colors` and convert with `colorFromHex(...)`.
+- If a new reusable semantic color is needed for Compose, add it to `ConektaColors`.
+- If a new cross-platform token is required by multiple modules, add it to `CDNResources.Colors`.
+
 ## Publishing
 
 Published to Maven Central.

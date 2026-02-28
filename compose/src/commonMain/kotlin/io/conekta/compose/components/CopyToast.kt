@@ -6,14 +6,14 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.conekta.compose.theme.ConektaColors
 import io.conekta.compose.theme.LocalConektaFontFamily
-
-private val CopyToastBg = Color(0xFF212247)
+import io.conekta.compose.utils.colorFromHex
+import io.conekta.elements.resources.CDNResources
 
 @Composable
 internal fun CopyToast(
@@ -22,7 +22,7 @@ internal fun CopyToast(
 ) {
     Surface(
         modifier = modifier,
-        color = CopyToastBg,
+        color = ConektaColors.SuccessTextPrimary,
         shape = RoundedCornerShape(8.dp),
     ) {
         Text(
@@ -33,7 +33,7 @@ internal fun CopyToast(
                     fontFamily = LocalConektaFontFamily.current,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Medium,
-                    color = Color.White,
+                    color = colorFromHex(CDNResources.Colors.WHITE),
                 ),
         )
     }
