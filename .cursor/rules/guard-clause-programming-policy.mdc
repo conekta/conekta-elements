@@ -6,3 +6,4 @@ alwaysApply: true
 - Prefer guard clauses (early returns) instead of deep nested conditionals.
 - In UI and business logic, handle terminal states first (e.g. loading/error/null-invalid) and return early.
 - When a block becomes too nested, extract it into small focused private methods.
+- Avoid inline `if/else` assignments for value selection; prefer guard clauses, `when`, or `takeIf`/`takeUnless` + Elvis.

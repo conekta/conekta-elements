@@ -29,17 +29,16 @@ fun ConektaCheckout(
     onPaymentMethodSelected: (String) -> Unit,
     onError: (CheckoutError) -> Unit,
     modifier: Modifier = Modifier,
-    initialLanguageTag: String = AUTO_LANGUAGE_TAG,
     onLanguageChanged: ((String) -> Unit)? = null,
     onOrderCreated: ((CheckoutOrderResult) -> Unit)? = null,
     checkoutApiServiceFactory: (CheckoutConfig) -> CheckoutApiService = { CheckoutApiService(it) },
 ) {
     val deviceLanguage = rememberDeviceLanguageTag()
-    var currentLanguageTag by remember(initialLanguageTag, deviceLanguage) {
+    val requestedLanguageTag =
+        config.languageTag.takeUnless { it.equals(AUTO_LANGUAGE_TAG, ignoreCase = true) } ?: deviceLanguage
+    var currentLanguageTag by remember(config.languageTag, deviceLanguage) {
         mutableStateOf(
-            normalizeLanguageTag(
-                if (initialLanguageTag == AUTO_LANGUAGE_TAG) deviceLanguage else initialLanguageTag,
-            ),
+            normalizeLanguageTag(requestedLanguageTag),
         )
     }
 

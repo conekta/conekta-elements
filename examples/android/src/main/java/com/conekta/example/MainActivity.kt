@@ -185,6 +185,7 @@ private fun CheckoutExample() {
                     jwtToken = JWT_TOKEN,
                     merchantName = "My Store",
                     baseUrl = checkoutBaseUrl,
+                    languageTag = "auto",
                     tokenizerBaseUrl = apiBaseUrl,
                     tokenizerRsaPublicKey = tokenizerRsaPublicKey,
                 ),

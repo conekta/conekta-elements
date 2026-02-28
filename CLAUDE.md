@@ -77,6 +77,7 @@ make compose-test   # Compose module tests + coverage
 - Prefer guard clauses (early returns) to reduce nesting and improve readability.
 - Handle exceptional or terminal states first (`loading`, `error`, invalid input) and return early.
 - Extract nested conditional blocks into focused private methods when logic grows beyond simple rendering.
+- Avoid inline `if/else` assignments when selecting simple values; prefer guard clauses, `when`, or Kotlin helpers (`takeIf`/`takeUnless` + Elvis).
 
 ## Publishing
 

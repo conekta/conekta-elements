@@ -27,6 +27,8 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
+import kotlin.test.assertNotEquals
+import kotlin.test.assertTrue
 
 @RunWith(RobolectricTestRunner::class)
 class ConektaCheckoutTest {
@@ -267,5 +269,88 @@ class ConektaCheckoutTest {
             onNodeWithText(thrownMessage).assertIsDisplayed()
             val error = assertIs<CheckoutError.NetworkError>(capturedError)
             assertEquals(thrownMessage, error.message)
+        }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun checkoutUsesConfigLanguageTagWhenProvided() =
+        runComposeUiTest {
+            var serviceConfigLanguageTag: String? = null
+            val config =
+                CheckoutConfig(
+                    checkoutRequestId = "lang-en-checkout",
+                    publicKey = "key_test_123",
+                    jwtToken = "jwt_test",
+                    baseUrl = "https://test.conekta.com/",
+                    languageTag = "en-US",
+                )
+
+            setContent {
+                ConektaCheckout(
+                    config = config,
+                    onPaymentMethodSelected = {},
+                    onError = {},
+                    checkoutApiServiceFactory = { checkoutConfig ->
+                        serviceConfigLanguageTag = checkoutConfig.languageTag
+                        object : CheckoutApiService(checkoutConfig) {
+                            override suspend fun fetchCheckout(): Result<CheckoutResult> =
+                                Result.success(
+                                    CheckoutResult(
+                                        orderId = "ord_lang_en",
+                                        checkoutId = "chk_lang_en",
+                                        amount = 12000,
+                                        currency = CurrencyCodes.MXN,
+                                        allowedPaymentMethods = listOf(CheckoutPaymentMethods.CARD),
+                                    ),
+                                )
+                        }
+                    },
+                )
+            }
+
+            waitForIdle()
+            assertEquals("en", serviceConfigLanguageTag)
+        }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun checkoutResolvesAutoLanguageTagUsingDeviceLanguage() =
+        runComposeUiTest {
+            var serviceConfigLanguageTag: String? = null
+            val config =
+                CheckoutConfig(
+                    checkoutRequestId = "lang-auto-checkout",
+                    publicKey = "key_test_123",
+                    jwtToken = "jwt_test",
+                    baseUrl = "https://test.conekta.com/",
+                    languageTag = "auto",
+                )
+
+            setContent {
+                ConektaCheckout(
+                    config = config,
+                    onPaymentMethodSelected = {},
+                    onError = {},
+                    checkoutApiServiceFactory = { checkoutConfig ->
+                        serviceConfigLanguageTag = checkoutConfig.languageTag
+                        object : CheckoutApiService(checkoutConfig) {
+                            override suspend fun fetchCheckout(): Result<CheckoutResult> =
+                                Result.success(
+                                    CheckoutResult(
+                                        orderId = "ord_lang_auto",
+                                        checkoutId = "chk_lang_auto",
+                                        amount = 12000,
+                                        currency = CurrencyCodes.MXN,
+                                        allowedPaymentMethods = listOf(CheckoutPaymentMethods.CARD),
+                                    ),
+                                )
+                        }
+                    },
+                )
+            }
+
+            waitForIdle()
+            assertNotEquals("auto", serviceConfigLanguageTag)
+            assertTrue(serviceConfigLanguageTag == "es" || serviceConfigLanguageTag == "en")
         }
 }
