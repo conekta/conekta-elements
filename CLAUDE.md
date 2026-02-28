@@ -45,11 +45,18 @@ make shared-test    # Shared module tests + coverage
 make compose-test   # Compose module tests + coverage
 ```
 
+### Pre-Push Policy
+
+- Before any `git push`, run linter checks and fix reported issues.
+- Recommended command: `make lint-fix`.
+- If `lint-fix` cannot be executed, run the corresponding module lint task and report the reason.
+
 ### Test Data Policy
 
 - Keep test payloads in fixtures (`*Fixtures.kt`), not inline multiline JSON in test files.
 - When adding a new payload shape, create/update a fixture helper and consume it from tests.
 - Prefer deterministic fixture data unless the test explicitly validates runtime randomness.
+- Tests must not contain `if`/`else` branches; use deterministic setup and explicit test cases instead.
 
 ## Publishing
 
