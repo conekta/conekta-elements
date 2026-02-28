@@ -76,6 +76,32 @@ object CheckoutApiFixtures {
         }
         """.trimIndent()
 
+    fun malformedPurchaserMessageErrorPayload(
+        status: String = "unprocessable_entity",
+        message: String = "Backend validation failed",
+    ): String =
+        """
+        {
+          "status": "$status",
+          "message": "$message",
+          "message_to_purchaser": { "unexpected": true }
+        }
+        """.trimIndent()
+
+    fun detailsOnlyMalformedPurchaserMessageErrorPayload(
+        code: String = "custom_error",
+        detailMessage: String = "First detail message",
+    ): String =
+        """
+        {
+          "code": "$code",
+          "details": [
+            { "message": "$detailMessage" }
+          ],
+          "message_to_purchaser": { "unexpected": true }
+        }
+        """.trimIndent()
+
     fun nestedDetailsErrorPayload(nestedDetailMessage: String): String =
         """
         {

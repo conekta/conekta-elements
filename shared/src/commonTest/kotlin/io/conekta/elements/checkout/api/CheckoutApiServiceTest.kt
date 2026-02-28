@@ -260,6 +260,25 @@ class CheckoutApiServiceTest {
             assertIs<CheckoutError.NetworkError>(exception.checkoutError)
         }
 
+    @Test
+    fun fetchCheckoutSuccessWithUnparseableBodyReturnsNetworkFailure() =
+        runTest {
+            val mockClient =
+                createMockClient(
+                    statusCode = HttpStatusCode.OK,
+                    responseBody = """{"unexpected":"shape"}""",
+                )
+
+            val service = CheckoutApiService(config = testConfig, httpClient = mockClient)
+            val result = service.fetchCheckout()
+
+            assertTrue(result.isFailure)
+            val exception = result.exceptionOrNull()
+            assertIs<CheckoutApiException>(exception)
+            val networkError = assertIs<CheckoutError.NetworkError>(exception.checkoutError)
+            assertEquals("Could not parse checkout response", networkError.message)
+        }
+
     // --- createOrder tests ---
 
     private data class CapturedRequest(
@@ -352,6 +371,21 @@ class CheckoutApiServiceTest {
             val bodyJson = Json.decodeFromString<JsonObject>(capturedBody)
             assertEquals("tok_test_abc", bodyJson["tokenId"]?.jsonPrimitive?.content)
             assertEquals("Card", bodyJson["paymentMethod"]?.jsonPrimitive?.content)
+        }
+
+    @Test
+    fun createOrderUnsupportedPaymentMethodReturnsValidationFailure() =
+        runTest {
+            val mockClient = createPostMockClient()
+            val service = CheckoutApiService(config = testConfig, httpClient = mockClient)
+
+            val result = service.createOrder("unsupported_method")
+
+            assertTrue(result.isFailure)
+            val exception = result.exceptionOrNull()
+            assertIs<CheckoutApiException>(exception)
+            val validationError = assertIs<CheckoutError.ValidationError>(exception.checkoutError)
+            assertEquals("Unsupported payment method: unsupported_method", validationError.message)
         }
 
     @Test

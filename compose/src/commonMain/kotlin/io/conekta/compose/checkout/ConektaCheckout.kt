@@ -37,13 +37,9 @@ fun ConektaCheckout(
     val deviceLanguage = rememberDeviceLanguageTag()
     var currentLanguageTag by remember(initialLanguageTag, deviceLanguage) {
         mutableStateOf(
-            if (initialLanguageTag ==
-                AUTO_LANGUAGE_TAG
-            ) {
-                normalizeLanguageTag(deviceLanguage)
-            } else {
-                normalizeLanguageTag(initialLanguageTag)
-            },
+            normalizeLanguageTag(
+                if (initialLanguageTag == AUTO_LANGUAGE_TAG) deviceLanguage else initialLanguageTag,
+            ),
         )
     }
 

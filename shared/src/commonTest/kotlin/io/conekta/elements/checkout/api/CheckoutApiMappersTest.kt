@@ -62,6 +62,58 @@ class CheckoutApiMappersTest {
     }
 
     @Test
+    fun checkoutRequestResponseToDomainMapsLineItemsDiscountAndShippingLines() {
+        val dto =
+            CheckoutRequestResponseDto(
+                id = "checkout-with-lines",
+                name = "Checkout with lines",
+                amount = 9000,
+                allowedPaymentMethods = listOf("card"),
+                orderTemplate =
+                    CheckoutOrderTemplateDto(
+                        currency = "MXN",
+                        lineItems =
+                            listOf(
+                                CheckoutLineItemTemplateDto(
+                                    name = "Producto demo",
+                                    quantity = 2,
+                                    unitPrice = 4500,
+                                ),
+                            ),
+                        discountLines =
+                            listOf(
+                                CheckoutAmountLineTemplateDto(
+                                    description = "Promo 2x1",
+                                    amount = 500,
+                                ),
+                            ),
+                        shippingLines =
+                            listOf(
+                                CheckoutAmountLineTemplateDto(
+                                    description = "Envio express",
+                                    amount = 250,
+                                ),
+                            ),
+                    ),
+            )
+
+        val result = dto.toDomain()
+
+        assertEquals(1, result.lineItems.size)
+        assertEquals("Producto demo", result.lineItems.first().name)
+        assertEquals(2, result.lineItems.first().quantity)
+        assertEquals(4500, result.lineItems.first().unitPrice)
+
+        assertEquals(1, result.discountLines.size)
+        assertEquals("Promo 2x1", result.discountLines.first().description)
+        assertEquals(500, result.discountLines.first().amount)
+
+        assertEquals(1, result.shippingLines.size)
+        assertEquals("Envio express", result.shippingLines.first().description)
+        assertEquals(250, result.shippingLines.first().amount)
+    }
+
+    @Test
     fun checkoutOrderResponseToDomainMapsNullableCollectionsAndDescriptions() {
         val dto =
             CheckoutOrderResponseDto(

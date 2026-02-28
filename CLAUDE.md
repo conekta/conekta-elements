@@ -45,6 +45,12 @@ make shared-test    # Shared module tests + coverage
 make compose-test   # Compose module tests + coverage
 ```
 
+### Test Data Policy
+
+- Keep test payloads in fixtures (`*Fixtures.kt`), not inline multiline JSON in test files.
+- When adding a new payload shape, create/update a fixture helper and consume it from tests.
+- Prefer deterministic fixture data unless the test explicitly validates runtime randomness.
+
 ## Publishing
 
 Published to Maven Central.
