@@ -50,6 +50,7 @@ class ConektaCheckoutTest {
                     publicKey = "key_test_123",
                     jwtToken = "jwt_test",
                     baseUrl = "https://test.conekta.com/",
+                    languageTag = "en",
                 )
 
             setContent {
