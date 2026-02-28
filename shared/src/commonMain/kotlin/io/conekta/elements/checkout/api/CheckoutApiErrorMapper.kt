@@ -84,15 +84,15 @@ internal class CheckoutApiErrorMapper(
                 return null
             }
 
-        val resolvedMessage =
-            extractDetailMessage(rootObject["details"]) ?: rootObject.stringValue("message") ?: return null
-
         val code =
             rootObject.stringValue("status")
                 ?: rootObject.stringValue("code")
                 ?: "http_$statusCode"
 
-        return ParsedBackendError(code = code, message = resolvedMessage)
+        return ParsedBackendError(
+            code = code,
+            message = extractDetailMessage(rootObject["details"]) ?: rootObject.stringValue("message") ?: return null,
+        )
     }
 
     private fun extractDetailMessage(detailsElement: JsonElement?): String? = extractMessageRecursively(detailsElement)

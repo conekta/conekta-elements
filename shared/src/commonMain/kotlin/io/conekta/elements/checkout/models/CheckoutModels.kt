@@ -186,6 +186,14 @@ data class CheckoutChargePaymentMethod(
 
 @ObjCName("CheckoutError")
 sealed class CheckoutError {
+    val errorMessage: String
+        get() =
+            when (this) {
+                is ValidationError -> message
+                is NetworkError -> message
+                is ApiError -> message
+            }
+
     @ObjCName("CheckoutValidationError")
     data class ValidationError(
         val message: String,
