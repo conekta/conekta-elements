@@ -207,7 +207,18 @@ jobs:
         run: |
           PROJECT_KEY=$(grep '^sonar.projectKey=' sonar-project.properties | cut -d'=' -f2)
           SONAR_URL="${{ secrets.SONAR_HOST_URL }}/dashboard?id=${PROJECT_KEY}&pullRequest=${{ github.event.pull_request.number }}"
-          gh pr comment "${{ github.event.pull_request.number }}" \
-            --edit-last \
-            --create-if-none \
-            --body "**SonarQube Analysis:** [View Dashboard]($SONAR_URL)"
+          REPO="${{ github.repository }}"
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          MARKER="<!-- sonar-dashboard-link -->"
+          COMMENT_BODY="$MARKER
+          **SonarQube Analysis:** [View Dashboard]($SONAR_URL)"
+
+          # Keep only one github-actions[bot] comment: the Sonar dashboard link.
+          BOT_COMMENT_IDS=$(gh api "repos/$REPO/issues/$PR_NUMBER/comments" --paginate \
+            --jq ".[] | select(.user.login == \"github-actions[bot]\") | .id")
+
+          for comment_id in $BOT_COMMENT_IDS; do
+            gh api -X DELETE "repos/$REPO/issues/comments/$comment_id"
+          done
+
+          gh pr comment "$PR_NUMBER" --body "$COMMENT_BODY"
