@@ -15,4 +15,5 @@ regexes = [
 stopwords = [
   "pk_test_123456789",
   "TOKEN456",
+  "key_test_abc123",
 ]

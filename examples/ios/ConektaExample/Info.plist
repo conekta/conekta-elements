@@ -35,7 +35,24 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
 	<key>ConektaPublicKey</key>
 	<string>$(CONEKTA_PUBLIC_KEY)</string>
+	<key>ConektaCheckoutRequestId</key>
+	<string>$(CONEKTA_CHECKOUT_REQUEST_ID)</string>
+	<key>ConektaJwtToken</key>
+	<string>$(CONEKTA_JWT_TOKEN)</string>
+	<key>ConektaTokenizerRsaPublicKey</key>
+	<string>$(CONEKTA_TOKENIZER_RSA_PUBLIC_KEY)</string>
+	<key>ConektaApiBaseUrl</key>
+	<string>$(CONEKTA_API_BASE_URL)</string>
+	<key>ConektaCheckoutBaseUrl</key>
+	<string>$(CONEKTA_CHECKOUT_BASE_URL)</string>
 </dict>
 </plist>

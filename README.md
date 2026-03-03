@@ -73,24 +73,7 @@ dependencies {
 
 Artifacts are published to **Maven Central**. No additional repository configuration required.
 
-For **GitHub Packages** (pre-release builds):
-
-```kotlin
-// settings.gradle.kts
-dependencyResolutionManagement {
-    repositories {
-        maven {
-            url = uri("https://maven.pkg.github.com/conekta/conekta-elements")
-            credentials {
-                username = providers.gradleProperty("gpr.user").orNull ?: System.getenv("GP_USER")
-                password = providers.gradleProperty("gpr.token").orNull ?: System.getenv("GP_TOKEN")
-            }
-        }
-    }
-}
-```
-
-#### Coil setup (required for compose module)
+### Coil setup (required for compose module)
 
 The compose module uses [Coil 3](https://coil-kt.github.io/coil/) to load card brand icons from Conekta's CDN. Initialize it in your `Application` class:
 
@@ -198,6 +181,33 @@ fun PaymentScreen() {
 }
 ```
 
+#### Checkout (dynamic payment methods)
+
+```kotlin
+import io.conekta.compose.checkout.ConektaCheckout
+import io.conekta.elements.checkout.models.CheckoutConfig
+import io.conekta.elements.checkout.models.CheckoutError
+
+@Composable
+fun CheckoutScreen() {
+    ConektaCheckout(
+        config = CheckoutConfig(
+            checkoutRequestId = "dc5baf10-...",
+            publicKey = "key_xxxxx",
+            jwtToken = "jwt_xxxxx",
+        ),
+        onPaymentMethodSelected = { method ->
+            println("Selected: $method")
+        },
+        onError = { error: CheckoutError ->
+            println("Error: $error")
+        },
+    )
+}
+```
+
+See [`compose/README.md`](./compose/README.md) for full Checkout documentation.
+
 ### iOS Usage
 
 ```swift
@@ -290,10 +300,11 @@ conekta-elements/
 │       │       │   ├── formatters/    # Card number/CVV/expiry formatters
 │       │       │   ├── models/        # TokenizerConfig, TokenResult, TokenizerError
 │       │       │   └── validators/    # Form validation (Luhn, expiry, CVV)
+│       │       ├── checkout/           # Checkout models + API
 │       │       └── assets/            # CDN URLs for card brand images
 │       ├── androidMain/    # JCE crypto implementation
 │       ├── iosMain/        # CommonCrypto/Security implementation
-│       ├── jsMain/         # crypto-js + jsencrypt implementation
+│       ├── jsMain/         # jsencrypt implementation
 │       └── commonTest/     # Shared tests
 ├── compose/                # Compose Multiplatform UI module (Android, iOS)
 │   └── src/
@@ -302,7 +313,8 @@ conekta-elements/
 │       │       ├── tokenizer/     # ConektaTokenizer composable
 │       │       ├── components/    # TextField, CardBrandIcon, etc.
 │       │       ├── theme/         # Colors, fonts
-│       │       └── i18n/          # Localization (ES/EN)
+│       │       ├── checkout/       # ConektaCheckout composable
+│       │       └── localization/  # Localization (ES/EN)
 │       └── androidHostTest/       # Robolectric UI tests
 ├── webApp/                 # React + TypeScript web library
 ├── examples/               # Android + iOS example apps

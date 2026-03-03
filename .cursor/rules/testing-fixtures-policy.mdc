@@ -1,0 +1,12 @@
+---
+description: Keep test payloads in fixtures
+globs:
+  - "**/*Test.kt"
+alwaysApply: true
+---
+
+- Do not inline multiline JSON payloads directly inside tests.
+- Add payload builders/samples in `*Fixtures.kt` and reference them from tests.
+- If a test needs a new payload variant, extend the existing fixture object instead of duplicating JSON.
+- Keep fixture values deterministic by default; only use runtime-random values when the test is specifically about that behavior.
+- Do not use `if`/`else` in tests; model each branch as an explicit deterministic test case.

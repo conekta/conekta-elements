@@ -45,6 +45,46 @@ make shared-test    # Shared module tests + coverage
 make compose-test   # Compose module tests + coverage
 ```
 
+### Pre-Push Policy
+
+- Before any `git push`, run linter checks and fix reported issues.
+- Recommended command: `make lint-fix`.
+- If `lint-fix` cannot be executed, run the corresponding module lint task and report the reason.
+
+### Test Data Policy
+
+- Keep test payloads in fixtures (`*Fixtures.kt`), not inline multiline JSON in test files.
+- When adding a new payload shape, create/update a fixture helper and consume it from tests.
+- Prefer deterministic fixture data unless the test explicitly validates runtime randomness.
+- Tests must not contain `if`/`else` branches; use deterministic setup and explicit test cases instead.
+
+### Color Token Policy
+
+- Do not hardcode colors in Compose components (avoid `Color(0x...)` in feature UI files).
+- For Compose UI semantic colors, use `ConektaColors` from `compose/theme/ConektaColors.kt`.
+- For shared/cross-module or CDN-defined palette values, use `CDNResources.Colors` and convert with `colorFromHex(...)`.
+- If a new reusable semantic color is needed for Compose, add it to `ConektaColors`.
+- If a new cross-platform token is required by multiple modules, add it to `CDNResources.Colors`.
+
+### JS NPM Dependency Version Policy
+
+- For Kotlin/JS `npm(...)` dependencies in Gradle scripts, do not hardcode versions inline.
+- Declare versions in `gradle/libs.versions.toml` under `[versions]`.
+- Reference them from build scripts (e.g. `npm("jsencrypt", libs.versions.jsencrypt.get())`).
+
+### Guard Clause Policy
+
+- Prefer guard clauses (early returns) to reduce nesting and improve readability.
+- Handle exceptional or terminal states first (`loading`, `error`, invalid input) and return early.
+- Extract nested conditional blocks into focused private methods when logic grows beyond simple rendering.
+- Avoid inline `if/else` assignments when selecting simple values; prefer guard clauses, `when`, or Kotlin helpers (`takeIf`/`takeUnless` + Elvis).
+
+### Unused Local Variables Policy
+
+- Do not keep local variables that are only pass-through aliases or are never referenced.
+- Prefer inlining simple one-off expressions directly at call/return sites when it improves clarity.
+- If a temporary variable is needed for readability, ensure it is meaningfully reused.
+
 ## Publishing
 
-Published to GitHub Packages: `maven.pkg.github.com/conekta/conekta-elements`
+Published to Maven Central.

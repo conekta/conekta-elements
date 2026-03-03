@@ -2,9 +2,8 @@
 
 package io.conekta.elements.tokenizer.models
 
+import io.conekta.elements.network.ConektaServers
 import kotlin.native.ObjCName
-
-private const val PRODUCTION_BASE_URL = "https://api.conekta.io/"
 
 @Suppress("MaxLineLength")
 private const val PRODUCTION_RSA_KEY =
@@ -24,7 +23,7 @@ data class TokenizerConfig(
     val publicKey: String,
     val merchantName: String = "Demo Store",
     val collectCardholderName: Boolean = true,
-    val baseUrl: String = PRODUCTION_BASE_URL,
+    val baseUrl: String = ConektaServers.TOKENIZER_PRODUCTION_BASE_URL,
     val rsaPublicKey: String = PRODUCTION_RSA_KEY,
 ) {
     // Secondary constructors for Swift/ObjC (default values are not exported to ObjC)
@@ -32,7 +31,7 @@ data class TokenizerConfig(
         publicKey = publicKey,
         merchantName = "Demo Store",
         collectCardholderName = true,
-        baseUrl = PRODUCTION_BASE_URL,
+        baseUrl = ConektaServers.TOKENIZER_PRODUCTION_BASE_URL,
         rsaPublicKey = PRODUCTION_RSA_KEY,
     )
 
@@ -44,7 +43,7 @@ data class TokenizerConfig(
         publicKey = publicKey,
         merchantName = merchantName,
         collectCardholderName = collectCardholderName,
-        baseUrl = PRODUCTION_BASE_URL,
+        baseUrl = ConektaServers.TOKENIZER_PRODUCTION_BASE_URL,
         rsaPublicKey = PRODUCTION_RSA_KEY,
     )
 }

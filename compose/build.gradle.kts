@@ -117,6 +117,10 @@ kotlin {
                 implementation(libs.core)
                 implementation(libs.junit)
                 implementation(libs.compose.ui.test.junit4)
+                implementation(libs.ktor.client.mock)
+                implementation(libs.ktor.client.content.negotiation)
+                implementation(libs.ktor.serialization.json)
+                implementation(libs.kotlinx.serialization.json)
             }
         }
 
@@ -173,19 +177,6 @@ mavenPublishing {
             url.set("https://github.com/conekta/conekta-elements")
             connection.set("scm:git:git://github.com/conekta/conekta-elements.git")
             developerConnection.set("scm:git:ssh://git@github.com/conekta/conekta-elements.git")
-        }
-    }
-}
-
-publishing {
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/conekta/conekta-elements")
-            credentials {
-                username = project.findProperty("gpr.user") as String? ?: System.getenv("GP_USER")
-                password = project.findProperty("gpr.token") as String? ?: System.getenv("GP_TOKEN")
-            }
         }
     }
 }
@@ -275,8 +266,21 @@ tasks.register<VerifyComposeResourcesSyncTask>("verifyComposeResourcesSync") {
 
     builtResourcesDir = layout.buildDirectory.dir("processedResources/iosArm64/main/composeResources")
     spmResourcesDir =
-        layout.buildDirectory.dir(
-            "XCFrameworks/release/composeKit.xcframework/ios-arm64/composeKit.framework/composeResources",
+        rootProject.layout.projectDirectory.dir(
+            "Sources/ComposeResources/compose-resources/composeResources",
+        )
+}
+
+tasks.register<SyncComposeResourcesToSPMTask>("syncComposeResourcesToSPM") {
+    group = "build"
+    description = "Syncs processed Compose resources to Sources/ComposeResources for SPM"
+
+    dependsOn("iosArm64ProcessResources")
+
+    builtResourcesDir = layout.buildDirectory.dir("processedResources/iosArm64/main/composeResources")
+    spmResourcesDir =
+        rootProject.layout.projectDirectory.dir(
+            "Sources/ComposeResources/compose-resources/composeResources",
         )
 }
 

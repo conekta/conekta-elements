@@ -111,4 +111,22 @@ class AmountTest {
         val amount = Amount(1)
         assertEquals("0.01", amount.toFixed(2))
     }
+
+    @Test
+    fun `apiFormatToFixed with 2 decimals formats amount correctly`() {
+        val amount = Amount(43461)
+        assertEquals("434.61", amount.apiFormatToFixed(2))
+    }
+
+    @Test
+    fun `apiFormatToFixed matches toFixed output`() {
+        val amount = Amount(12599)
+        assertEquals(amount.toFixed(2), amount.apiFormatToFixed(2))
+    }
+
+    @Test
+    fun `apiFormatToFixed formats zero amount`() {
+        val amount = Amount(0)
+        assertEquals("0.00", amount.apiFormatToFixed(2))
+    }
 }

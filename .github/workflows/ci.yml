@@ -31,7 +31,7 @@ jobs:
         run: make verify-ios-resources
 
   build_kmp:
-    runs-on: aws-runner-set
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
 
@@ -66,9 +66,6 @@ jobs:
 
       - uses: android-actions/setup-android@v3
 
-      - name: Install make
-        run: sudo apt-get update && sudo apt-get install -y make
-
       - name: Build KMP
         run: make build-ci
 
@@ -102,7 +99,7 @@ jobs:
         run: make publish-local
 
   build_js:
-    runs-on: aws-runner-set
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
         with:
@@ -123,10 +120,6 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: npm
-
-      - name: Install make
-        run: sudo apt-get update && sudo apt-get install -y make
-
       - name: Prepare (JS Build)
         run: make js-build-ci
 
@@ -164,7 +157,7 @@ jobs:
           skip: "@(renovate/**|dependabot/**)"
 
   sonarcloud:
-    runs-on: aws-runner-set
+    runs-on: ubuntu-latest
     needs: [build_kmp, build_js]
     if: always() && (needs.build_kmp.result == 'success' && needs.build_js.result == 'success')
     permissions:
@@ -208,26 +201,24 @@ jobs:
           SONAR_PROJECT_VERSION: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref_name }}
 
       - name: Comment SonarQube link on PR
-        if: github.event_name == 'pull_request'
+        if: always() && github.event_name == 'pull_request'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           PROJECT_KEY=$(grep '^sonar.projectKey=' sonar-project.properties | cut -d'=' -f2)
-          SONAR_URL="${{ secrets.SONAR_HOST_URL }}dashboard?id=${PROJECT_KEY}&pullRequest=${{ github.event.pull_request.number }}"
+          SONAR_URL="${{ secrets.SONAR_HOST_URL }}/dashboard?id=${PROJECT_KEY}&pullRequest=${{ github.event.pull_request.number }}"
           REPO="${{ github.repository }}"
           PR_NUMBER="${{ github.event.pull_request.number }}"
-          API="https://api.github.com"
-          AUTH="Authorization: Bearer $GITHUB_TOKEN"
+          MARKER="<!-- sonar-dashboard-link -->"
+          COMMENT_BODY="$MARKER
+          **SonarQube Analysis:** [View Dashboard]($SONAR_URL)"
 
-          # Delete previous SonarQube comment if it exists
-          COMMENT_ID=$(curl -s -H "$AUTH" "$API/repos/$REPO/issues/$PR_NUMBER/comments" \
-            | grep -o '"id":[0-9]*,"node_id":"[^"]*","url":"[^"]*","html_url":"[^"]*","body":"\*\*SonarQube Analysis' \
-            | grep -o '"id":[0-9]*' | tail -1 | cut -d: -f2)
-          if [ -n "$COMMENT_ID" ]; then
-            curl -s -X DELETE -H "$AUTH" "$API/repos/$REPO/issues/comments/$COMMENT_ID"
-          fi
+          # Keep only one github-actions[bot] comment: the Sonar dashboard link.
+          BOT_COMMENT_IDS=$(gh api "repos/$REPO/issues/$PR_NUMBER/comments" --paginate \
+            --jq ".[] | select(.user.login == \"github-actions[bot]\") | .id")
 
-          # Create new comment (always at the bottom)
-          curl -s -X POST -H "$AUTH" -H "Content-Type: application/json" \
-            -d "{\"body\": \"**SonarQube Analysis:** [View Dashboard]($SONAR_URL)\"}" \
-            "$API/repos/$REPO/issues/$PR_NUMBER/comments"
+          for comment_id in $BOT_COMMENT_IDS; do
+            gh api -X DELETE "repos/$REPO/issues/comments/$comment_id"
+          done
+
+          gh pr comment "$PR_NUMBER" --body "$COMMENT_BODY"

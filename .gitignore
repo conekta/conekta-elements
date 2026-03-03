@@ -22,4 +22,4 @@ storybook-static
 .env
 # Local Xcode config (developer-specific signing)
 Local.xcconfig
-.build
+.build/

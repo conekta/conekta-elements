@@ -1,15 +1,15 @@
 # Conekta Elements SDK - Examples
 
-Minimal examples showing how to render the Conekta tokenizer form on Android and iOS.
+Minimal examples showing how to render the Conekta tokenizer and checkout forms on Android and iOS.
 
 ## Configuration
 
-Both examples require a **Conekta public key** to work. Replace `YOUR_PUBLIC_KEY_HERE` in the following files:
+Both examples require a **Conekta public key** to work.
 
-| Platform | File                                                                 |
-|----------|----------------------------------------------------------------------|
-| Android  | `android/src/main/java/com/conekta/example/MainActivity.kt` (line 36) |
-| iOS      | `ios/Local.xcconfig` (see iOS setup below)                            |
+| Platform | Configuration |
+|----------|---------------|
+| Android  | Set `CONEKTA_PUBLIC_KEY` in `local.properties` at the repo root |
+| iOS      | Set `CONEKTA_PUBLIC_KEY` in `ios/Local.xcconfig` (see iOS setup below) |
 
 You can get your public key from the [Conekta Dashboard](https://panel.conekta.com/).
 
@@ -41,10 +41,10 @@ implementation("io.conekta:conekta-elements-compose:0.2.0-beta.2")
 <application android:name=".ExampleApplication" ...>
 ```
 
-3. Set your public key in `MainActivity.kt`:
+3. Set your public key in `local.properties` at the repository root:
 
-```kotlin
-private const val CONEKTA_PUBLIC_KEY = "YOUR_PUBLIC_KEY_HERE"
+```properties
+CONEKTA_PUBLIC_KEY=key_xxxxx
 ```
 
 4. Build and run.
@@ -53,7 +53,7 @@ private const val CONEKTA_PUBLIC_KEY = "YOUR_PUBLIC_KEY_HERE"
 
 | File | Description |
 |------|-------------|
-| `MainActivity.kt` | Renders `ConektaTokenizer` composable and handles token/error callbacks |
+| `MainActivity.kt` | Renders `ConektaCheckout` with a mocked checkout response to test payment method rendering locally |
 | `ExampleApplication.kt` | Configures Coil image loader for SVG card brand icons |
 | `build.gradle.kts` | Dependencies: SDK, Compose |
 | `AndroidManifest.xml` | Internet permission and Application class registration |
@@ -105,6 +105,6 @@ CONEKTA_PUBLIC_KEY = YOUR_PUBLIC_KEY_HERE
 
 | File | Description |
 |------|-------------|
-| `ContentView.swift` | Renders `ConektaTokenizerView` and handles token/error callbacks |
+| `ContentView.swift` | Main orchestrator with Tokenizer and Checkout tabs |
 | `ConektaTokenizerView.swift` | `UIViewControllerRepresentable` wrapper for the Compose UI |
 | `ConektaExampleApp.swift` | SwiftUI app entry point |

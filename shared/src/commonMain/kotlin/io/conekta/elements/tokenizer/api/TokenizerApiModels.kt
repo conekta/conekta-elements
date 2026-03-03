@@ -43,4 +43,12 @@ data class TokenErrorResponseDto(
     val type: String = "",
     val message: String = "",
     @SerialName("message_to_purchaser") val messageToPurchaser: String = "",
+    val details: List<TokenErrorDetailDto> = emptyList(),
+)
+
+@Serializable
+data class TokenErrorDetailDto(
+    val message: String = "",
+    val param: String? = null,
+    val code: String = "",
 )

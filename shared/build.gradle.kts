@@ -77,8 +77,7 @@ kotlin {
 
         jsMain.dependencies {
             implementation(libs.ktor.client.js)
-            implementation(npm("crypto-js", "4.2.0"))
-            implementation(npm("jsencrypt", "3.3.2"))
+            implementation(npm("jsencrypt", libs.versions.jsencrypt.get()))
         }
 
         commonTest.dependencies {
@@ -122,19 +121,6 @@ mavenPublishing {
             url.set("https://github.com/conekta/conekta-elements")
             connection.set("scm:git:git://github.com/conekta/conekta-elements.git")
             developerConnection.set("scm:git:ssh://git@github.com/conekta/conekta-elements.git")
-        }
-    }
-}
-
-publishing {
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/conekta/conekta-elements")
-            credentials {
-                username = project.findProperty("gpr.user") as String? ?: System.getenv("GP_USER")
-                password = project.findProperty("gpr.token") as String? ?: System.getenv("GP_TOKEN")
-            }
         }
     }
 }

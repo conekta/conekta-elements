@@ -4,6 +4,36 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose") version "2.3.0"
 }
 
+import java.util.Properties
+
+val localProperties =
+    Properties().apply {
+        val file = file("local.properties")
+        if (file.exists()) {
+            file.inputStream().use(::load)
+        }
+    }
+
+val conektaPublicKey =
+    localProperties.getProperty("CONEKTA_PUBLIC_KEY")
+        ?: System.getenv("CONEKTA_PUBLIC_KEY")
+        ?: ""
+
+val conektaTokenizerRsaPublicKey =
+    localProperties.getProperty("CONEKTA_TOKENIZER_RSA_PUBLIC_KEY")
+        ?: System.getenv("CONEKTA_TOKENIZER_RSA_PUBLIC_KEY")
+        ?: ""
+
+val conektaApiBaseUrl =
+    localProperties.getProperty("CONEKTA_API_BASE_URL")
+        ?: System.getenv("CONEKTA_API_BASE_URL")
+        ?: ""
+
+val conektaCheckoutBaseUrl =
+    localProperties.getProperty("CONEKTA_CHECKOUT_BASE_URL")
+        ?: System.getenv("CONEKTA_CHECKOUT_BASE_URL")
+        ?: ""
+
 android {
     namespace = "com.conekta.example"
     compileSdk = 36
@@ -14,10 +44,15 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
+        buildConfigField("String", "CONEKTA_PUBLIC_KEY", "\"$conektaPublicKey\"")
+        buildConfigField("String", "CONEKTA_TOKENIZER_RSA_PUBLIC_KEY", "\"$conektaTokenizerRsaPublicKey\"")
+        buildConfigField("String", "CONEKTA_API_BASE_URL", "\"$conektaApiBaseUrl\"")
+        buildConfigField("String", "CONEKTA_CHECKOUT_BASE_URL", "\"$conektaCheckoutBaseUrl\"")
     }
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     compileOptions {
@@ -34,6 +69,7 @@ kotlin {
 
 dependencies {
     // Conekta Elements SDK
+    // Resolved from the local workspace via includeBuild/dependencySubstitution in settings.gradle.kts
     implementation("io.conekta:conekta-elements-compose:0.2.0-beta.2")
 
     // Compose

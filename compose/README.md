@@ -1,6 +1,6 @@
 # Conekta Elements - Compose Module
 
-SDK de UI para tokenización de tarjetas en Android usando Jetpack Compose.
+SDK de UI para tokenización de tarjetas y checkout en Android usando Jetpack Compose.
 
 ## Instalación
 
@@ -10,9 +10,9 @@ dependencies {
 }
 ```
 
-### Configuraci\u00f3n de Coil (requerida)
+### Configuración de Coil (requerida)
 
-La librer\u00eda usa Coil para cargar iconos de tarjetas (SVG) desde CDN. Crea una clase `Application` e inicializa Coil:
+La librería usa Coil para cargar iconos de tarjetas (SVG) desde CDN. Crea una clase `Application` e inicializa Coil:
 
 ```kotlin
 import android.app.Application
@@ -37,9 +37,11 @@ Registra en tu `AndroidManifest.xml`:
 
 ## Uso Básico
 
+### Tokenizer
+
 ```kotlin
 import io.conekta.compose.tokenizer.ConektaTokenizer
-import io.conekta.compose.models.TokenizerConfig
+import io.conekta.elements.tokenizer.models.TokenizerConfig
 
 @Composable
 fun MyPaymentScreen() {
@@ -73,29 +75,57 @@ fun MyPaymentScreen() {
 }
 ```
 
+### Checkout dinámico (métodos de pago)
+
+```kotlin
+import io.conekta.compose.checkout.ConektaCheckout
+import io.conekta.elements.checkout.models.CheckoutConfig
+import io.conekta.elements.checkout.models.CheckoutError
+
+@Composable
+fun MyCheckoutScreen() {
+    ConektaCheckout(
+        config = CheckoutConfig(
+            checkoutRequestId = "dc5baf10-0f2b-4378-9f74-afa6bb418198",
+            publicKey = "key_xxxxx",
+            jwtToken = "jwt_xxxxx",
+        ),
+        onPaymentMethodSelected = { method ->
+            println("Selected method: $method")
+        },
+        onError = { error: CheckoutError ->
+            println("Checkout error: $error")
+        },
+    )
+}
+```
+
 ## Características
 
-### ✅ Diseño Basado en Figma
+### Diseño Basado en Figma
 - Sigue el sistema de diseño de Conekta
 - Colores, tipografía y espaciado consistentes
 - Componentes reutilizables
 
-### ✅ Validación Automática
+### Validación Automática
 - Validación de número de tarjeta (algoritmo de Luhn)
 - Validación de fecha de expiración
 - Validación de CVV según marca de tarjeta
 - Detección automática de marca (Visa, Mastercard, Amex)
 
-### ✅ Formato Automático
+### Formato Automático
 - Número de tarjeta: espacios cada 4 dígitos
 - Fecha de expiración: formato MM/YY
 - CVV: 3-4 dígitos según marca
 - Preserva posición del cursor durante formato
 
-### ✅ Modal de Información
+### Modal de Información
 - "Tu pago está protegido"
 - Arrastrable y con cierre al tocar fuera
 - Información sobre seguridad de Conekta
+
+### Localización
+- Soporte para Español e Inglés
 
 ## Configuración
 
@@ -137,23 +167,24 @@ compose/
 │   ├── ConektaColors.kt    # Sistema de colores
 │   └── ConektaTheme.kt     # Tema Material3
 ├── components/
-│   ├── ConektaTextField.kt # Campo de texto personalizado
+│   ├── ConektaTextField.kt  # Campo de texto personalizado
 │   └── ConektaButton.kt    # Botón personalizado
 ├── tokenizer/
 │   ├── ConektaTokenizer.kt # Componente principal (API pública)
 │   └── CardFormatters.kt   # Utilidades de formato y validación
-└── models/
-    └── TokenizerModels.kt  # Modelos de datos
+├── checkout/
+│   └── ConektaCheckout.kt  # Componente de checkout dinámico
+├── localization/
+│   └── Strings (ES/EN)     # Cadenas localizadas
+└── utils/
+    └── Utilidades internas
 ```
 
 ## Próximos Pasos
 
-- [ ] Agregar logos de tarjetas como recursos
-- [ ] Implementar llamada real al API de Conekta
 - [ ] Agregar soporte para MSI (Meses Sin Intereses)
 - [ ] Agregar animaciones de transición
 - [ ] Soporte para temas oscuros
-- [ ] Localización (i18n)
 
 ## Notas de Desarrollo
 

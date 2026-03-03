@@ -1,0 +1,8 @@
+---
+description: Run linter before pushing changes
+alwaysApply: true
+---
+
+- Before any `git push`, run linter checks and fix issues first.
+- Preferred command is `make lint-fix`.
+- If `make lint-fix` is not available for the current scope, run the nearest equivalent lint task and explain what was run.

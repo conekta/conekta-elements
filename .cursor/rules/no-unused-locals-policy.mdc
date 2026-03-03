@@ -1,0 +1,8 @@
+---
+description: Avoid unused local variables and pass-through aliases
+alwaysApply: true
+---
+
+- Do not keep local variables that are never used.
+- Avoid pass-through local aliases used only once (e.g. assign then immediately return/pass through).
+- Inline simple one-off expressions at the usage site unless a named variable clearly improves readability and is reused.

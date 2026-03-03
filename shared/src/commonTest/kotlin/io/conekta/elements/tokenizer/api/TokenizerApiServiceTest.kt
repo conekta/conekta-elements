@@ -1,5 +1,7 @@
 package io.conekta.elements.tokenizer.api
 
+import io.conekta.elements.localization.ConektaLanguage
+import io.conekta.elements.testfixtures.TokenizerApiFixtures
 import io.conekta.elements.tokenizer.crypto.CardEncryptor
 import io.conekta.elements.tokenizer.models.TokenizerConfig
 import io.conekta.elements.tokenizer.models.TokenizerError
@@ -24,20 +26,22 @@ class TokenizerApiServiceTest {
         TokenizerConfig(
             publicKey = "key_test_abc123",
             merchantName = "Test Store",
-            baseUrl = "https://test.conekta.com/",
+            baseUrl = "https://test.conekta.com",
             rsaPublicKey = "test_rsa_key",
         )
 
     private fun createMockClient(
         statusCode: HttpStatusCode = HttpStatusCode.OK,
         responseBody: String = "",
+        onRequest: ((String?) -> Unit)? = null,
     ): HttpClient =
         HttpClient(MockEngine) {
             install(ContentNegotiation) {
                 json(Json { ignoreUnknownKeys = true })
             }
             engine {
-                addHandler {
+                addHandler { request ->
+                    onRequest?.invoke(request.headers[HttpHeaders.AcceptLanguage])
                     respond(
                         content = responseBody,
                         status = statusCode,
@@ -51,6 +55,38 @@ class TokenizerApiServiceTest {
             }
         }
 
+    @Test
+    fun tokenizeSendsAcceptLanguageHeader() =
+        runTest {
+            var capturedAcceptLanguage: String? = null
+            val mockClient =
+                createMockClient(
+                    statusCode = HttpStatusCode.OK,
+                    responseBody = TokenizerApiFixtures.tokenResponsePayload(id = "tok_lang"),
+                    onRequest = { acceptLanguage -> capturedAcceptLanguage = acceptLanguage },
+                )
+
+            val service =
+                TokenizerApiService(
+                    config = testConfig,
+                    languageTag = ConektaLanguage.EN,
+                    httpClient = mockClient,
+                    cryptoService = fakeEncryptor,
+                )
+
+            val result =
+                service.tokenize(
+                    cardNumber = "4242424242424242",
+                    expMonth = "12",
+                    expYear = "26",
+                    cvc = "123",
+                    cardholderName = "John Doe",
+                )
+
+            assertTrue(result.isSuccess)
+            assertEquals(ConektaLanguage.EN, capturedAcceptLanguage)
+        }
+
     // Fake encryptor that prefixes each plaintext so we can verify it in the request body
     private val fakeEncryptor = CardEncryptor { plaintext, _ -> "enc:$plaintext" }
 
@@ -60,8 +96,7 @@ class TokenizerApiServiceTest {
             val mockClient =
                 createMockClient(
                     statusCode = HttpStatusCode.OK,
-                    responseBody =
-                        """{"id":"tok_test_xyz789","livemode":false,"used":false,"object":"token"}""",
+                    responseBody = TokenizerApiFixtures.tokenResponsePayload(id = "tok_test_xyz789"),
                 )
 
             val service =
@@ -93,12 +128,11 @@ class TokenizerApiServiceTest {
                 createMockClient(
                     statusCode = HttpStatusCode.UnprocessableEntity,
                     responseBody =
-                        """{
-                        "object":"error",
-                        "type":"invalid_request_error",
-                        "message":"card number is invalid",
-                        "message_to_purchaser":"The card could not be processed"
-                    }""",
+                        TokenizerApiFixtures.tokenErrorPayload(
+                            type = "invalid_request_error",
+                            message = "card number is invalid",
+                            messageToPurchaser = "The card could not be processed",
+                        ),
                 )
 
             val service =
@@ -163,7 +197,10 @@ class TokenizerApiServiceTest {
                 createMockClient(
                     statusCode = HttpStatusCode.Created,
                     responseBody =
-                        """{"id":"tok_created_123","livemode":true,"used":false,"object":"token"}""",
+                        TokenizerApiFixtures.tokenResponsePayload(
+                            id = "tok_created_123",
+                            livemode = true,
+                        ),
                 )
 
             val service =
@@ -193,8 +230,7 @@ class TokenizerApiServiceTest {
             val mockClient =
                 createMockClient(
                     statusCode = HttpStatusCode.OK,
-                    responseBody =
-                        """{"id":"tok_fmt","livemode":false,"used":false,"object":"token"}""",
+                    responseBody = TokenizerApiFixtures.tokenResponsePayload(id = "tok_fmt"),
                 )
 
             val service =
@@ -224,12 +260,11 @@ class TokenizerApiServiceTest {
                 createMockClient(
                     statusCode = HttpStatusCode.BadRequest,
                     responseBody =
-                        """{
-                        "object":"error",
-                        "type":"parameter_validation_error",
-                        "message":"The card number is not valid",
-                        "message_to_purchaser":""
-                    }""",
+                        TokenizerApiFixtures.tokenErrorPayload(
+                            type = "parameter_validation_error",
+                            message = "The card number is not valid",
+                            messageToPurchaser = "",
+                        ),
                 )
 
             val service =
@@ -256,6 +291,77 @@ class TokenizerApiServiceTest {
         }
 
     @Test
+    fun tokenizeApiErrorFallsBackToDetailsMessageWhenTopLevelMessagesAreEmpty() =
+        runTest {
+            val detailsMessage = "Please include your access key in your request."
+            val mockClient =
+                createMockClient(
+                    statusCode = HttpStatusCode.Unauthorized,
+                    responseBody =
+                        TokenizerApiFixtures.tokenErrorDetailsPayload(
+                            type = "authentication_error",
+                            detailsMessage = detailsMessage,
+                        ),
+                )
+
+            val service =
+                TokenizerApiService(
+                    config = testConfig,
+                    httpClient = mockClient,
+                    cryptoService = fakeEncryptor,
+                )
+
+            val result =
+                service.tokenize(
+                    cardNumber = "4242424242424242",
+                    expMonth = "12",
+                    expYear = "26",
+                    cvc = "123",
+                    cardholderName = "Test",
+                )
+
+            assertTrue(result.isFailure)
+            val exception = result.exceptionOrNull()
+            assertIs<TokenizerApiException>(exception)
+            val apiError = exception.tokenizerError as TokenizerError.ApiError
+            assertEquals("authentication_error", apiError.code)
+            assertEquals(detailsMessage, apiError.message)
+        }
+
+    @Test
+    fun tokenizeApiErrorFallsBackToUnknownMessageWhenAllErrorMessagesAreMissing() =
+        runTest {
+            val mockClient =
+                createMockClient(
+                    statusCode = HttpStatusCode.BadRequest,
+                    responseBody = """{"object":"error","type":"invalid_request_error"}""",
+                )
+
+            val service =
+                TokenizerApiService(
+                    config = testConfig,
+                    httpClient = mockClient,
+                    cryptoService = fakeEncryptor,
+                )
+
+            val result =
+                service.tokenize(
+                    cardNumber = "4242424242424242",
+                    expMonth = "12",
+                    expYear = "26",
+                    cvc = "123",
+                    cardholderName = "Test",
+                )
+
+            assertTrue(result.isFailure)
+            val exception = result.exceptionOrNull()
+            assertIs<TokenizerApiException>(exception)
+            val apiError = exception.tokenizerError as TokenizerError.ApiError
+            assertEquals("invalid_request_error", apiError.code)
+            assertEquals("Unknown API error", apiError.message)
+        }
+
+    @Test
     fun tokenizePassesEachFieldToEncryptor() =
         runTest {
             val capturedPlaintexts = mutableListOf<String>()
@@ -271,8 +377,7 @@ class TokenizerApiServiceTest {
             val mockClient =
                 createMockClient(
                     statusCode = HttpStatusCode.OK,
-                    responseBody =
-                        """{"id":"tok_cap","livemode":false,"used":false,"object":"token"}""",
+                    responseBody = TokenizerApiFixtures.tokenResponsePayload(id = "tok_cap"),
                 )
 
             val service =
@@ -313,8 +418,7 @@ class TokenizerApiServiceTest {
                         addHandler { request ->
                             capturedUrl = request.url.toString()
                             respond(
-                                content =
-                                    """{"id":"tok_url","livemode":false,"used":false,"object":"token"}""",
+                                content = TokenizerApiFixtures.tokenResponsePayload(id = "tok_url"),
                                 status = HttpStatusCode.OK,
                                 headers =
                                     headersOf(
@@ -362,8 +466,7 @@ class TokenizerApiServiceTest {
                             capturedAcceptHeader = request.headers["Accept"] ?: ""
                             capturedUserAgentHeader = request.headers["Conekta-Client-User-Agent"] ?: ""
                             respond(
-                                content =
-                                    """{"id":"tok_auth","livemode":false,"used":false,"object":"token"}""",
+                                content = TokenizerApiFixtures.tokenResponsePayload(id = "tok_auth"),
                                 status = HttpStatusCode.OK,
                                 headers =
                                     headersOf(
@@ -414,8 +517,7 @@ class TokenizerApiServiceTest {
             val mockClient =
                 createMockClient(
                     statusCode = HttpStatusCode.OK,
-                    responseBody =
-                        """{"id":"tok_never","livemode":false,"used":false,"object":"token"}""",
+                    responseBody = TokenizerApiFixtures.tokenResponsePayload(id = "tok_never"),
                 )
 
             val service =
@@ -447,8 +549,7 @@ class TokenizerApiServiceTest {
             val mockClient =
                 createMockClient(
                     statusCode = HttpStatusCode.OK,
-                    responseBody =
-                        """{"id":"tok_amex","livemode":false,"used":false,"object":"token"}""",
+                    responseBody = TokenizerApiFixtures.tokenResponsePayload(id = "tok_amex"),
                 )
 
             val service =
