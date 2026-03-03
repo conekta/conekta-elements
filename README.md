@@ -181,6 +181,33 @@ fun PaymentScreen() {
 }
 ```
 
+#### Checkout (dynamic payment methods)
+
+```kotlin
+import io.conekta.compose.checkout.ConektaCheckout
+import io.conekta.elements.checkout.models.CheckoutConfig
+import io.conekta.elements.checkout.models.CheckoutError
+
+@Composable
+fun CheckoutScreen() {
+    ConektaCheckout(
+        config = CheckoutConfig(
+            checkoutRequestId = "dc5baf10-...",
+            publicKey = "key_xxxxx",
+            jwtToken = "jwt_xxxxx",
+        ),
+        onPaymentMethodSelected = { method ->
+            println("Selected: $method")
+        },
+        onError = { error: CheckoutError ->
+            println("Error: $error")
+        },
+    )
+}
+```
+
+See [`compose/README.md`](./compose/README.md) for full Checkout documentation.
+
 ### iOS Usage
 
 ```swift
@@ -273,6 +300,7 @@ conekta-elements/
 │       │       │   ├── formatters/    # Card number/CVV/expiry formatters
 │       │       │   ├── models/        # TokenizerConfig, TokenResult, TokenizerError
 │       │       │   └── validators/    # Form validation (Luhn, expiry, CVV)
+│       │       ├── checkout/           # Checkout models + API
 │       │       └── assets/            # CDN URLs for card brand images
 │       ├── androidMain/    # JCE crypto implementation
 │       ├── iosMain/        # CommonCrypto/Security implementation
@@ -285,7 +313,8 @@ conekta-elements/
 │       │       ├── tokenizer/     # ConektaTokenizer composable
 │       │       ├── components/    # TextField, CardBrandIcon, etc.
 │       │       ├── theme/         # Colors, fonts
-│       │       └── i18n/          # Localization (ES/EN)
+│       │       ├── checkout/       # ConektaCheckout composable
+│       │       └── localization/  # Localization (ES/EN)
 │       └── androidHostTest/       # Robolectric UI tests
 ├── webApp/                 # React + TypeScript web library
 ├── examples/               # Android + iOS example apps
