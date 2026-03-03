@@ -14,7 +14,6 @@ Both examples require a **Conekta public key** to work. Replace `YOUR_PUBLIC_KEY
 You can get your public key from the [Conekta Dashboard](https://panel.conekta.com/).
 
 - **Production keys** start with `key_` (from the production environment)
-- **Test/Sandbox keys** start with `key_` (from the sandbox environment at panel.stg.conekta.io)
 
 ---
 
