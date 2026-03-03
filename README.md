@@ -164,20 +164,6 @@ See [`webApp/README.md`](./webApp/README.md) for full documentation.
 
 All platforms require a **Conekta public key** to tokenize cards. Get yours from the [Conekta Dashboard](https://panel.conekta.com/):
 
-| Environment | Dashboard URL | Key prefix |
-|---|---|---|
-| Production | `panel.conekta.com` | `key_` |
-| Sandbox | `panel.stg.conekta.io` | `key_` |
-
-The SDK uses the **production** Conekta API by default (`https://api.conekta.io/`). For sandbox/staging, pass `baseUrl` in the config:
-
-```kotlin
-TokenizerConfig(
-    publicKey = "key_sandbox_xxxxx",
-    baseUrl = "https://pay.stg.conekta.io/",
-)
-```
-
 ---
 
 ## Usage
