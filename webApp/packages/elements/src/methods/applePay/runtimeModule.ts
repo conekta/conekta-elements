@@ -25,8 +25,7 @@ export const applePayModule: MethodModule = {
         const flag = await client.getFeatureFlagByName(`component:${checkoutRequest.companyId}`, APPLE_PAY_FOR_INTEGRATION_FLAG);
         const validMerchant = isValidMerchantForApplePay(
             new MerchantEligibilityInput(
-                // !isIntegration, // right now we only support apple pay element for integration, in the future we need to check if its hosted with shopify
-                false, // remove, this its just for testing
+                !isIntegration, // right now we only support apple pay element for integration, in the future we need to check if its hosted with shopify
                 isIntegration,
                 Boolean(flag?.value)
             )
