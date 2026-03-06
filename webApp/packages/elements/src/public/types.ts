@@ -6,6 +6,7 @@ export type InitArgs = {
     molecule: MoleculeId;
     locale?: string;
     theme?: any;
+    baseUrl?: string;
 
     onInit?: (e: { checkoutRequestId: string }) => void;
     onSuccess?: (e: { checkoutRequestId: string; paymentMethod: string; payload: any }) => void;

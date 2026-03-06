@@ -63,7 +63,7 @@ export const createElementsRuntime = () => {
     const engine = new OrchestrationEngineJs(core, effectRunner);
 
     const init = async (args: InitArgs) => {
-        const conektaJsClient = new ConektaJsClient(args.locale ?? 'es');
+        const conektaJsClient = new ConektaJsClient(args.locale ?? 'es', args.baseUrl);
         const container = resolveContainer(args.container);
 
         args.onInit?.({ checkoutRequestId: args.checkoutRequestId });
