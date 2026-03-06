@@ -1,3 +1,4 @@
+/// <reference path="../../../zoid.d.ts" />
 import zoid from 'zoid';
 import { iframeDefinition } from './iframeDefinition';
 

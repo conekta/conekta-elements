@@ -1,4 +1,4 @@
-
+/// <reference path="../../zoid.d.ts" />
 import zoid from 'zoid';
 import { iframeDefinition } from '../../orchestrator/transport/zoid/iframeDefinition';
 import { APPLE_PAY_TAG } from './constants';
