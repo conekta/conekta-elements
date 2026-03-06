@@ -3,13 +3,19 @@ package io.conekta.elements.network
 import io.conekta.elements.network.ConektaHttpClient
 import io.conekta.elements.network.sdkUserAgent
 import io.conekta.elements.models.Checkout
+import io.conekta.elements.models.CreateOrderPayload
 import io.conekta.elements.models.FeatureFlag
+import io.conekta.elements.models.OrderResponse
 import io.ktor.client.call.body
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
+import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
+import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 
 class CheckoutSsrApiService(
@@ -69,6 +75,44 @@ class CheckoutSsrApiService(
             if (response.status.isSuccess()) {
                 val featureFlag: FeatureFlag = response.body()
                 Result.success(featureFlag)
+            } else {
+                val errorBody = response.bodyAsText()
+                Result.failure(
+                    CheckoutSsrException(
+                        CheckoutSsrError.HttpError(
+                            status = response.status.value,
+                            body = errorBody,
+                        ),
+                    ),
+                )
+            }
+        } catch (e: CheckoutSsrException) {
+            Result.failure(e)
+        } catch (e: Exception) {
+            Result.failure(
+                CheckoutSsrException(
+                    CheckoutSsrError.NetworkError(e.message ?: "Unknown network error"),
+                ),
+            )
+        }
+
+    suspend fun createOrder(payload: CreateOrderPayload): Result<OrderResponse> =
+        try {
+            val base = normalizeBaseUrl(config.baseUrl)
+            val url = "${base}api/order"
+
+            val response = httpClient.post(url) {
+                headers {
+                    append(HttpHeaders.AcceptLanguage, config.language)
+                    append("x-source", config.source)
+                }
+                contentType(ContentType.Application.Json)
+                setBody(payload)
+            }
+
+            if (response.status.isSuccess()) {
+                val order: OrderResponse = response.body()
+                Result.success(order)
             } else {
                 val errorBody = response.bodyAsText()
                 Result.failure(
