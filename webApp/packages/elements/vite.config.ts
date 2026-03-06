@@ -21,6 +21,12 @@ export default defineConfig({
         },
         rollupOptions: {
             external: [],
+            output: {
+                banner: `var process = (typeof process !== 'undefined' ? process : { env: {} });`,
+            },
         },
+    },
+    define: {
+        'process.env': '{}',
     },
 });
