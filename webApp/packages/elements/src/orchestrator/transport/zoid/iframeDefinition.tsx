@@ -16,6 +16,7 @@ export const iframeDefinition = {
     onLifecycleEvent: { type: 'function', required: false },
     onResult: { type: 'function', required: false },
     onLog: { type: 'function', required: false },
+    onHeightListener: { type: 'function', required: false },
   },
 
   dimensions,

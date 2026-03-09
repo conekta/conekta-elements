@@ -62,6 +62,7 @@ export type ElementMountCallbacks = {
     onLifecycleEvent?: (e: MethodLifecycleEvent) => void;
     onResult?: (e: ResultEvent) => void;
     onLog?: (e: any) => void;
+    onHeightListener?: (height: number) => void;
 };
 
 export type ElementMountOptions = ElementMountAttributes & ElementMountCallbacks;

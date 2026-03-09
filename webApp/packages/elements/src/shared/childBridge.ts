@@ -4,6 +4,7 @@ import type { ReadyEvent } from './types';
 
 type XProps = ElementMountOptions & {
     export?: (exportsImpl: ElementRPC) => void;
+    onHeightListener?: (height: number) => void;
 };
 
 export const getXProps = (): XProps | undefined => (window as any).xprops;
@@ -24,5 +25,6 @@ export const createChildBridge = () => {
         emitActionRequired: (actionRequired: ActionRequiredEvent) => xprops?.onActionRequired?.(actionRequired),
         emitLog: (log: any) => xprops?.onLog?.(log),
         emitStateChange: (stateChange: StateChangeEvent) => xprops?.onStateChange?.(stateChange),
+        emitHeight: (height: number) => xprops?.onHeightListener?.(height),
     };
 };

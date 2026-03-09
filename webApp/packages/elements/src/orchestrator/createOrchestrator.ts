@@ -56,6 +56,9 @@ export const createOrchestrator = (config: OrchestratorConfig = {}): Orchestrato
             onLog: (data: any) => {
                 opts.onLog?.(data);
             },
+            onHeightListener: (height: number) => {
+                container.style.height = `${height}px`;
+            },
         };
 
         // 3) create instance & render
