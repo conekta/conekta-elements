@@ -13,7 +13,7 @@ export default defineConfig({
             fileName: (format) => `index.${format}.js`
         },
         rollupOptions: {
-            external: ['react', 'react-dom', 'ct-conekta-elements-orchestator-lib']
+            external: ['react', 'react-dom', '@conekta/elements-shared']
         }
     }
 });
