@@ -97,7 +97,7 @@ mavenPublishing {
 
     coordinates(
         groupId = project.property("conekta.group") as String,
-        artifactId = "conekta-elements-shared",
+        artifactId = "@conekta/elements-shared",
         version = project.property("conekta.version") as String,
     )
 

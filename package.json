@@ -12,7 +12,9 @@
     "publish-dry-run": "cd webApp && npm publish --dry-run",
     "prepublishOnly": "cd webApp && npm run build",
     "publish-app": "cd webApp && npm publish",
-    "sync-version": "VERSION=$(grep '^conekta.version=' gradle.properties | cut -d'=' -f2) && cd webApp && npm --no-git-tag-version --allow-same-version version \"$VERSION\"",
+    "sync-version": "npm run sync-version-elements && npm run sync-version-elements-react",
+    "sync-version-elements": "VERSION=$(grep '^conekta.version=' gradle.properties | cut -d'=' -f2) && cd webApp/packages/elements && npm --no-git-tag-version --allow-same-version version \"$VERSION\"",
+    "sync-version-elements-react": "VERSION=$(grep '^conekta.version=' gradle.properties | cut -d'=' -f2) && cd webApp/packages/elements-react && npm --no-git-tag-version --allow-same-version version \"$VERSION\"",
     "prepare": "npm run sync-version && make js-build"
   }
 }

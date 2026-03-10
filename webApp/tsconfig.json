@@ -16,7 +16,11 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "paths": {
+      "common/*": ["./src/common/*"]
+    },
+    "typeRoots": ["./src/global.d.ts"]
   },
   "include": [
     "src",

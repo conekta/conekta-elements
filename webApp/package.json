@@ -19,6 +19,9 @@
     "dev": "vite",
     "start": "vite",
     "build": "tsc && vite build",
+    "build:packages": "pnpm -r build",
+    "build:elements": "pnpm --filter @conekta/elements build",
+    "build:react": "pnpm --filter @conekta/elements-react build",
     "preview": "vite preview",
     "type-check": "tsc --noEmit",
     "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
@@ -35,6 +38,8 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "crypto-js": "^4.2.0",
+    "jsencrypt": "^3.5.4",
     "shared": "0.2.0-beta.2",
     "zustand": "^4.5.0"
   },
