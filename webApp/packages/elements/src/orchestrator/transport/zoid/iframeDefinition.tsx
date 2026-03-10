@@ -1,7 +1,7 @@
 import type { ElementRPC } from '../../../shared/types';
 import type { ViewState } from '../../../shared/types';
 
-const dimensions = { height: '60px', width: '100%' };
+const dimensions = { height: '70px', width: '100%', minHeight: '70px' };
 
 export const iframeDefinition = {
   tag: '',
@@ -21,7 +21,11 @@ export const iframeDefinition = {
 
   dimensions,
   attributes: { iframe: { allow: 'payment *' } },
-  autoResize: { height: true, width: false },
+  autoResize: { 
+    height: true, 
+    width: false,
+    element: 'body'
+  },
 
   exports: ({ getExports }: any) => {
     const call = <K extends keyof ElementRPC>(
