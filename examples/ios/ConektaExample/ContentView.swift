@@ -6,12 +6,17 @@ struct ContentView: View {
     @State private var alertTitle = ""
     @State private var alertMessage = ""
 
-    // Replace with your Conekta public key (see README)
-    private static let conektaPublicKey = "YOUR_PUBLIC_KEY_HERE"
+    // Set CONEKTA_PUBLIC_KEY in Local.xcconfig (see README)
+    private static let conektaPublicKey: String = {
+        guard let key = Bundle.main.infoDictionary?["ConektaPublicKey"] as? String, !key.isEmpty else {
+            fatalError("CONEKTA_PUBLIC_KEY not set in Local.xcconfig")
+        }
+        return key
+    }()
 
     var body: some View {
         ConektaTokenizerView(
-            config: SharedTokenizerConfig(
+            config: TokenizerConfig(
                 publicKey: ContentView.conektaPublicKey,
                 merchantName: "My Store",
                 collectCardholderName: true
@@ -26,9 +31,9 @@ struct ContentView: View {
             },
             onError: { error in
                 alertTitle = "Error"
-                if let apiError = error as? SharedTokenizerError.ApiError {
+                if let apiError = error as? TokenizerError.TokenizerApiError {
                     alertMessage = "\(apiError.code): \(apiError.message)"
-                } else if let networkError = error as? SharedTokenizerError.NetworkError {
+                } else if let networkError = error as? TokenizerError.TokenizerNetworkError {
                     alertMessage = networkError.message
                 } else {
                     alertMessage = "Payment could not be processed. Please try again."

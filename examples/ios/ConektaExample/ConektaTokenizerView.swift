@@ -3,9 +3,9 @@ import UIKit
 import composeKit
 
 struct ConektaTokenizerView: UIViewControllerRepresentable {
-    let config: SharedTokenizerConfig
-    let onSuccess: (SharedTokenResult) -> Void
-    let onError: (SharedTokenizerError) -> Void
+    let config: TokenizerConfig
+    let onSuccess: (TokenizerResult) -> Void
+    let onError: (TokenizerError) -> Void
 
     func makeUIViewController(context: Context) -> UIViewController {
         return ConektaTokenizerViewControllerKt.ConektaTokenizerViewController(

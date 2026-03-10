@@ -202,7 +202,7 @@ jobs:
           > For a specific version, use the corresponding versioned release." \
             --prerelease=false
 
-      - name: Update checksum in README
+      - name: Update checksum in README and Package.swift
         if: steps.validate.outputs.skip == 'false'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -210,12 +210,14 @@ jobs:
           CHECKSUM="${{ steps.package.outputs.checksum }}"
           VERSION="${{ steps.validate.outputs.tag_version }}"
           sed -i '' "s/checksum: \".*\"/checksum: \"$CHECKSUM\"/" README.md
+          sed -i '' "s|url: \"https://github.com/conekta/conekta-elements/releases/download/.*/composeKit.xcframework.zip\"|url: \"https://github.com/conekta/conekta-elements/releases/download/latest/composeKit.xcframework.zip\"|" Package.swift
+          sed -i '' "s/checksum: \".*\"/checksum: \"$CHECKSUM\"/" Package.swift
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git diff --quiet README.md && exit 0
+          git diff --quiet README.md Package.swift && exit 0
           BRANCH="chore/xcframework-checksum-${VERSION}"
           git checkout -b "$BRANCH"
-          git add README.md
+          git add README.md Package.swift
           git commit -m "chore: update XCFramework checksum to $CHECKSUM"
           git push origin "$BRANCH"
           gh pr create \

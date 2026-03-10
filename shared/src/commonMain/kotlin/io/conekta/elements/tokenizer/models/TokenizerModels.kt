@@ -1,15 +1,8 @@
+@file:OptIn(kotlin.experimental.ExperimentalObjCName::class)
+
 package io.conekta.elements.tokenizer.models
 
-/**
- * Configuration for the Conekta Tokenizer
- */
-data class TokenizerConfig(
-    val publicKey: String,
-    val merchantName: String = "Demo Store",
-    val collectCardholderName: Boolean = true,
-    val baseUrl: String = PRODUCTION_BASE_URL,
-    val rsaPublicKey: String = PRODUCTION_RSA_KEY,
-)
+import kotlin.native.ObjCName
 
 private const val PRODUCTION_BASE_URL = "https://api.conekta.io/"
 
@@ -24,8 +17,42 @@ private const val PRODUCTION_RSA_KEY =
         "sSQIDAQAB"
 
 /**
+ * Configuration for the Conekta Tokenizer
+ */
+@ObjCName("TokenizerConfig")
+data class TokenizerConfig(
+    val publicKey: String,
+    val merchantName: String = "Demo Store",
+    val collectCardholderName: Boolean = true,
+    val baseUrl: String = PRODUCTION_BASE_URL,
+    val rsaPublicKey: String = PRODUCTION_RSA_KEY,
+) {
+    // Secondary constructors for Swift/ObjC (default values are not exported to ObjC)
+    constructor(publicKey: String) : this(
+        publicKey = publicKey,
+        merchantName = "Demo Store",
+        collectCardholderName = true,
+        baseUrl = PRODUCTION_BASE_URL,
+        rsaPublicKey = PRODUCTION_RSA_KEY,
+    )
+
+    constructor(
+        publicKey: String,
+        merchantName: String,
+        collectCardholderName: Boolean,
+    ) : this(
+        publicKey = publicKey,
+        merchantName = merchantName,
+        collectCardholderName = collectCardholderName,
+        baseUrl = PRODUCTION_BASE_URL,
+        rsaPublicKey = PRODUCTION_RSA_KEY,
+    )
+}
+
+/**
  * Result of a successful tokenization
  */
+@ObjCName("TokenizerResult")
 data class TokenResult(
     val token: String,
     val lastFour: String,
@@ -34,15 +61,19 @@ data class TokenResult(
 /**
  * Error during tokenization
  */
+@ObjCName("TokenizerError")
 sealed class TokenizerError {
+    @ObjCName("TokenizerValidationError")
     data class ValidationError(
         val message: String,
     ) : TokenizerError()
 
+    @ObjCName("TokenizerNetworkError")
     data class NetworkError(
         val message: String,
     ) : TokenizerError()
 
+    @ObjCName("TokenizerApiError")
     data class ApiError(
         val code: String,
         val message: String,

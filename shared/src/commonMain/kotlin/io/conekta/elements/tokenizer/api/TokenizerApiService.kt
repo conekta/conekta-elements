@@ -22,10 +22,9 @@ import io.ktor.http.isSuccess
  * Service that orchestrates card data encryption and tokenization via the Conekta API.
  *
  * Flow:
- * 1. Build card payload → JSON serialize
- * 2. Encrypt with AES + RSA (CryptoJS-compatible)
- * 3. POST to {baseUrl}/tokens with Bearer auth
- * 4. Parse response
+ * 1. Encrypt each card field individually with RSA PKCS#1 v1.5 (mirrors conekta-ios Card.m)
+ * 2. POST {"card": {encrypted fields}} to {baseUrl}/tokens with Bearer auth
+ * 3. Parse response
  */
 class TokenizerApiService(
     private val config: TokenizerConfig,
@@ -42,30 +41,20 @@ class TokenizerApiService(
         cardholderName: String,
     ): Result<TokenResult> =
         try {
-            // 1. Build card payload
-            val cardPayload =
+            // 1. Encrypt each field individually (same as conekta-ios Card.m setNumber:name:cvc:expMonth:expYear:)
+            val requestBody =
                 CardPayloadDto(
                     card =
                         CardDataDto(
-                            cvc = cvc,
-                            expMonth = expMonth,
-                            expYear = expYear,
-                            name = cardholderName,
-                            number = cardNumber,
+                            number = cryptoService.encrypt(cardNumber, config.rsaPublicKey),
+                            name = cryptoService.encrypt(cardholderName, config.rsaPublicKey),
+                            cvc = cryptoService.encrypt(cvc, config.rsaPublicKey),
+                            expMonth = cryptoService.encrypt(expMonth, config.rsaPublicKey),
+                            expYear = cryptoService.encrypt(expYear, config.rsaPublicKey),
                         ),
                 )
 
-            val cardJson = json.encodeToString(CardPayloadDto.serializer(), cardPayload)
-
-            // 2. Encrypt
-            val encrypted = cryptoService.encryptCardData(cardJson, config.rsaPublicKey)
-            val requestBody =
-                TokenRequestDto(
-                    data = encrypted.encryptedData,
-                    key = encrypted.encryptedKey,
-                )
-
-            // 3. POST to API
+            // 2. POST to API
             val url = "${config.baseUrl}tokens"
             val response =
                 httpClient.post(url) {
@@ -78,7 +67,7 @@ class TokenizerApiService(
                     setBody(requestBody)
                 }
 
-            // 4. Parse response
+            // 3. Parse response
             if (response.status.isSuccess()) {
                 val tokenResponse: TokenResponseDto = response.body()
                 val lastFour = cardNumber.filter { it.isDigit() }.takeLast(4)

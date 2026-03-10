@@ -22,3 +22,6 @@ webApp/packages/elements/dist
 webApp/packages/elements-react/dist
 storybook-static
 .env
+# Local Xcode config (developer-specific signing)
+Local.xcconfig
+.build

@@ -20,3 +20,11 @@ shared-test:
 	./gradlew :shared:allTests :shared:koverXmlReport
 compose-test:
 	./gradlew :compose:testAndroidHostTest :compose:koverXmlReport
+build-XCFramework:
+	./gradlew :compose:assembleComposeKitReleaseXCFramework
+	# syncComposeResourcesToSPM runs automatically and updates Sources/ComposeResources/composeResources/
+	# Before releasing: update Package.swift binaryTarget from path: to url: + checksum:
+ios-test:
+	./gradlew :shared:iosSimulatorArm64Test
+verify-ios-resources:
+	./gradlew :compose:verifyComposeResourcesSync

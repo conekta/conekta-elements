@@ -56,17 +56,15 @@ kotlin {
     // https://developer.android.com/kotlin/multiplatform/migrate
     val xcfName = "composeKit"
     val xcf = XCFramework(xcfName)
+    val iosTargets = listOf(iosX64(), iosArm64(), iosSimulatorArm64())
 
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64(),
-    ).forEach {
+    iosTargets.forEach {
         it.binaries.framework {
             baseName = xcfName
-            binaryOption("bundleId", "io.conekta.$xcfName")
+            binaryOption("bundleId", "$group.$xcfName")
             xcf.add(this)
             isStatic = true
+            export(project(":shared"))
         }
     }
 
@@ -224,6 +222,62 @@ tasks.register<ValidateStringsSpellingTask>("validateStringsSpelling") {
 tasks.named("check") {
     dependsOn("validateStringsOrder")
     dependsOn("validateStringsSpelling")
+}
+
+// Embed Compose resources directly inside the XCFramework slices.
+// CMP's DefaultIosResourceReader looks for composeResources/ inside Frameworks/*.framework,
+// so resources placed here are found automatically at runtime — no extra steps for consumers.
+tasks.register("embedComposeResourcesToXCFramework") {
+    group = "build"
+    description = "Copies Compose resources into each XCFramework slice so CMP can find them at runtime"
+
+    // Use the committed Sources/ComposeResources as input — these are already the processed
+    // resources (with qualifier prefix) kept in sync by syncComposeResourcesToSPM.
+    val resourcesDir =
+        rootProject.layout.projectDirectory.dir(
+            "Sources/ComposeResources/compose-resources/composeResources",
+        )
+    val xcfDir = layout.buildDirectory.dir("XCFrameworks/release/composeKit.xcframework")
+
+    inputs.files(resourcesDir.asFileTree)
+    outputs.dir(xcfDir)
+
+    doLast {
+        val src = resourcesDir.asFile
+        val xcf = xcfDir.get().asFile
+
+        val archDirs = xcf.listFiles { file -> file.isDirectory && file.name.startsWith("ios-") }
+        val slices =
+            archDirs?.flatMap { arch ->
+                val frameworks = arch.listFiles { f -> f.isDirectory && f.extension == "framework" }
+                frameworks?.toList().orEmpty()
+            }
+
+        if (slices.isNullOrEmpty()) {
+            logger.warn("No XCFramework slices found in ${xcf.path}")
+        } else {
+            slices.forEach { framework ->
+                val dest = framework.resolve("composeResources")
+                dest.deleteRecursively()
+                src.copyRecursively(dest)
+            }
+        }
+    }
+}
+
+tasks.matching { it.name == "assembleComposeKitReleaseXCFramework" }.configureEach {
+    finalizedBy("embedComposeResourcesToXCFramework")
+}
+
+tasks.register<VerifyComposeResourcesSyncTask>("verifyComposeResourcesSync") {
+    group = "verification"
+    description = "Fails if the XCFramework slices are missing Compose resources"
+
+    builtResourcesDir = layout.buildDirectory.dir("processedResources/iosArm64/main/composeResources")
+    spmResourcesDir =
+        layout.buildDirectory.dir(
+            "XCFrameworks/release/composeKit.xcframework/ios-arm64/composeKit.framework/composeResources",
+        )
 }
 
 // Kover configuration for code coverage
