@@ -11,58 +11,61 @@ import { toKmpResultStatus, toPaymentMethod, toViewState } from '../shared/payme
 import { getMethodModule } from './methods/registry';
 
 export const createElementsRuntime = () => {
-
-    const orchestrator = createOrchestrator();
-    let slotByMethod: Record<PaymentMethod, HTMLElement> = {} as Record<PaymentMethod, HTMLElement>;
-
-    const core = new OrchestratorCore(Policy.express);
-
-
-    const setBlocked = (method: PaymentMethod, blocked: boolean) => {
-        const slot = slotByMethod[method];
-        if (!slot) return;
-        slot.style.position = 'relative';
-
-        let overlay = slot.querySelector(':scope > [data-overlay="blocked"]') as HTMLElement | null;
-
-        if (blocked) {
-            slot.style.pointerEvents = 'none';
-            if (!overlay) {
-                overlay = document.createElement('div');
-                overlay.dataset.overlay = 'blocked';
-                overlay.style.position = 'absolute';
-                overlay.style.inset = '0';
-                overlay.style.background = 'rgba(255,255,255,0.6)';
-                overlay.style.borderRadius = '8px';
-                slot.appendChild(overlay);
-            }
-        } else {
-            slot.style.pointerEvents = '';
-            overlay?.remove();
-        }
-    };
-
-    const effectRunner = {
-        run: async (eff: Effect) => {
-            if (eff instanceof Effect.RpcSetActive) {
-                return orchestrator.setActiveFor(toPaymentMethod(eff.method), eff.active);
-            }
-            if (eff instanceof Effect.RpcSetViewState) {
-                return orchestrator.setViewStateFor(toPaymentMethod(eff.method), toViewState(eff.viewState));
-            }
-            if (eff instanceof Effect.RpcSubmit) {
-                return orchestrator.submitFor(toPaymentMethod(eff.method));
-            }
-            if (eff instanceof Effect.HostSetBlocked) {
-                setBlocked(toPaymentMethod(eff.method), eff.blocked);
-                return;
-            }
-        },
-    };
-
-    const engine = new OrchestrationEngineJs(core, effectRunner);
-
     const init = async (args: InitArgs) => {
+        // Create orchestrator with correct baseUrl from args
+        const orchestrator = createOrchestrator({
+            baseUrl: args.baseUrl,
+            locale: args.locale,
+            theme: args.theme
+        });
+
+        let slotByMethod: Record<PaymentMethod, HTMLElement> = {} as Record<PaymentMethod, HTMLElement>;
+
+        const core = new OrchestratorCore(Policy.express);
+
+        const setBlocked = (method: PaymentMethod, blocked: boolean) => {
+            const slot = slotByMethod[method];
+            if (!slot) return;
+            slot.style.position = 'relative';
+
+            let overlay = slot.querySelector(':scope > [data-overlay="blocked"]') as HTMLElement | null;
+
+            if (blocked) {
+                slot.style.pointerEvents = 'none';
+                if (!overlay) {
+                    overlay = document.createElement('div');
+                    overlay.dataset.overlay = 'blocked';
+                    overlay.style.position = 'absolute';
+                    overlay.style.inset = '0';
+                    overlay.style.background = 'rgba(255,255,255,0.6)';
+                    overlay.style.borderRadius = '8px';
+                    slot.appendChild(overlay);
+                }
+            } else {
+                slot.style.pointerEvents = '';
+                overlay?.remove();
+            }
+        };
+
+        const effectRunner = {
+            run: async (eff: Effect) => {
+                if (eff instanceof Effect.RpcSetActive) {
+                    return orchestrator.setActiveFor(toPaymentMethod(eff.method), eff.active);
+                }
+                if (eff instanceof Effect.RpcSetViewState) {
+                    return orchestrator.setViewStateFor(toPaymentMethod(eff.method), toViewState(eff.viewState));
+                }
+                if (eff instanceof Effect.RpcSubmit) {
+                    return orchestrator.submitFor(toPaymentMethod(eff.method));
+                }
+                if (eff instanceof Effect.HostSetBlocked) {
+                    setBlocked(toPaymentMethod(eff.method), eff.blocked);
+                    return;
+                }
+            },
+        };
+
+        const engine = new OrchestrationEngineJs(core, effectRunner);
         const conektaJsClient = new ConektaJsClient(args.locale ?? 'es', args.baseUrl);
         const container = resolveContainer(args.container);
 
