@@ -58,6 +58,17 @@ export const createOrchestrator = (config: OrchestratorConfig = {}): Orchestrato
             },
             onHeightListener: (height: number) => {
                 container.style.height = `${height}px`;
+                container.style.minHeight = `${height}px`;
+                
+                const iframe = container.querySelector('iframe');
+                if (iframe) {
+                    iframe.style.height = `${height}px`;
+                    iframe.style.minHeight = `${height}px`;
+                }
+                
+                if ((window as any).xprops?.onResize) {
+                    (window as any).xprops.onResize({ height });
+                }
             },
         };
 
@@ -66,6 +77,35 @@ export const createOrchestrator = (config: OrchestratorConfig = {}): Orchestrato
 
         // Varios SDKs aceptan string; preferible HTMLElement
         instance.render(container);
+
+        const handleApplePayMessages = (event: MessageEvent) => {
+            if (event.data?.type === 'APPLE_PAY_MODAL_OPENING') {
+                const currentHeight = parseInt(container.style.height) || container.clientHeight || 60;
+                const additionalHeight = event.data.payload?.additionalHeight || 400;
+                const newHeight = currentHeight + additionalHeight;
+                
+                container.style.height = `${newHeight}px`;
+                container.style.minHeight = `${newHeight}px`;
+                
+                const iframe = container.querySelector('iframe');
+                if (iframe) {
+                    iframe.style.height = `${newHeight}px`;
+                    iframe.style.minHeight = `${newHeight}px`;
+                }
+                
+            } else if (event.data?.type === 'APPLE_PAY_MODAL_CLOSED') {
+                container.style.height = 'auto';
+                container.style.minHeight = '70px';
+                
+                const iframe = container.querySelector('iframe');
+                if (iframe) {
+                    iframe.style.height = 'auto';
+                    iframe.style.minHeight = '70px';
+                }
+            }
+        };
+
+        window.addEventListener('message', handleApplePayMessages);
 
         // 4) rpc wrapper
         const rpc = toRPC(instance);
@@ -80,6 +120,7 @@ export const createOrchestrator = (config: OrchestratorConfig = {}): Orchestrato
                 } finally {
                     mounted.delete(method);
                     if (activeMethod === method) activeMethod = null;
+                    window.removeEventListener('message', handleApplePayMessages);
                 }
             },
         };
